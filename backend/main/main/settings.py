@@ -118,7 +118,7 @@ SIMPLE_JWT = {
 }
 
 if DEBUG:
-    INSTALLED_APPS.extend(["debug_toolbar"])
+    INSTALLED_APPS.extend(["debug_toolbar", "drf_spectacular"])
     MIDDLEWARE.extend(["debug_toolbar.middleware.DebugToolbarMiddleware"])
     REST_FRAMEWORK.update(
         {
@@ -129,3 +129,9 @@ if DEBUG:
             "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
         }
     )
+    SPECTACULAR_SETTINGS = {
+        "TITLE": "Main Server API",
+        "DESCRIPTION": "Main Server for 'Octopus' app",
+        "VERSION": "1.0.0",
+        "SERVE_INCLUDE_SCHEMA": False,
+    }
