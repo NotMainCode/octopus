@@ -95,7 +95,8 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = "/static/django/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -135,3 +136,5 @@ if DEBUG:
         "VERSION": "1.0.0",
         "SERVE_INCLUDE_SCHEMA": False,
     }
+    TEMPLATES[0].update({"DIRS": [os.path.join(BASE_DIR, "templates/api_doc")]})
+    STATICFILES_DIRS = (os.path.join(BASE_DIR, "api_doc/"),)

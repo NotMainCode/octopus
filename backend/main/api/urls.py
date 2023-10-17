@@ -2,6 +2,7 @@
 
 from django.conf import settings
 from django.urls import include, path
+from django.views.generic import TemplateView
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
@@ -20,9 +21,19 @@ if settings.DEBUG:
             name="schema",
         ),
         path(
+            "redoc/v1/",
+            TemplateView.as_view(template_name = "main_v1_redoc.html"),
+            name = "main_v1_redoc",
+        ),
+        path(
             "redoc/v1/dynamic/",
             SpectacularRedocView.as_view(url_name="api:schema"),
             name="redoc_dynamic",
+        ),
+        path(
+            "swagger/v1/",
+            TemplateView.as_view(template_name = "main_v1_swagger.html"),
+            name = "main_v1_swagger",
         ),
         path(
             "swagger/v1/dynamic/",
