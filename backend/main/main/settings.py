@@ -17,6 +17,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+INTERNAL_IPS = ["127.0.0.1"]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -114,6 +116,8 @@ SIMPLE_JWT = {
 }
 
 if DEBUG:
+    INSTALLED_APPS.extend(["debug_toolbar"])
+    MIDDLEWARE.extend(["debug_toolbar.middleware.DebugToolbarMiddleware"])
     REST_FRAMEWORK.update(
         {
             "DEFAULT_AUTHENTICATION_CLASSES": [
