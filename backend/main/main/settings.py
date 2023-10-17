@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "rest_framework",
     "rest_framework_simplejwt",
+    "companies",
 ]
 
 MIDDLEWARE = [
@@ -112,7 +113,6 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(
         seconds=int(os.getenv("REFRESH_TOKEN_LIFETIME", ONE_WEEK_IN_SECONDS))
     ),
-    "JTI_CLAIM": os.getenv("JTI_CLAIM", "jti"),
 }
 
 if DEBUG:
