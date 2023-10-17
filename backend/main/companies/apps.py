@@ -1,4 +1,4 @@
-"""Configuration of 'Companies' application."""
+"""Configuration of 'Companies' app."""
 
 from django.apps import AppConfig
 
