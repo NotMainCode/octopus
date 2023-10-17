@@ -1,8 +1,16 @@
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-3zby_h+fe&7@xfqa+(4w$&wpuj&avz!fza910up8=z2409oak5'
+SECRET_KEY = os.getenv(
+    "DJANGO_SECRET_KEY",
+    'django-insecure-3zby_h+fe&7@xfqa+(4w$&wpuj&avz!fza910up8=z2409oak5',
+)
 
 DEBUG = True
 
@@ -49,13 +57,13 @@ WSGI_APPLICATION = 'main.wsgi.application'
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
+        "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.postgresql"),
+        "NAME": os.getenv("POSTGRES_DB", "postgres"),
+        "USER": os.getenv("POSTGRES_USER", "postgres"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "postgres"),
+        "HOST": os.getenv("DB_HOST", "localhost"),
+        "PORT": os.getenv("DB_PORT", "5432"),
+    },
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -76,6 +84,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
+USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
