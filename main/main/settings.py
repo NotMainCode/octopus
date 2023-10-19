@@ -118,6 +118,9 @@ SIMPLE_JWT = {
     ),
 }
 
+# CONSTANTS
+MAX_LENGHT_USER_MODEL: int = 150
+
 if DEBUG:
     INSTALLED_APPS.extend(["debug_toolbar", "drf_spectacular"])
     MIDDLEWARE.extend(["debug_toolbar.middleware.DebugToolbarMiddleware"])
