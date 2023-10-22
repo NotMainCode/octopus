@@ -1,4 +1,4 @@
-"""Admin site settings of the 'User' app."""
+"""Admin site settings of the 'Users' app."""
 from django.contrib import admin
 
 from users.models import User
