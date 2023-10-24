@@ -9,16 +9,21 @@ from django.core.validators import (
 from django.db import models
 
 
+class Industry(models.Model):
+    name = models.CharField(max_length=200)
+
+
 class Company(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    phones = models.TextField()  # Заглушка для модели Phones
     email = models.EmailField()
     address = models.CharField(max_length=200)
     logo = models.ImageField(upload_to="companiues/logo/")
     website = models.URLField()
-    fields = models.CharField(max_length=200)  # Заглушка для модели Fields
-    industries = models.CharField(max_length=200)  # Заглушка для модели Industries
+    services = models.ForeignKey("Services", on_delete=models.CASCADE)
+    industries = models.ForeignKey(
+        Industry, on_delete=models.CASCADE, related_name="industries,"
+    )
     team_size = models.PositiveIntegerField()
     year_founded = models.PositiveIntegerField(
         validators=[
@@ -31,3 +36,17 @@ class Company(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Phone(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=15)
+
+
+class ServiceCategory(models.Model):
+    name = models.CharField(max_length=100)
+
+
+class Service(models.Model):
+    category = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
