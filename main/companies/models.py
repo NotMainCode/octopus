@@ -1,10 +1,10 @@
 """Database settings of the 'Companies' app."""
 
 from django.core.validators import (
-    MinValueValidator,
+    MaxLengthValidator,
     MaxValueValidator,
     MinLengthValidator,
-    MaxLengthValidator,
+    MinValueValidator,
 )
 from django.db import models
 
@@ -18,11 +18,17 @@ class Company(models.Model):
     description = models.TextField()
     email = models.EmailField()
     address = models.CharField(max_length=200)
-    logo = models.ImageField(upload_to="companiues/logo/")
+    logo = models.ImageField(upload_to="companies/logo/")
     website = models.URLField()
-    services = models.ForeignKey("Services", on_delete=models.CASCADE)
-    industries = models.ForeignKey(
-        Industry, on_delete=models.CASCADE, related_name="industries,"
+    services = models.ManyToManyField(
+        "Services",
+        related_name="companies",
+        on_delete=models.CASCADE,
+    )
+    industries = models.ManyToManyField(
+        Industry,
+        on_delete=models.CASCADE,
+        related_name="companies",
     )
     team_size = models.PositiveIntegerField()
     year_founded = models.PositiveIntegerField(
@@ -39,7 +45,11 @@ class Company(models.Model):
 
 
 class Phone(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        related_name="phones",
+    )
     phone = models.CharField(max_length=15)
 
 
