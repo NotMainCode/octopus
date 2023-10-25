@@ -13,6 +13,15 @@ class Industry(models.Model):
     name = models.CharField(max_length=200)
 
 
+class ServiceCategory(models.Model):
+    name = models.CharField(max_length=100)
+
+
+class Service(models.Model):
+    category = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+
+
 class Company(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -21,13 +30,11 @@ class Company(models.Model):
     logo = models.ImageField(upload_to="companies/logo/")
     website = models.URLField()
     services = models.ManyToManyField(
-        "Services",
+        Service,
         related_name="companies",
-        on_delete=models.CASCADE,
     )
     industries = models.ManyToManyField(
         Industry,
-        on_delete=models.CASCADE,
         related_name="companies",
     )
     team_size = models.PositiveIntegerField()
@@ -51,12 +58,3 @@ class Phone(models.Model):
         related_name="phones",
     )
     phone = models.CharField(max_length=15)
-
-
-class ServiceCategory(models.Model):
-    name = models.CharField(max_length=100)
-
-
-class Service(models.Model):
-    category = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
