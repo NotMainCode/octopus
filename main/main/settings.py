@@ -75,17 +75,20 @@ DATABASES = {
 }
 
 AUTH_PASSWORD_VALIDATORS = [
+    # {
+    #     "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    # },
+    # {
+    #     "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    # },
+    # {
+    #     "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    # },
+    # {
+    #     "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    # },
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": "users.validators.CustomPasswordValidator",
     },
 ]
 
@@ -121,7 +124,10 @@ SIMPLE_JWT = {
 }
 
 # CONSTANTS
-MAX_LENGHT_USER_MODEL: int = 150
+MAX_LEN_FN_LN_USER_MODEL: int = 30
+MAX_LEN_EMAIL_USER_MODEL: int = 254
+MIN_LEN_PASSWORD_USER_MODEL: int = 8
+MAX_LEN_PASSWORD_USER_MODEL: int = 30
 
 if DEBUG:
     INSTALLED_APPS.extend(["debug_toolbar", "drf_spectacular"])
