@@ -89,6 +89,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = "users.User"
+
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
@@ -117,6 +119,9 @@ SIMPLE_JWT = {
         seconds=int(os.getenv("REFRESH_TOKEN_LIFETIME", ONE_WEEK_IN_SECONDS))
     ),
 }
+
+# CONSTANTS
+MAX_LENGHT_USER_MODEL: int = 150
 
 if DEBUG:
     INSTALLED_APPS.extend(["debug_toolbar", "drf_spectacular"])
