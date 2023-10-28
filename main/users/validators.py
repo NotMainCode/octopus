@@ -35,19 +35,14 @@ class CustomPasswordValidator:
         symbol = set(password) - set("".join(re.findall(pattern, password)))
         if len(symbol) > 0:
             raise ValidationError(_(f"Символы <{''.join(symbol)}> запрещены!"))
-        return True
 
     def get_help_text(self):
         return _(
-            "Ваш пароль должен содержать не менее %(min_length)d и "
-            "не более %(max_length)d символов. Разрешено использовать цифры и "
-            "спецсимволы <-+_.!?@#$%^&*>"
+            "Ваш пароль должен содержать не менее %(min_length)d и не "
+            "более %(max_length)d символов. Разрешено использовать латинский алфавит, "
+            "цифры и спецсимволы <-+_.!?@#$%^&*>"
             % {"min_length": self.min_length, "max_length": self.max_length}
         )
-
-
-def raiser(e):
-    raise ValidationError(e)
 
 
 def validate_first_name_and_last_name_fields(input_string):
@@ -58,11 +53,8 @@ def validate_first_name_and_last_name_fields(input_string):
     symbol = set(input_string) - set(
         "".join(re.findall(r"[a-zA-Zа-яА-Я- ]", input_string))
     )
-    return (
-        True
-        if len(symbol) == 0
-        else raiser("Нельзя использовать эти символы <{}>".format(*symbol))
-    )
+    if len(symbol) > 0:
+        raise ValidationError("Нельзя использовать эти символы <{}>".format(*symbol))
 
 
 def validate_email_field(email):
@@ -72,9 +64,9 @@ def validate_email_field(email):
         "[a-zA-Z]{2,63}": email.split(".")[1],
     }
     exception = {
-        "[a-zA-Z0-9._-]+": "'До <@> нельзя использовать эти символы <{}> '.format(*symbol)",
-        "[a-zA-Z0-9.-]+": "'От <@> до <.> нельзя использовать эти символы <{}>'.format(*symbol)",
-        "[a-zA-Z]{2,63}": "'После <.> нельзя использовать эти символы <{}>'.format(*symbol)",
+        "[a-zA-Z0-9._-]+": "f'До <@> нельзя использовать эти символы <{symbol}>'",
+        "[a-zA-Z0-9.-]+": "f'От <@> до <.> нельзя использовать эти символы <{symbol}>'",
+        "[a-zA-Z]{2,63}": "f'После <.> нельзя использовать эти символы <{symbol}>'",
     }
 
     lower_email = email.lower()
@@ -89,4 +81,5 @@ def validate_email_field(email):
             "".join(re.findall(pattern, patterns[pattern]))
         )
         if len(symbol) > 0:
-            raiser(eval(exception[pattern]))
+            symbol = "".join(symbol)
+            raise ValidationError(eval(exception[pattern]))

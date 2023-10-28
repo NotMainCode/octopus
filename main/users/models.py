@@ -15,13 +15,13 @@ class User(AbstractUser):
     username = None
     first_name = models.CharField(
         verbose_name="Имя",
-        max_length=settings.MAX_LEN_FN_LN_USER_MODEL,
+        max_length=settings.MAX_LEN_FULL_NAME_USER_MODEL,
         blank=False,
         validators=[validate_first_name_and_last_name_fields],
     )
     last_name = models.CharField(
         verbose_name="Фамилия",
-        max_length=settings.MAX_LEN_FN_LN_USER_MODEL,
+        max_length=settings.MAX_LEN_FULL_NAME_USER_MODEL,
         blank=False,
         validators=[validate_first_name_and_last_name_fields],
     )
