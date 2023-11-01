@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Industry, ServiceCategory, Service, Company, Phone
+from django.contrib.admin import InlineModelAdmin, TabularInline
+
+from .models import Company, Industry, Phone, Service, ServiceCategory
 
 
 @admin.register(Industry)
