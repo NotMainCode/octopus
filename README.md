@@ -81,11 +81,17 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-8. Создать суперпользователя:
+8. Импортировать тестовые данные о компаниях
+```
+python manage.py import_test_data_companies
+```
+
+9. Создать суперпользователя:
 ```
 python manage.py createsuperuser
 ```
-9. Запустить проект:
+
+10.Запустить проект:
 ```
 python manage.py runserver 8008
 ```
