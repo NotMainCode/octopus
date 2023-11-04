@@ -31,7 +31,7 @@ class CustomPasswordValidator:
 
         if re.search(r"[^0-9]", password) is None:
             raise ValidationError(_("Пароль не должен содержать только цифры!"))
-        pattern = r"[a-zA-Zа-яА-Я-+_.!?@#$%^&*\d+]"
+        pattern = r"[a-zA-Zа-яА-Я-+_.!?@#$%^&*\d+=/]"
         symbol = set(password) - set("".join(re.findall(pattern, password)))
         if len(symbol) > 0:
             raise ValidationError(_(f"Символы <{''.join(symbol)}> запрещены!"))

@@ -121,13 +121,26 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(
         seconds=int(os.getenv("REFRESH_TOKEN_LIFETIME", ONE_WEEK_IN_SECONDS))
     ),
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
 }
+
+PASSWORD_RESET_TIMEOUT = int(os.getenv("PASSWORD_RESET_TIMEOUT", 86400))
 
 # CONSTANTS
 MAX_LEN_FULL_NAME_USER_MODEL: int = 30
 MAX_LEN_EMAIL_USER_MODEL: int = 254
 MIN_LEN_PASSWORD_USER_MODEL: int = 8
 MAX_LEN_PASSWORD_USER_MODEL: int = 30
+
+# EMAIL
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_USE_SSL = True
+EMAIL_HOST = 'smtp.rambler.ru'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 465
 
 if DEBUG:
     INSTALLED_APPS.extend(["debug_toolbar", "drf_spectacular"])
