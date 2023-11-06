@@ -2,12 +2,10 @@ name: Test when push on all branch
 
 on:
   push:
-    branches:
-      - '*'
     branches-ignore:
       - 'main'
       - 'develop'
-      - 'release-*' 
+      - 'release-*'
 
 jobs:
   backend_tests:
