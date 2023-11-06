@@ -19,3 +19,4 @@ rpds-py==0.10.6
 sqlparse==0.4.4
 tzdata==2023.3
 uritemplate==4.1.1
+gunicorn==20.1.0
