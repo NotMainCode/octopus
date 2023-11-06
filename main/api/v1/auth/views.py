@@ -167,12 +167,7 @@ class UserResetPasswordView(BaseView, views.APIView):
 class UserResetPasswordConfirmView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
-        data = dict()
-        data["uid"] = request.data.get("uid")
-        data["token"] = request.data.get("token")
-        data["new_password"] = request.data.get("new_password")
-        data["re_new_password"] = request.data.get("re_new_password")
-        serializer = self.get_serializer(action)(data=data)
+        serializer = self.get_serializer(action)(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.user
             user.password = serializer.validated_data["new_password"]
