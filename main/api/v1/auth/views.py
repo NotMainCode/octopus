@@ -2,83 +2,75 @@
 from django.contrib.auth import get_user_model, tokens
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
+from django.urls import resolve
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode
 
-from rest_framework import status, viewsets
+from rest_framework import status, views
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt import tokens
 
-from ..auth.serializers import (
+from api.v1.auth.serializers import (
     TokenUIDSerializer,
-    UserSerializer,
     UserSigninSerializer,
     UserSignupSerializer,
     UserResetPasswordConfirmSerializer,
     UserResetPasswordSerializer,
 )
-from ..auth.permissions import IsReadOnly
 
 
 User = get_user_model()
 
-action_list = {
-    "signup": "registration",
-    "signin": "login to your personal account",
-    "reset_password": "password change",
-}
 
+class BaseView:
+    permission_classes = (AllowAny,)
 
-class CustomAuthModel(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    permission_classes = [IsReadOnly]
+    action_list = {
+        "signup": "registration",
+        "signin": "login to your personal account",
+        "reset_password": "password change",
+    }
 
-    def get_serializer_class(self):
-        if self.action == "signup":
-            return UserSignupSerializer
-        elif self.action == "signup_confirm":
-            return TokenUIDSerializer
-        elif self.action == "signin":
-            return UserSigninSerializer
-        elif self.action == "signin_confirm":
-            return TokenUIDSerializer
-        elif self.action == "reset_password":
-            return UserResetPasswordSerializer
-        elif self.action == "reset_password_confirm":
-            return UserResetPasswordConfirmSerializer
-        else:
-            return UserSerializer
-
-    def _generate_URL(self, user, request):
+    def _generate_URL(self, action, user, request):
         uid = force_str(urlsafe_base64_encode(force_bytes(user.id)))
         token = default_token_generator.make_token(user)
         site = get_current_site(request)
         protocol = "https:/" if request.is_secure() else "http:/"
         confirm_url = "/".join(
-            (protocol, site.domain, "#", str(self.action) + "_confirm", uid, str(token))
+            (protocol, site.domain, "#", action + "_confirm", uid, str(token))
         )
         return confirm_url
 
     def _generate_mail(self, action, url):
         mail = dict()
-        mail["subject"] = action_list[action]
+        mail["subject"] = self.action_list[action]
         mail["message"] = url
         return mail
 
-    @action(
-        methods=["POST"],
-        permission_classes=(AllowAny,),
-        detail=False,
-        url_path="signup",
-    )
-    def signup(self, request):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
+    def get_serializer(self, action):
+        if action == "signup":
+            return UserSignupSerializer
+        elif action == "signup_confirm":
+            return TokenUIDSerializer
+        elif action == "signin":
+            return UserSigninSerializer
+        elif action == "signin_confirm":
+            return TokenUIDSerializer
+        elif action == "reset_password":
+            return UserResetPasswordSerializer
+        return UserResetPasswordConfirmSerializer
+
+
+class UserSignupView(BaseView, views.APIView):
+    def post(self, request):
+        action = resolve(request.path_info).url_name
+        serializer = self.get_serializer(action)(data=request.data)
+        if serializer.is_valid():
             user = serializer.save()
-            confirm_url = self._generate_URL(user, request)
-            mail = self._generate_mail(self.action, confirm_url)
+            confirm_url = self._generate_URL(action, user, request)
+            mail = self._generate_mail(action, confirm_url)
             user.send_mail(user, mail)
             return Response(
                 "На почту отправлено письмо со ссылкой подтверждения",
@@ -86,97 +78,113 @@ class CustomAuthModel(viewsets.ModelViewSet):
             )
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    @action(
-        methods=["POST"],
-        permission_classes=(AllowAny,),
-        detail=False,
-        url_path="signup_confirm",
-    )
-    def signup_confirm(self, request):
-        serializer = self.get_serializer(data=request.query_params)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.validated_data
+
+class UserSignupConfirmView(BaseView, views.APIView):
+    def post(self, request):
+        serializer = self.get_serializer(action)(data=request.data)
+        if serializer.is_valid():
+            user = serializer.user
             user.is_active = True
             user.save(update_fields=["is_active"])
-            return Response("Пользователь активирован", status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-
-    @action(
-        methods=["POST"],
-        permission_classes=(AllowAny,),
-        detail=False,
-        url_path="signin",
-    )
-    def signin(self, request):
-        email = request.data.get("email")
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = User.objects.get(email=email)
-            confirm_url = self._generate_URL(user, request)
-            mail = self._generate_mail(self.action, confirm_url)
-            user.send_mail(user, mail)
-            return Response(
-                "На почту отправлено письмо со ссылкой подтверждения",
-                status=status.HTTP_204_NO_CONTENT,
-            )
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-
-    @action(
-        methods=["POST"],
-        permission_classes=(AllowAny,),
-        detail=False,
-        url_path="signin_confirm",
-    )
-    def signin_confirm(self, request):
-        serializer = self.get_serializer(data=request.query_params)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.validated_data
             token = tokens.RefreshToken.for_user(user)
             return Response(
                 {"access": str(token.access_token), "refresh": str(token)},
                 status=status.HTTP_200_OK,
             )
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return (
+            Response(status=status.HTTP_400_BAD_REQUEST)
+            if user.is_active
+            else Response(
+                {"detail": "User is active"}, status=status.HTTP_403_FORBIDDEN
+            )
+        )
 
-    @action(
-        methods=["POST"],
-        permission_classes=(AllowAny,),
-        detail=False,
-        url_path="reset_password",
-    )
-    def reset_password(self, request):
+
+class UserSigninView(BaseView, views.APIView):
+    def post(self, request):
         email = request.data.get("email")
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
+        action = resolve(request.path_info).url_name
+        serializer = self.get_serializer(action)(data=request.data)
+        if serializer.is_valid():
             user = User.objects.get(email=email)
-            confirm_url = self._generate_URL(user, request)
-            mail = self._generate_mail(self.action, confirm_url)
+            confirm_url = self._generate_URL(action, user, request)
+            mail = self._generate_mail(action, confirm_url)
             user.send_mail(user, mail)
             return Response(
                 "На почту отправлено письмо со ссылкой подтверждения",
                 status=status.HTTP_204_NO_CONTENT,
             )
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return (
+            Response(status=status.HTTP_400_BAD_REQUEST)
+            if user.is_active
+            else Response(
+                {"detail": "User is inactive"}, status=status.HTTP_403_FORBIDDEN
+            )
+        )
 
-    @action(
-        methods=["POST"],
-        permission_classes=(AllowAny,),
-        detail=False,
-        url_path="reset_password_confirm",
-    )
-    def reset_password_confirm(self, request):
+
+class UserSigninConfirmView(BaseView, views.APIView):
+    def post(self, request):
+        serializer = self.get_serializer(action)(data=request.data)
+        if serializer.is_valid():
+            user = serializer.user
+            token = tokens.RefreshToken.for_user(user)
+            return Response(
+                {"access": str(token.access_token), "refresh": str(token)},
+                status=status.HTTP_200_OK,
+            )
+        return (
+            Response(status=status.HTTP_400_BAD_REQUEST)
+            if user.is_active
+            else Response(
+                {"detail": "User is active"}, status=status.HTTP_403_FORBIDDEN
+            )
+        )
+
+
+class UserResetPasswordView(BaseView, views.APIView):
+    def post(self, request):
+        action = resolve(request.path_info).url_name
+        serializer = self.get_serializer(action)(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.user
+            confirm_url = self._generate_URL(action, user, request)
+            mail = self._generate_mail(action, confirm_url)
+            user.send_mail(user, mail)
+            return Response(
+                "На почту отправлено письмо со ссылкой подтверждения",
+                status=status.HTTP_204_NO_CONTENT,
+            )
+        return (
+            Response(status=status.HTTP_400_BAD_REQUEST)
+            if user.is_active
+            else Response(
+                {"detail": "User is inactive"}, status=status.HTTP_403_FORBIDDEN
+            )
+        )
+
+
+class UserResetPasswordConfirmView(BaseView, views.APIView):
+    def post(self, request):
+        action = resolve(request.path_info).url_name
         data = dict()
-        data["uid"] = request.query_params.get("uid")
-        data["token"] = request.query_params.get("token")
+        data["uid"] = request.data.get("uid")
+        data["token"] = request.data.get("token")
         data["new_password"] = request.data.get("new_password")
         data["re_new_password"] = request.data.get("re_new_password")
-        serializer = self.get_serializer(data=data)
+        serializer = self.get_serializer(action)(data=data)
         if serializer.is_valid(raise_exception=True):
-            user = serializer.validated_data
-            user.password = request.data.get("new_password")
+            user = serializer.user
+            user.password = serializer.validated_data["new_password"]
             user.save(update_fields=["password"])
             return Response(
                 "Пароль изменен",
-                status=status.HTTP_200_OK,
+                status=status.HTTP_204_NO_CONTENT,
             )
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return (
+            Response(status=status.HTTP_400_BAD_REQUEST)
+            if user.is_active
+            else Response(
+                {"detail": "User is inactive"}, status=status.HTTP_403_FORBIDDEN
+            )
+        )
