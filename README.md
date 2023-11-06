@@ -84,6 +84,8 @@ python manage.py migrate
 8. Импортировать тестовые данные о компаниях
 ```
 python manage.py loaddata ../test_data_companies.json
+
+Содержимое папки 'test_data_companies_media' скопировать в папку 'main/media'
 ```
 
 9. Создать суперпользователя:
