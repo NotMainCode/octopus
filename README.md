@@ -83,7 +83,7 @@ python manage.py migrate
 
 8. Импортировать тестовые данные о компаниях
 ```
-python manage.py import_test_data_companies
+python manage.py loaddata ../test_data_companies.json
 ```
 
 9. Создать суперпользователя:
