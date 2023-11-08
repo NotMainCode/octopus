@@ -1,5 +1,5 @@
 """Views for 'auth' endpoints of 'Api' application v1."""
-from django.contrib.auth import get_user_model, tokens
+from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import resolve
@@ -7,19 +7,18 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode
 
 from rest_framework import status, views
-from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework_simplejwt import tokens
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.v1.auth.serializers import (
     TokenUIDSerializer,
-    UserSigninSerializer,
-    UserSignupSerializer,
     UserResetPasswordConfirmSerializer,
     UserResetPasswordSerializer,
+    UserSigninSerializer,
+    UserSignupSerializer,
 )
-
 
 User = get_user_model()
 
@@ -33,7 +32,7 @@ class BaseView:
         "reset_password": "password change",
     }
 
-    def _generate_URL(self, action, user, request):
+    def _generate_url(self, action, user, request):
         uid = force_str(urlsafe_base64_encode(force_bytes(user.id)))
         token = default_token_generator.make_token(user)
         site = get_current_site(request)
@@ -67,79 +66,60 @@ class UserSignupView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
         serializer = self.get_serializer(action)(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             user = serializer.save()
-            confirm_url = self._generate_URL(action, user, request)
+            confirm_url = self._generate_url(action, user, request)
             mail = self._generate_mail(action, confirm_url)
             user.send_mail(user, mail)
             return Response(
-                "На почту отправлено письмо со ссылкой подтверждения",
                 status=status.HTTP_204_NO_CONTENT,
             )
-        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserSignupConfirmView(BaseView, views.APIView):
     def post(self, request):
+        action = resolve(request.path_info).url_name
         serializer = self.get_serializer(action)(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             user = serializer.user
+            if user.is_active:
+                raise PermissionDenied("User is active.")
             user.is_active = True
             user.save(update_fields=["is_active"])
-            token = tokens.RefreshToken.for_user(user)
+            token = RefreshToken.for_user(user)
             return Response(
                 {"access": str(token.access_token), "refresh": str(token)},
                 status=status.HTTP_200_OK,
             )
-        return (
-            Response(status=status.HTTP_400_BAD_REQUEST)
-            if user.is_active
-            else Response(
-                {"detail": "User is active"}, status=status.HTTP_403_FORBIDDEN
-            )
-        )
 
 
 class UserSigninView(BaseView, views.APIView):
     def post(self, request):
-        email = request.data.get("email")
         action = resolve(request.path_info).url_name
         serializer = self.get_serializer(action)(data=request.data)
-        if serializer.is_valid():
-            user = User.objects.get(email=email)
-            confirm_url = self._generate_URL(action, user, request)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.user
+            confirm_url = self._generate_url(action, user, request)
             mail = self._generate_mail(action, confirm_url)
             user.send_mail(user, mail)
             return Response(
-                "На почту отправлено письмо со ссылкой подтверждения",
                 status=status.HTTP_204_NO_CONTENT,
             )
-        return (
-            Response(status=status.HTTP_400_BAD_REQUEST)
-            if user.is_active
-            else Response(
-                {"detail": "User is inactive"}, status=status.HTTP_403_FORBIDDEN
-            )
-        )
 
 
 class UserSigninConfirmView(BaseView, views.APIView):
     def post(self, request):
+        action = resolve(request.path_info).url_name
         serializer = self.get_serializer(action)(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             user = serializer.user
-            token = tokens.RefreshToken.for_user(user)
+            if not user.is_active:
+                raise PermissionDenied("User is inactive.")
+            token = RefreshToken.for_user(user)
             return Response(
                 {"access": str(token.access_token), "refresh": str(token)},
                 status=status.HTTP_200_OK,
             )
-        return (
-            Response(status=status.HTTP_400_BAD_REQUEST)
-            if user.is_active
-            else Response(
-                {"detail": "User is active"}, status=status.HTTP_403_FORBIDDEN
-            )
-        )
 
 
 class UserResetPasswordView(BaseView, views.APIView):
@@ -148,20 +128,12 @@ class UserResetPasswordView(BaseView, views.APIView):
         serializer = self.get_serializer(action)(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.user
-            confirm_url = self._generate_URL(action, user, request)
+            confirm_url = self._generate_url(action, user, request)
             mail = self._generate_mail(action, confirm_url)
             user.send_mail(user, mail)
             return Response(
-                "На почту отправлено письмо со ссылкой подтверждения",
                 status=status.HTTP_204_NO_CONTENT,
             )
-        return (
-            Response(status=status.HTTP_400_BAD_REQUEST)
-            if user.is_active
-            else Response(
-                {"detail": "User is inactive"}, status=status.HTTP_403_FORBIDDEN
-            )
-        )
 
 
 class UserResetPasswordConfirmView(BaseView, views.APIView):
@@ -170,16 +142,11 @@ class UserResetPasswordConfirmView(BaseView, views.APIView):
         serializer = self.get_serializer(action)(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.user
+            if not user.is_active:
+                raise PermissionDenied("User is inactive.")
             user.password = serializer.validated_data["new_password"]
             user.save(update_fields=["password"])
             return Response(
                 "Пароль изменен",
                 status=status.HTTP_204_NO_CONTENT,
             )
-        return (
-            Response(status=status.HTTP_400_BAD_REQUEST)
-            if user.is_active
-            else Response(
-                {"detail": "User is inactive"}, status=status.HTTP_403_FORBIDDEN
-            )
-        )

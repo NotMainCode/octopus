@@ -2,14 +2,13 @@
 from django.urls import path
 
 from api.v1.auth.views import (
-    UserSignupView,
-    UserSignupConfirmView,
-    UserSigninView,
-    UserSigninConfirmView,
-    UserResetPasswordView,
     UserResetPasswordConfirmView,
+    UserResetPasswordView,
+    UserSigninConfirmView,
+    UserSigninView,
+    UserSignupConfirmView,
+    UserSignupView,
 )
-
 
 urlpatterns = [
     path("signup/", UserSignupView.as_view(), name="signup"),

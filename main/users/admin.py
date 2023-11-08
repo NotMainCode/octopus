@@ -7,6 +7,8 @@ from users.models import User
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = (
-        "email", "first_name", "last_name",
+        "email",
+        "first_name",
+        "last_name",
     )
-    empty_value_display = '-пусто-'
+    empty_value_display = "-пусто-"
