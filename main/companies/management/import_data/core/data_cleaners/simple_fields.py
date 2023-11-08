@@ -32,9 +32,10 @@ def remove_object_with_invalid_data(
                 ):
                     break
 
-            remove_object_with_invalid_field_value(
+            if remove_object_with_invalid_field_value(
                 objects_csv_data, object_index, field_name, field_validators[field_name]
-            )
+            ):
+                break
 
 
 def get_field_validators_required_fields_int_type_fields(
