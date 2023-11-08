@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.contrib.admin import InlineModelAdmin, TabularInline
+from django.contrib.admin import TabularInline
 
 from .models import Company, Industry, Phone, Service, ServiceCategory
 
