@@ -1,12 +1,14 @@
 """Database settings of the 'Companies' app."""
 
 from django.core.validators import (
-    MaxLengthValidator,
     MaxValueValidator,
-    MinLengthValidator,
     MinValueValidator,
 )
 from django.db import models
+
+
+class City(models.Model):
+    name = models.CharField(max_length=120, unique=True)
 
 
 class Industry(models.Model):
@@ -24,6 +26,11 @@ class Service(models.Model):
 
 class Company(models.Model):
     name = models.CharField(max_length=100)
+    city = models.ForeignKey(
+        City,
+        related_name = "companies",
+        on_delete = models.CASCADE,
+    )
     description = models.TextField()
     email = models.EmailField()
     address = models.CharField(max_length=200)
@@ -42,8 +49,6 @@ class Company(models.Model):
         validators=[
             MinValueValidator(1900),
             MaxValueValidator(2100),
-            MinLengthValidator(4),
-            MaxLengthValidator(4),
         ],
     )
 
@@ -57,4 +62,4 @@ class Phone(models.Model):
         on_delete=models.CASCADE,
         related_name="phones",
     )
-    phone = models.CharField(max_length=15)
+    phone = models.CharField(max_length=18)
