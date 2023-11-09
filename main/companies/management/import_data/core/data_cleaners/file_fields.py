@@ -21,8 +21,7 @@ def download_files_and_save_upload_to_value(
 ) -> None:
     """Download and save the file, prepare the data to be saved in the database."""
     upload_to = objects_model_name._meta.get_field(objects_file_field_name).upload_to
-    os.makedirs(os.path.join(settings.MEDIA_ROOT, upload_to), exist_ok = True)
-
+    os.makedirs(os.path.join(settings.MEDIA_ROOT, upload_to), exist_ok=True)
 
     for object_csv_data in objects_csv_data:
         file_url = object_csv_data[objects_file_field_name]
