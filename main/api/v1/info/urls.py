@@ -2,10 +2,10 @@
 
 from django.urls import path
 
-from api.v1.info.views import industries, service_categories, services
+from api.v1.info.views import InfoAPIView
 
 urlpatterns = [
-    path("industries/", industries, name="industries_list"),
-    path("service_categories/", service_categories, name="service_categories_list"),
-    path("services/", services, name="services_list"),
+    path("industries/", InfoAPIView.as_view(), name="industries_list"),
+    path("service_categories/", InfoAPIView.as_view(), name="service_categories_list"),
+    path("services/", InfoAPIView.as_view(), name="services_list"),
 ]

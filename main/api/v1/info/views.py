@@ -1,40 +1,38 @@
 """Views for 'info' endpoints of 'Api' application v1."""
 
-from rest_framework import status
-from rest_framework.decorators import (
-    api_view,
-    authentication_classes,
-    permission_classes,
-)
+from django.urls import resolve
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
 
-from api.v1.info.serializers import IndustrySerializer, ServiceCategorySerializer, ServiceSerializer
-from companies.models import Industry, Service, ServiceCategory
+from api.v1.info.serializers import (
+    CitySerializer,
+    IndustrySerializer,
+    ServiceCategorySerializer,
+    ServiceSerializer,
+)
+from companies.models import City, Industry, Service, ServiceCategory
+
+INFO_SERIALIZERS = {
+    "industries_list": IndustrySerializer,
+    "service_categories_list": ServiceCategorySerializer,
+    "services_list": ServiceSerializer,
+    "cities_list": CitySerializer,
+}
+
+INFO_MODELS = {
+    "industries_list": Industry,
+    "service_categories_list": ServiceCategory,
+    "services_list": Service,
+    "cities_list": City,
+}
 
 
-@api_view()
-@authentication_classes(())
-@permission_classes((AllowAny,))
-def industries(request):
-    """URL request handler for the industries/ endpoint."""
-    serializer = IndustrySerializer(Industry.objects.all(), many=True)
-    return Response(data=serializer.data, status=status.HTTP_200_OK)
+class InfoAPIView(ListAPIView):
+    authentication_classes = ()
+    permission_classes = (AllowAny,)
 
+    def get_queryset(self):
+        return INFO_MODELS[resolve(self.request.path_info).url_name].objects.all()
 
-@api_view()
-@authentication_classes(())
-@permission_classes((AllowAny,))
-def service_categories(request):
-    """URL request handler for the service_categories/ endpoint."""
-    serializer = ServiceCategorySerializer(ServiceCategory.objects.all(), many=True)
-    return Response(data=serializer.data, status=status.HTTP_200_OK)
-
-
-@api_view()
-@authentication_classes(())
-@permission_classes((AllowAny,))
-def services(request):
-    """URL request handler for the services/ endpoint."""
-    serializer = ServiceSerializer(Service.objects.all(), many=True)
-    return Response(data=serializer.data, status=status.HTTP_200_OK)
+    def get_serializer_class(self):
+        return INFO_SERIALIZERS[resolve(self.request.path_info).url_name]
