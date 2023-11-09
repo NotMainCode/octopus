@@ -81,11 +81,27 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-8. Создать суперпользователя:
+8. Импортировать данные о компаниях из csv файла в БД
+```
+python manage.py import_data_companies
+```
+
+9. Дамп БД
+```
+python -Xutf8 ./manage.py dumpdata > ../data_companies.json
+```
+
+10. Импортировать данные о компаниях из json файла в БД
+```
+python manage.py loaddata ../data_companies.json
+```
+
+11. Создать суперпользователя:
 ```
 python manage.py createsuperuser
 ```
-9. Запустить проект:
+
+12. Запустить проект:
 ```
 python manage.py runserver 8008
 ```
