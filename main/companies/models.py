@@ -1,9 +1,6 @@
 """Database settings of the 'Companies' app."""
 
-from django.core.validators import (
-    MaxValueValidator,
-    MinValueValidator,
-)
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
@@ -62,4 +59,4 @@ class Phone(models.Model):
         on_delete=models.CASCADE,
         related_name="phones",
     )
-    phone = models.CharField(max_length=18)
+    number = models.CharField(max_length=18)
