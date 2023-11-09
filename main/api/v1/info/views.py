@@ -4,6 +4,7 @@ from django.urls import resolve
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 
+from api.v1.info.filters import InfoSearchFilter
 from api.v1.info.serializers import (
     CitySerializer,
     IndustrySerializer,
@@ -28,8 +29,11 @@ INFO_MODELS = {
 
 
 class InfoAPIView(ListAPIView):
+    """URL requests handler for endpoints of the Info group."""
+
     authentication_classes = ()
     permission_classes = (AllowAny,)
+    filter_backends = (InfoSearchFilter,)
 
     def get_queryset(self):
         return INFO_MODELS[resolve(self.request.path_info).url_name].objects.all()

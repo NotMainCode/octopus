@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 
-from companies.models import Industry, Service, ServiceCategory
+from companies.models import City, Industry, Service, ServiceCategory
 
 
 class IndustrySerializer(serializers.ModelSerializer):
@@ -47,3 +47,11 @@ class ServiceSerializer(ServiceCategoryBriefSerializer):
     class Meta:
         model = Service
         fields = (*ServiceCategoryBriefSerializer.Meta.fields, "category")
+
+
+class CitySerializer(serializers.ModelSerializer):
+    """Brief serializer for working with City resource."""
+
+    class Meta:
+        model = City
+        fields = ("id", "name")

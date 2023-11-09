@@ -7,6 +7,9 @@ from django.db import models
 class City(models.Model):
     name = models.CharField(max_length=120, unique=True)
 
+    class Meta:
+        ordering = ("name",)
+
 
 class Industry(models.Model):
     name = models.CharField(max_length=200)
