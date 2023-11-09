@@ -37,3 +37,13 @@ class ServiceCategorySerializer(ServiceCategoryBriefSerializer):
     class Meta:
         model = ServiceCategory
         fields = (*ServiceCategoryBriefSerializer.Meta.fields, "services")
+
+
+class ServiceSerializer(ServiceCategoryBriefSerializer):
+    """Serializer for working with Service resource."""
+
+    category = ServiceCategoryBriefSerializer()
+
+    class Meta:
+        model = Service
+        fields = (*ServiceCategoryBriefSerializer.Meta.fields, "category")
