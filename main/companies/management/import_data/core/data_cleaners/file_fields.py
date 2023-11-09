@@ -16,8 +16,8 @@ from companies.management.import_data.core.messengers import (
 def download_files_and_save_upload_to_value(
     objects_csv_data: list[dict[str, str | int]],
     objects_file_field_name: str,
-    objects_field_name_for_file_name: str,
     objects_model_name: models.base.ModelBase,
+    model_field_name_for_create_file_name: str,
 ) -> None:
     """Download and save the file, prepare the data to be saved in the database."""
     upload_to = objects_model_name._meta.get_field(objects_file_field_name).upload_to
@@ -30,7 +30,7 @@ def download_files_and_save_upload_to_value(
                     "".join(
                         filter(
                             str.isalpha,
-                            object_csv_data[objects_field_name_for_file_name],
+                            object_csv_data[model_field_name_for_create_file_name],
                         )
                     ),
                     file_url[file_url.rindex(".", -5) :],

@@ -4,6 +4,9 @@ from companies.management.import_data.core.csv_file_reader import get_data_from_
 from companies.management.import_data.core.data_cleaners.file_fields import (
     download_files_and_save_upload_to_value,
 )
+from companies.management.import_data.core.data_cleaners.fk_fields import (
+    set_fk_fields_values,
+)
 from companies.management.import_data.core.data_cleaners.m2m_fields import (
     get_clean_data_for_m2m_field,
 )
@@ -17,7 +20,7 @@ from companies.management.import_data.core.fix_phone_number import fix_phone_num
 from companies.management.import_data.core.messengers import (
     display_message_data_import_from_file_completed,
 )
-from companies.models import Company, Industry, Phone, Service
+from companies.models import City, Company, Industry, Phone, Service
 
 
 def import_data_companies(file_paths: dict[str, str]) -> None:
@@ -25,11 +28,18 @@ def import_data_companies(file_paths: dict[str, str]) -> None:
     companies = get_data_from_csv_file(file_paths["companies"])
     remove_object_with_invalid_data(companies, Company)
 
+    set_fk_fields_values(
+        objects_csv_data=companies,
+        fk_field_name="city",
+        fk_model=City,
+        field_name_in_fk_model="name",
+    )
+
     download_files_and_save_upload_to_value(
         objects_csv_data=companies,
         objects_file_field_name="logo",
-        objects_field_name_for_file_name="name",
         objects_model_name=Company,
+        model_field_name_for_create_file_name="name",
     )
 
     industries = get_data_from_csv_file(file_paths["industries"])

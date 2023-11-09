@@ -59,4 +59,4 @@ class Phone(models.Model):
         on_delete=models.CASCADE,
         related_name="phones",
     )
-    phone = models.CharField(max_length=18)
+    number = models.CharField(max_length=18)
