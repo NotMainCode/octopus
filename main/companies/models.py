@@ -17,7 +17,9 @@ class ServiceCategory(models.Model):
 
 
 class Service(models.Model):
-    category = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE)
+    category = models.ForeignKey(
+        ServiceCategory, on_delete=models.CASCADE, related_name="services"
+    )
     name = models.CharField(max_length=100)
 
 
@@ -25,8 +27,8 @@ class Company(models.Model):
     name = models.CharField(max_length=100)
     city = models.ForeignKey(
         City,
-        related_name = "companies",
-        on_delete = models.CASCADE,
+        related_name="companies",
+        on_delete=models.CASCADE,
     )
     description = models.TextField()
     email = models.EmailField()
