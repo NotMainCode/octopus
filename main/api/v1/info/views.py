@@ -29,11 +29,11 @@ INFO_API_VIEW_SERIALIZERS = {
     "cities_list": CitySerializer,
 }
 
-INFO_API_VIEW_MODELS = {
-    "industries_list": Industry,
-    "service_categories_list": ServiceCategory,
-    "services_list": Service,
-    "cities_list": City,
+INFO_API_VIEW_QUERYSET = {
+    "industries_list": Industry.objects.all(),
+    "service_categories_list": ServiceCategory.objects.prefetch_related("services"),
+    "services_list": Service.objects.select_related("category"),
+    "cities_list": City.objects.all(),
 }
 
 
@@ -45,9 +45,7 @@ class InfoAPIView(ListAPIView):
     filter_backends = (InfoSearchFilter,)
 
     def get_queryset(self):
-        return INFO_API_VIEW_MODELS[
-            resolve(self.request.path_info).url_name
-        ].objects.all()
+        return INFO_API_VIEW_QUERYSET[resolve(self.request.path_info).url_name]
 
     def get_serializer_class(self):
         return INFO_API_VIEW_SERIALIZERS[resolve(self.request.path_info).url_name]
@@ -58,7 +56,7 @@ class InfoAPIView(ListAPIView):
 @permission_classes((AllowAny,))
 def search_services_companies(request):
     """URL requests handler for the search_services_companies/ endpoint."""
-    companies = Company.objects.all()
+    companies = Company.objects.values("id", "name")
     filter_companies = InfoSearchFilter().filter_queryset(
         request, companies, search_services_companies
     )
