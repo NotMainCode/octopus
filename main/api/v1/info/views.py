@@ -11,6 +11,9 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from api.v1.drf_spectacular.custom_decorators import (
+    activate_drf_spectacular_view_decorator,
+)
 from api.v1.info.filters import InfoSearchFilter
 from api.v1.info.serializers import (
     CitySerializer,
@@ -37,6 +40,7 @@ INFO_API_VIEW_QUERYSET = {
 }
 
 
+@activate_drf_spectacular_view_decorator
 class InfoAPIView(ListAPIView):
     """URL requests handler for Info endpoints except search_services_companies."""
 
@@ -51,6 +55,7 @@ class InfoAPIView(ListAPIView):
         return INFO_API_VIEW_SERIALIZERS[resolve(self.request.path_info).url_name]
 
 
+@activate_drf_spectacular_view_decorator
 @api_view()
 @authentication_classes(())
 @permission_classes((AllowAny,))

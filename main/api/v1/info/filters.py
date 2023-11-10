@@ -7,6 +7,10 @@ from rest_framework.exceptions import PermissionDenied
 
 SEARCH_PARAM_REQUIRED_URL_NAMES = {"cities_list", "search_services_companies_list"}
 
+SEARCH_PARAM_REQUIRED_MESSAGE = (
+    "The 'name' query parameter must contain at least three characters."
+)
+
 
 class InfoSearchFilter(filters.SearchFilter):
     """Filter for endpoints of the Info group."""
@@ -17,9 +21,7 @@ class InfoSearchFilter(filters.SearchFilter):
         name = request.query_params.get(self.search_param)
         if resolve(request.path_info).url_name in SEARCH_PARAM_REQUIRED_URL_NAMES:
             if name is None or len(name) < 3:
-                raise PermissionDenied(
-                    "The 'name' query parameter must contain at least three characters."
-                )
+                raise PermissionDenied(SEARCH_PARAM_REQUIRED_MESSAGE)
 
         return (
             queryset.annotate(
