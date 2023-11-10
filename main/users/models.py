@@ -5,7 +5,6 @@ from django.db import models
 
 from users.user_manager import CustomUserManager
 from users.validators import (
-    CustomPasswordValidator,
     validate_email_field,
     validate_first_name_and_last_name_fields,
 )
@@ -42,7 +41,5 @@ class User(AbstractUser):
         return f"{self.first_name} {self.last_name}"
 
     def save(self, *args, **kwargs):
-        validator = CustomPasswordValidator()
-        validator.validate(self.password)
         self.set_password(self.password)
         super(User, self).save(*args, **kwargs)
