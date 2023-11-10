@@ -2,7 +2,6 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
 from users.user_manager import CustomUserManager
 from users.validators import (
     CustomPasswordValidator,
@@ -42,7 +41,5 @@ class User(AbstractUser):
         return f"{self.first_name} {self.last_name}"
 
     def save(self, *args, **kwargs):
-        validator = CustomPasswordValidator()
-        validator.validate(self.password)
         self.set_password(self.password)
         super(User, self).save(*args, **kwargs)
