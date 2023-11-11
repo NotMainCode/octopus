@@ -1,7 +1,6 @@
 from django.contrib import admin
-from django.contrib.admin import TabularInline
 
-from .models import Company, Industry, Phone, Service, ServiceCategory
+from companies.models import Company, Industry, Phone, Service, ServiceCategory
 
 
 @admin.register(Industry)
@@ -20,7 +19,7 @@ class ServiceAdmin(admin.ModelAdmin):
     list_filter = ("category",)
 
 
-class PhoneInline(TabularInline):
+class PhoneInline(admin.TabularInline):
     model = Phone
     extra = 1
 
@@ -38,5 +37,5 @@ class CompanyAdmin(admin.ModelAdmin):
 
 @admin.register(Phone)
 class PhoneAdmin(admin.ModelAdmin):
-    list_display = ("company", "phone")
+    list_display = ("company", "number")
     list_filter = ("company__name",)

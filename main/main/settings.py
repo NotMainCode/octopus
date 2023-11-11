@@ -15,7 +15,7 @@ SECRET_KEY = os.getenv(
 
 DEBUG = True
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(' ')
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(" ")
 
 INTERNAL_IPS = ["127.0.0.1"]
 
@@ -113,7 +113,9 @@ SIMPLE_JWT = {
     "SIGNING_KEY": SECRET_KEY,
 }
 
-PASSWORD_RESET_TIMEOUT = int(os.getenv("PASSWORD_RESET_TIMEOUT", 86400))
+ONE_WEEK_IN_SECONDS = 604800
+
+PASSWORD_RESET_TIMEOUT = int(os.getenv("PASSWORD_RESET_TIMEOUT", ONE_WEEK_IN_SECONDS))
 
 # CONSTANTS
 MAX_LEN_FULL_NAME_USER_MODEL: int = 30
@@ -124,7 +126,7 @@ MAX_LEN_HASH_PASSWORD_USER_MODEL: int = 128
 
 # EMAIL
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
 EMAIL_USE_SSL = True
 EMAIL_HOST = "smtp.rambler.ru"
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")

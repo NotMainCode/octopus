@@ -5,7 +5,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import resolve
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode
-
 from rest_framework import status, views
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import AllowAny
@@ -43,19 +42,19 @@ class BaseView:
         return confirm_url
 
     def _generate_mail(self, action, url):
-        mail = dict()
+        mail = {}
         mail["subject"] = self.action_list[action]
         mail["message"] = url
         return mail
 
-    def get_serializer(self, action):
+    def get_serializer_class(self, action):
         if action == "signup":
             return UserSignupSerializer
-        elif action == "signup_confirm":
+        if action == "signup_confirm":
             return TokenUIDSerializer
-        elif action == "signin":
+        if action == "signin":
             return UserSigninSerializer
-        elif action == "reset_password":
+        if action == "reset_password":
             return UserResetPasswordSerializer
         return UserResetPasswordConfirmSerializer
 
@@ -63,7 +62,7 @@ class BaseView:
 class UserSignupView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
-        serializer = self.get_serializer(action)(data=request.data)
+        serializer = self.get_serializer_class(action)(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         confirm_url = self._generate_url(action, user, request)
@@ -77,7 +76,7 @@ class UserSignupView(BaseView, views.APIView):
 class UserSignupConfirmView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
-        serializer = self.get_serializer(action)(data=request.data)
+        serializer = self.get_serializer_class(action)(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.user
         if user.is_active:
@@ -92,7 +91,7 @@ class UserSignupConfirmView(BaseView, views.APIView):
 class UserSigninView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
-        serializer = self.get_serializer(action)(data=request.data)
+        serializer = self.get_serializer_class(action)(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.user
         confirm_url = self._generate_url(action, user, request)
@@ -108,7 +107,7 @@ class UserSigninView(BaseView, views.APIView):
 class UserResetPasswordView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
-        serializer = self.get_serializer(action)(data=request.data)
+        serializer = self.get_serializer_class(action)(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.user
         confirm_url = self._generate_url(action, user, request)
@@ -122,7 +121,7 @@ class UserResetPasswordView(BaseView, views.APIView):
 class UserResetPasswordConfirmView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
-        serializer = self.get_serializer(action)(data=request.data)
+        serializer = self.get_serializer_class(action)(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.user
         if not user.is_active:
