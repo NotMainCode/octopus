@@ -5,7 +5,7 @@ from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema
 from rest_framework import status
 
 from api.v1.drf_spectacular.serializers.info.serializers import (
-    RequestParameterRequiredResponse403Serializer,
+    RequestParameterRequiredResponse400Serializer,
     SearchServicesCompaniesResponse200Serializer,
 )
 
@@ -35,7 +35,7 @@ VIEWS_DECORATORS = {
         ],
         responses={
             status.HTTP_200_OK: SearchServicesCompaniesResponse200Serializer(),
-            status.HTTP_403_FORBIDDEN: RequestParameterRequiredResponse403Serializer,
+            status.HTTP_400_BAD_REQUEST: RequestParameterRequiredResponse400Serializer,
         },
     ),
 }

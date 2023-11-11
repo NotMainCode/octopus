@@ -13,7 +13,7 @@ class SearchServicesCompaniesResponse200Serializer(serializers.Serializer):
     services = ServiceBriefSerializer(many=True)
 
 
-class RequestParameterRequiredResponse403Serializer(serializers.Serializer):
-    """403 response: request parameter required."""
+class RequestParameterRequiredResponse400Serializer(serializers.Serializer):
+    """400 response: request parameter required."""
 
-    detail = serializers.CharField(default=SEARCH_PARAM_REQUIRED_MESSAGE)
+    query_param = serializers.CharField(default=SEARCH_PARAM_REQUIRED_MESSAGE)
