@@ -11,6 +11,6 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += (
-        path("admin/__debug__/", include("debug_toolbar.urls")),
-        path("admin/api-auth/", include("rest_framework.urls")),
+        path("__debug__/", include("debug_toolbar.urls")),
+        path("api-auth/", include("rest_framework.urls")),
     )

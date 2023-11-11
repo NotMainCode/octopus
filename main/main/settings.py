@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_simplejwt",
+    "django_filters",
     "users",
     "companies",
     "api",
@@ -74,11 +75,7 @@ DATABASES = {
     },
 }
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "users.validators.CustomPasswordValidator",
-    },
-]
+AUTH_PASSWORD_VALIDATORS = [{"NAME": "users.validators.CustomPasswordValidator"}]
 
 AUTH_USER_MODEL = "users.User"
 
