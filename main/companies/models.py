@@ -12,14 +12,23 @@ from django.db import models
 class Industry(models.Model):
     name = models.CharField(max_length=200)
 
+    def __str__(self):
+        return self.name
+
 
 class ServiceCategory(models.Model):
     name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 
 class Service(models.Model):
     category = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 
 class Company(models.Model):
@@ -42,8 +51,6 @@ class Company(models.Model):
         validators=[
             MinValueValidator(1900),
             MaxValueValidator(2100),
-            MinLengthValidator(4),
-            MaxLengthValidator(4),
         ],
     )
 
@@ -58,3 +65,6 @@ class Phone(models.Model):
         related_name="phones",
     )
     phone = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.phone

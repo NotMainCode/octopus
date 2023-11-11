@@ -10,3 +10,5 @@ class UserAdmin(admin.ModelAdmin):
         "email", "first_name", "last_name",
     )
     empty_value_display = '-пусто-'
+    search_fields = ('email', 'first_name', 'last_name')
+    ordering = ('email',)
