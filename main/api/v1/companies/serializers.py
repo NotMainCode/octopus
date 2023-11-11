@@ -9,6 +9,7 @@ class CitySerializer(serializers.ModelSerializer):
         model = City
         fields = ("id", "name")
 
+
 class ServiceCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceCategory
@@ -36,27 +37,34 @@ class CustomServiceSerializer(ServiceSerializer):
 
 
 class CompanySerializer(serializers.ModelSerializer):
-    """ Сериализатор получения компании."""
-    name = serializers.CharField()
+    """Сериализатор получения компании."""
+
     city = CitySerializer()
     services = ServiceSerializer(many=True)
 
     class Meta:
         model = Company
-        fields = (
-        "id", "name", "logo", "city",
-        "description", "services")
+        fields = ("id", "name", "logo", "city", "description", "services")
 
- 
+
 class CompanyDetailSerializer(serializers.ModelSerializer):
+    city = CitySerializer()
     industries = IndustrySerializer(many=True)
     services = CustomServiceSerializer(many=True)
 
     class Meta:
         model = Company
         fields = (
-            "id", "name", "description",
-            "email", "city", "address", 
-            "industries",  "services", "logo",
-            "website", "team_size", "year_founded"
-            )
+            "id",
+            "name",
+            "description",
+            "email",
+            "city",
+            "address",
+            "industries",
+            "services",
+            "logo",
+            "website",
+            "team_size",
+            "year_founded",
+        )

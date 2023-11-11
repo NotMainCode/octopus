@@ -17,11 +17,13 @@ class Industry(models.Model):
     def __str__(self):
         return self.name
 
+
 class ServiceCategory(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
+
 
 class Service(models.Model):
     category = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE)
@@ -69,14 +71,14 @@ class Company(models.Model):
         validators=[
             MinValueValidator(1900),
             MaxValueValidator(2100),
-            ],
-            )
+        ],
+    )
     city = models.ForeignKey(
         City,
         on_delete=models.CASCADE,
         verbose_name="Город",
-        related_name='companies',
-        )
+        related_name="companies",
+    )
 
     class Meta:
         verbose_name = "Компания"

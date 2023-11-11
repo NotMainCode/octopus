@@ -11,9 +11,7 @@ from drf_spectacular.views import (
 
 app_name = "api"
 
-urlpatterns = [
-    path("v1/", include("api.v1.urls"))
-    ]
+urlpatterns = [path("v1/", include("api.v1.urls"))]
 
 if settings.DEBUG:
     urlpatterns += (

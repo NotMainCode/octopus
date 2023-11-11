@@ -3,17 +3,9 @@
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
 
-from companies.models import City, Company
-
-from .paginations import CustomPagination
-from .serializers import CitySerializer, CompanyDetailSerializer, CompanySerializer
-
-
-class CityViewSet(viewsets.ModelViewSet):
-    queryset = City.objects.all()
-    authentication_classes = ()
-    permission_classes = (AllowAny,)
-    serializer_class = CitySerializer
+from api.v1.companies.paginations import CustomPagination
+from api.v1.companies.serializers import CompanyDetailSerializer, CompanySerializer
+from companies.models import Company
 
 
 class CompanyViewSet(viewsets.ModelViewSet):
@@ -21,9 +13,8 @@ class CompanyViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     authentication_classes = ()
     permission_classes = (AllowAny,)
-    serializer_class = CompanySerializer
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action == "list":
             return CompanySerializer
         return CompanyDetailSerializer
