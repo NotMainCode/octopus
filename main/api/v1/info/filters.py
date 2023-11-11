@@ -6,7 +6,7 @@ from django.urls import resolve
 from rest_framework import filters
 from rest_framework.exceptions import ValidationError
 
-SEARCH_PARAM_REQUIRED_URL_NAMES = {"cities_list", "search_services_companies_list"}
+SEARCH_PARAM_REQUIRED_URL_NAMES = {"search_services_companies_list"}
 
 SEARCH_PARAM_REQUIRED_MESSAGE = (
     "The 'name' query parameter must contain at least three characters."

@@ -34,7 +34,7 @@ VIEWS_DECORATORS = {
             ),
         ],
         responses={
-            status.HTTP_200_OK: SearchServicesCompaniesResponse200Serializer(),
+            status.HTTP_200_OK: SearchServicesCompaniesResponse200Serializer,
             status.HTTP_400_BAD_REQUEST: RequestParameterRequiredResponse400Serializer,
         },
     ),
