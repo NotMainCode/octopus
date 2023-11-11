@@ -1,5 +1,6 @@
 """Serializers for the 'auth' endpoints of 'Api' application v1."""
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
@@ -56,6 +57,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if attrs["password"] != attrs["re_password"]:
             raise serializers.ValidationError("Введены разные пароли.")
+        attrs["password"] = make_password(attrs["password"])
         attrs.pop("re_password")
         return attrs
 
@@ -79,7 +81,7 @@ class UserSigninSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 {"email": "Неверный email или пользователь не существует."}
             )
-        if not self.user.check_password(attrs["password"]):
+        if not self.user.check_password(attrs["password"], self.user.password):
             raise serializers.ValidationError({"password": "Неверный пароль."})
         if not self.user.is_active:
             raise PermissionDenied("User is inactive.")
@@ -114,9 +116,10 @@ class UserResetPasswordConfirmSerializer(TokenUIDSerializer):
     re_new_password = serializers.CharField(write_only=True, label="Повтор пароля")
 
     def validate(self, attrs):
-        super().validate(attrs)
+        attrs = super().validate(attrs)
         if attrs["new_password"] != attrs["re_new_password"]:
             raise serializers.ValidationError("Введены разные пароли.")
+        attrs["new_password"] = self.user.make_password(attrs["new_password"])
         return attrs
 
     def validate_new_password(self, value):

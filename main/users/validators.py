@@ -1,20 +1,61 @@
 import re
 
+from difflib import SequenceMatcher
 from django.conf import settings
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, FieldDoesNotExist
 from django.utils.translation import gettext as _
 
 
 class CustomPasswordValidator:
+    DEFAULT_USER_ATTRIBUTES = ("username", "first_name", "last_name", "email")
+
     def __init__(
         self,
+        user_attributes=DEFAULT_USER_ATTRIBUTES,
+        max_similarity=0.7,
         min_length=settings.MIN_LEN_PASSWORD_USER_MODEL,
         max_length=settings.MAX_LEN_PASSWORD_USER_MODEL,
     ):
         self.min_length = min_length
         self.max_length = max_length
+        self.user_attributes = user_attributes
+        self.max_similarity = max_similarity
+
+    def _exceeds_maximum_length_ratio(self, password, max_similarity, value):
+        pwd_len = len(password)
+        length_bound_similarity = max_similarity / 2 * pwd_len
+        value_len = len(value)
+        return pwd_len >= 10 * value_len and value_len < length_bound_similarity
 
     def validate(self, password, user=None):
+        low_password = password.lower()
+        for attribute_name in self.user_attributes:
+            value = getattr(user, attribute_name, None)
+            if not value or not isinstance(value, str):
+                continue
+            value_lower = value.lower()
+            value_parts = re.split(r"\W+", value_lower) + [value_lower]
+            for value_part in value_parts:
+                if self._exceeds_maximum_length_ratio(
+                    password, self.max_similarity, value_part
+                ):
+                    continue
+                if (
+                    SequenceMatcher(a=low_password, b=value_part).quick_ratio()
+                    >= self.max_similarity
+                ):
+                    try:
+                        verbose_name = str(
+                            user._meta.get_field(attribute_name).verbose_name
+                        )
+                    except FieldDoesNotExist:
+                        verbose_name = attribute_name
+                raise ValidationError(
+                    _("Пароль совпадает с полем %(verbose_name)s."),
+                    code="Пароль совпадает!",
+                    params={"verbose_name": verbose_name},
+                )
+
         if len(password) < self.min_length:
             raise ValidationError(
                 _("Минимальная длина пароля %(min_length)d символов!"),
