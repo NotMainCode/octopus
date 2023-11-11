@@ -80,16 +80,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-PASSWORD_HASHERS = (
-    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-    'django.contrib.auth.hashers.BCryptPasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
-    'django.contrib.auth.hashers.SHA1PasswordHasher',
-    'django.contrib.auth.hashers.MD5PasswordHasher',
-    'django.contrib.auth.hashers.CryptPasswordHasher',
-)
-
 AUTH_USER_MODEL = "users.User"
 
 LANGUAGE_CODE = "en-us"
@@ -129,7 +119,8 @@ PASSWORD_RESET_TIMEOUT = int(os.getenv("PASSWORD_RESET_TIMEOUT", 86400))
 MAX_LEN_FULL_NAME_USER_MODEL: int = 30
 MAX_LEN_EMAIL_USER_MODEL: int = 254
 MIN_LEN_PASSWORD_USER_MODEL: int = 8
-MAX_LEN_PASSWORD_USER_MODEL: int = 80
+MAX_LEN_PASSWORD_USER_MODEL: int = 30
+MAX_LEN_HASH_PASSWORD_USER_MODEL: int = 128
 
 # EMAIL
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

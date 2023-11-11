@@ -81,7 +81,7 @@ class UserSigninSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 {"email": "Неверный email или пользователь не существует."}
             )
-        if not self.user.check_password(attrs["password"], self.user.password):
+        if not self.user.check_password(attrs["password"]):
             raise serializers.ValidationError({"password": "Неверный пароль."})
         if not self.user.is_active:
             raise PermissionDenied("User is inactive.")

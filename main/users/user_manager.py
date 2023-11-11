@@ -17,5 +17,6 @@ class CustomUserManager(BaseUserManager):
         user.is_superuser = True
         user.is_active = True
         user.password = password
+        user.set_password(password)
         user.save(using=self._db)
         return user

@@ -38,7 +38,7 @@ class User(AbstractUser):
     )
     password = models.CharField(
         verbose_name="Пароль",
-        max_length=settings.MAX_LEN_PASSWORD_USER_MODEL,
+        max_length=settings.MAX_LEN_HASH_PASSWORD_USER_MODEL,
         blank=False,
         validators=[validator.validate],
     )
@@ -70,7 +70,7 @@ class User(AbstractUser):
         return f"{self.first_name} {self.last_name}"
 
     def check_password(self, raw_password):
-        return check_password(raw_password, self.user.password)
+        return check_password(raw_password, self.password)
 
     def make_password(self, raw_password):
         return make_password(raw_password)

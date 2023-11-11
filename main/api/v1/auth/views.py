@@ -55,8 +55,6 @@ class BaseView:
             return TokenUIDSerializer
         elif action == "signin":
             return UserSigninSerializer
-        elif action == "signin_confirm":
-            return TokenUIDSerializer
         elif action == "reset_password":
             return UserResetPasswordSerializer
         return UserResetPasswordConfirmSerializer
@@ -66,87 +64,71 @@ class UserSignupView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
         serializer = self.get_serializer(action)(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.save()
-            confirm_url = self._generate_url(action, user, request)
-            mail = self._generate_mail(action, confirm_url)
-            user.send_mail(user, mail)
-            return Response(
-                status=status.HTTP_204_NO_CONTENT,
-            )
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        confirm_url = self._generate_url(action, user, request)
+        mail = self._generate_mail(action, confirm_url)
+        user.send_mail(user, mail)
+        return Response(
+            status=status.HTTP_204_NO_CONTENT,
+        )
 
 
 class UserSignupConfirmView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
         serializer = self.get_serializer(action)(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.user
-            if user.is_active:
-                raise PermissionDenied("User is active.")
-            user.is_active = True
-            user.save(update_fields=["is_active"])
-            token = RefreshToken.for_user(user)
-            return Response(
-                {"access": str(token.access_token), "refresh": str(token)},
-                status=status.HTTP_200_OK,
-            )
+        serializer.is_valid(raise_exception=True)
+        user = serializer.user
+        if user.is_active:
+            raise PermissionDenied("User is active.")
+        user.is_active = True
+        user.save(update_fields=["is_active"])
+        return Response(
+            status=status.HTTP_204_NO_CONTENT,
+        )
 
 
 class UserSigninView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
         serializer = self.get_serializer(action)(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.user
-            confirm_url = self._generate_url(action, user, request)
-            mail = self._generate_mail(action, confirm_url)
-            user.send_mail(user, mail)
-            return Response(
-                status=status.HTTP_204_NO_CONTENT,
-            )
-
-
-class UserSigninConfirmView(BaseView, views.APIView):
-    def post(self, request):
-        action = resolve(request.path_info).url_name
-        serializer = self.get_serializer(action)(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.user
-            if not user.is_active:
-                raise PermissionDenied("User is inactive.")
-            token = RefreshToken.for_user(user)
-            return Response(
-                {"access": str(token.access_token), "refresh": str(token)},
-                status=status.HTTP_200_OK,
-            )
+        serializer.is_valid(raise_exception=True)
+        user = serializer.user
+        confirm_url = self._generate_url(action, user, request)
+        mail = self._generate_mail(action, confirm_url)
+        user.send_mail(user, mail)
+        token = RefreshToken.for_user(user)
+        return Response(
+            {"access": str(token.access_token), "refresh": str(token)},
+            status=status.HTTP_200_OK,
+        )
 
 
 class UserResetPasswordView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
         serializer = self.get_serializer(action)(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.user
-            confirm_url = self._generate_url(action, user, request)
-            mail = self._generate_mail(action, confirm_url)
-            user.send_mail(user, mail)
-            return Response(
-                status=status.HTTP_204_NO_CONTENT,
-            )
+        serializer.is_valid(raise_exception=True)
+        user = serializer.user
+        confirm_url = self._generate_url(action, user, request)
+        mail = self._generate_mail(action, confirm_url)
+        user.send_mail(user, mail)
+        return Response(
+            status=status.HTTP_204_NO_CONTENT,
+        )
 
 
 class UserResetPasswordConfirmView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
         serializer = self.get_serializer(action)(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.user
-            if not user.is_active:
-                raise PermissionDenied("User is inactive.")
-            user.password = serializer.validated_data["new_password"]
-            user.save(update_fields=["password"])
-            return Response(
-                "Пароль изменен",
-                status=status.HTTP_204_NO_CONTENT,
-            )
+        serializer.is_valid(raise_exception=True)
+        user = serializer.user
+        if not user.is_active:
+            raise PermissionDenied("User is inactive.")
+        user.password = serializer.validated_data["new_password"]
+        user.save(update_fields=["password"])
+        return Response(
+            status=status.HTTP_204_NO_CONTENT,
+        )
