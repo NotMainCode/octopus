@@ -100,7 +100,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          source: "docker-compose.production.yml"
+          source: "docker-compose.dev.yml"
           target: "octopus"
       - name: Executing remote ssh command to deploy
         uses: appleboy/ssh-action@master

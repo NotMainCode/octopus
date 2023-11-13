@@ -552,13 +552,13 @@ paths:
           in: query
           description: >-
             Уникальный идентификатор услуги <br>
-            Фильтр по id услуг
+            Множественный фильтр по id услуг (в ответе компании как минимум с одним совпадением id услуги)
           schema:
             type: integer
         - name: is_favorited
           required: false
           in: query
-          description: Фильтр по избранным компаниям текущего пользователя
+          description: Показывать только компании, находящиеся в списке избранного.
           schema:
             type: integer
             enum: [0, 1]
@@ -612,6 +612,9 @@ paths:
                                 type: integer
                               name:
                                 type: string
+                        is_favorited:
+                          type: boolean
+                          description: 'Находится ли в избранном'
   /api/v1/companies/{id}/:
     get:
       summary: Подробная информация о компании
@@ -648,6 +651,10 @@ paths:
                     type: string
                   email:
                     type: string
+                  phones:
+                    type: array
+                    items:
+                      type: string
                   city:
                     type: object
                     properties:
@@ -691,8 +698,94 @@ paths:
                     type: integer
                   year_founded:
                     type: integer
+                  is_favorited:
+                    type: boolean
+                    description: 'Находится ли в избранном'
         '404':
           $ref: '#/components/responses/NotFound'
+  /api/v1/companies/{id}/favorite/:
+    post:
+      summary: Добавить компанию в избранное
+      description: Доступно авторизованным по токену
+      tags:
+        - Favorite
+      security:
+        - jwtAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Уникальный идентификатор компании
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Компания успешно добавлена в избранное
+        '400':
+          description: Ошибка добавления в избранное
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example:
+                      "Компания добавлена в избранное ранее"
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          description: Пользователь неактивен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example:
+                      "User is inactive"
+    delete:
+      summary: Удалить компанию из избранного
+      description: Доступно авторизованным по токену
+      tags:
+        - Favorite
+      security:
+        - jwtAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Уникальный идентификатор компании
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Компания успешно удалена из избранного
+        '400':
+          description: Ошибка удаления из избранного
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example:
+                      "Компании не было в избранном"
+        '401':
+          $ref: '#/components/responses/AuthenticationError'
+        '403':
+          description: Пользователь неактивен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example:
+                      "User is inactive"
 components:
   schemas:
     User:
