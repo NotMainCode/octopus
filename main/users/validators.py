@@ -31,17 +31,17 @@ class CustomPasswordValidator:
 
         if re.search(r"[^0-9]", password) is None:
             raise ValidationError(_("Пароль не должен содержать только цифры!"))
-        pattern = r"[a-zA-Zа-яА-Я-+_.!?@#$%^&*\d+]"
+        pattern = r"[a-zA-Zа-яА-Я-+_.!?@#$%^&*\d+=/]"
         symbol = set(password) - set("".join(re.findall(pattern, password)))
-        if len(symbol) > 0:
+        if len(symbol):
             raise ValidationError(_(f"Символы <{''.join(symbol)}> запрещены!"))
 
     def get_help_text(self):
         return _(
-            "Ваш пароль должен содержать не менее %(min_length)d и не "
-            "более %(max_length)d символов. Разрешено использовать латинский алфавит, "
-            "цифры и спецсимволы <-+_.!?@#$%^&*>"
-            % {"min_length": self.min_length, "max_length": self.max_length}
+            f"Ваш пароль должен содержать не менее {self.min_length} и "
+            f"не более {self.max_length} символов. "
+            f"Разрешено использовать латинский алфавит, "
+            f"цифры и спецсимволы <-+_.!?@#$%^&*>"
         )
 
 
@@ -53,7 +53,7 @@ def validate_first_name_and_last_name_fields(input_string):
     symbol = set(input_string) - set(
         "".join(re.findall(r"[a-zA-Zа-яА-Я- ]", input_string))
     )
-    if len(symbol) > 0:
+    if len(symbol):
         raise ValidationError("Нельзя использовать эти символы <{}>".format(*symbol))
 
 
@@ -76,10 +76,8 @@ def validate_email_field(email):
         )
     if email.count("@") > 1:
         raise ValidationError("Нельзя использовать 2 знака <@>!")
-    for pattern in patterns:
-        symbol = set(patterns[pattern]) - set(
-            "".join(re.findall(pattern, patterns[pattern]))
-        )
-        if len(symbol) > 0:
+    for key, value in patterns.items():
+        symbol = set(value) - set("".join(re.findall(key, value)))
+        if len(symbol):
             symbol = "".join(symbol)
-            raise ValidationError(eval(exception[pattern]))
+            raise ValidationError(eval(exception[key]))

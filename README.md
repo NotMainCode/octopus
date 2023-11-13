@@ -5,7 +5,7 @@
 
 ## Документация API
 
-Статическая:
+Статическая (reference):
 
 http://127.0.0.1:8008/api/redoc/v1/
 
@@ -81,11 +81,19 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-8. Создать суперпользователя:
+8. Импортировать тестовые данные о компаниях
+```
+python manage.py loaddata ../test_data_companies.json
+
+Содержимое папки 'test_data_companies_media' скопировать в папку 'main/media'
+```
+
+9. Создать суперпользователя:
 ```
 python manage.py createsuperuser
 ```
-9. Запустить проект:
+
+10.Запустить проект:
 ```
 python manage.py runserver 8008
 ```
