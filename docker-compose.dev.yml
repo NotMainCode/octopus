@@ -21,6 +21,15 @@ services:
       - media:/media
     depends_on:
       - db
+
+  frontend:
+    image: teamoctopus/octopus_frontend_dev
+    env_file: .env
+    command: cp -r /octopus-front/build/. /frontend_static/
+    volumes:
+      - static_volume:/frontend_static
+    depends_on:
+      - backend
   
   gateway:
     image: teamoctopus/octopus_gateway_dev
