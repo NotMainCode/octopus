@@ -49,17 +49,25 @@ jobs:
     needs: backend_tests
     if: failure()
     steps:
-      - name: Send message
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: |
-            ${{ github.actor }} created commit:
-            Commit message: ${{ github.event.commits[0].message }}
-            
-            Repository: ${{ github.repository }}
-            Branch ${{ github.ref }}
-            See changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+      - name: Checkout repository
+        uses: actions/checkout@v3
   
-            Has caused an error in the workflow.
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+  
+      - name: Install dependences
+        run: pip install requests argparse
+  
+      - name: Send custom message
+        run: |
+          python send_telegram_message.py \
+            --bot_token "${{ secrets.TELEGRAM_TOKEN }}" \
+            --chat_id "${{ secrets.TELEGRAM_TO }}" \
+            --message_thread_id "${{ secrets.CHAT_THREAD }}" \
+            --actor "${{ github.actor }}" \
+            --message "${{ github.event.commits[0].message }}" \
+            --repository "${{ github.repository }}" \
+            --commit_url "https://github.com/${{ github.repository }}/commit/${{ github.sha }}" \
+            --info "⛔️ Has caused an error in the workflow."
