@@ -26,9 +26,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_filters",
     "rest_framework",
     "rest_framework_simplejwt",
-    "django_filters",
     "users",
     "companies",
     "api",
@@ -96,8 +96,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework_simplejwt.authentication.JWTAuthentication"
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
 ONE_WEEK_IN_SECONDS = 604800
@@ -154,4 +155,6 @@ if DEBUG:
     TEMPLATES[0].update({"DIRS": [os.path.join(BASE_DIR, "templates/api_doc")]})
     STATICFILES_DIRS = (os.path.join(BASE_DIR, "api_doc/"),)
 
-CSRF_TRUSTED_ORIGINS = ['https://*.octopus-it.ru',]
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.octopus-it.ru",
+]

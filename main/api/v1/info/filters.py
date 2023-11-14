@@ -24,6 +24,9 @@ class InfoSearchFilter(filters.SearchFilter):
             if name is None or len(name) < 3:
                 raise ValidationError({"query_param": SEARCH_PARAM_REQUIRED_MESSAGE})
 
+        if name is None:
+            return queryset
+
         return (
             queryset.annotate(
                 relevance_to_search=Case(
