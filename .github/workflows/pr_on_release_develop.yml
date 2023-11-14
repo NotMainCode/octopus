@@ -101,7 +101,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           source: "docker-compose.dev.yml"
-          target: "octopus"
+          target: "octopus_dev"
       - name: Executing remote ssh command to deploy
         uses: appleboy/ssh-action@master
         with:
@@ -114,8 +114,8 @@ jobs:
             sudo docker-compose -f docker-compose.dev.yml pull
             sudo docker-compose -f docker-compose.dev.yml down
             sudo docker-compose -f docker-compose.dev.yml up -d
-            sudo docker-compose -f docker-compose.prod.yml exec -T backend python manage.py makemigrations --noinput
-            sudo docker-compose -f docker-compose.prod.yml exec -T backend python manage.py migrate --noinput
+            sudo docker-compose -f docker-compose.prod.yml exec -T backend python manage.py makemigrations
+            sudo docker-compose -f docker-compose.prod.yml exec -T backend python manage.py migrate
             sudo docker-compose -f docker-compose.prod.yml exec -T backend python manage.py collectstatic --noinput
 
   send_notification:
