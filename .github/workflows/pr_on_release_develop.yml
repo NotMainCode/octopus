@@ -114,9 +114,9 @@ jobs:
             sudo docker-compose -f docker-compose.dev.yml pull
             sudo docker-compose -f docker-compose.dev.yml down
             sudo docker-compose -f docker-compose.dev.yml up -d
-            sudo docker-compose -f docker-compose.prod.yml exec -T backend python manage.py makemigrations
-            sudo docker-compose -f docker-compose.prod.yml exec -T backend python manage.py migrate
-            sudo docker-compose -f docker-compose.prod.yml exec -T backend python manage.py collectstatic --noinput
+            sudo docker-compose -f docker-compose.dev.yml exec -T backend python manage.py makemigrations
+            sudo docker-compose -f docker-compose.dev.yml exec -T backend python manage.py migrate
+            sudo docker-compose -f docker-compose.dev.yml exec -T backend python manage.py collectstatic --noinput
 
   send_notification:
     runs-on: ubuntu-latest
