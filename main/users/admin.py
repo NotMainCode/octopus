@@ -48,7 +48,7 @@ class UserCreationForm(forms.ModelForm):
 class UserChangeForm(DjangoUserChangeForm):
     password = DjangoReadOnlyPasswordHashField(
         label="Пароль",
-        help_text="Чтобы изменить пароль, заполните заполните <a href={}>форму</a>.".format(
+        help_text="Чтобы изменить пароль, заполните <a href={}>форму</a>.".format(
             "../password/"
         ),
     )
