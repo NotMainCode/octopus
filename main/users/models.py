@@ -1,22 +1,17 @@
 """Database settings of the 'Users' app."""
-from typing import Iterable, Optional
 from django.conf import settings
-from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.models import AbstractUser
 from django.core.mail import send_mail
 from django.db import models
 
 from users.user_manager import CustomUserManager
 from users.validators import (
-    CustomPasswordValidator,
     validate_email_field,
     validate_first_name_and_last_name_fields,
 )
 
 
 class User(AbstractUser):
-    validator = CustomPasswordValidator()
-
     username = None
     first_name = models.CharField(
         verbose_name="Имя",

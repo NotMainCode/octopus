@@ -4,10 +4,12 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.contrib.auth.forms import (
-    AdminPasswordChangeForm,
-    ReadOnlyPasswordHashField,
-    UserChangeForm,
+    AdminPasswordChangeForm as DjangoAdminPasswordChangeForm,
 )
+from django.contrib.auth.forms import (
+    ReadOnlyPasswordHashField as DjangoReadOnlyPasswordHashField,
+)
+from django.contrib.auth.forms import UserChangeForm as DjangoUserChangeForm
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
@@ -43,8 +45,8 @@ class UserCreationForm(forms.ModelForm):
         return user
 
 
-class UserChangeForm(UserChangeForm):
-    password = ReadOnlyPasswordHashField(
+class UserChangeForm(DjangoUserChangeForm):
+    password = DjangoReadOnlyPasswordHashField(
         label="Пароль",
         help_text="Чтобы изменить пароль, заполните заполните <a href={}>форму</a>.".format(
             "../password/"
@@ -52,7 +54,7 @@ class UserChangeForm(UserChangeForm):
     )
 
 
-class AdminPasswordChangeForm(AdminPasswordChangeForm):
+class AdminPasswordChangeForm(DjangoAdminPasswordChangeForm):
     password1 = forms.CharField(
         label=_("Пароль"),
         widget=forms.PasswordInput(
