@@ -13,7 +13,7 @@ SECRET_KEY = os.getenv(
     "django-insecure-3zby_h+fe&7@xfqa+(4w$&wpuj&avz!fza910up8=z2409oak5",
 )
 
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost 127.0.0.1").split(" ")
 
