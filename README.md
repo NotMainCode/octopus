@@ -73,9 +73,6 @@ DEBUG=<boolean>
 DJANGO_SECRET_KEY=<secret key>
 ALLOWED_HOSTS=<ip address> <domain name>
 
-DJANGO_SUPERUSER_EMAIL=<superuser email>
-DJANGO_SUPERUSER_PASSWORD=<superuser password>
-
 ACCESS_TOKEN_LIFETIME=<seconds>
 REFRESH_TOKEN_LIFETIME=<seconds>
 ```
