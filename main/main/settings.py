@@ -2,6 +2,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -29,10 +30,10 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "django_filters",
+    "corsheaders",
     "users",
     "companies",
     "api",
-    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -115,8 +116,6 @@ SIMPLE_JWT = {
     "SIGNING_KEY": SECRET_KEY,
 }
 
-ONE_WEEK_IN_SECONDS = 604800
-
 PASSWORD_RESET_TIMEOUT = int(os.getenv("PASSWORD_RESET_TIMEOUT", ONE_WEEK_IN_SECONDS))
 
 # CONSTANTS
@@ -159,3 +158,4 @@ if DEBUG:
     STATICFILES_DIRS = (os.path.join(BASE_DIR, "api_doc/"),)
     CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
     CORS_URLS_REGEX = r"^/api/.*$"
+    CORS_ALLOW_HEADERS = [*default_headers, "x-xsrf-token"]
