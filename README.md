@@ -69,7 +69,9 @@ POSTGRES_PASSWORD=<postgres password>
 DB_HOST=<db host>
 DB_PORT=<db port>
 
+DEBUG=<boolean>
 DJANGO_SECRET_KEY=<secret key>
+ALLOWED_HOSTS=<ip address> <domain name>
 
 ACCESS_TOKEN_LIFETIME=<seconds>
 REFRESH_TOKEN_LIFETIME=<seconds>
