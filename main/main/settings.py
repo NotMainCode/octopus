@@ -133,7 +133,7 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = 465
 
-CSRF_TRUSTED_ORIGINS = ['https://*.octopus-it.ru',]
+CSRF_TRUSTED_ORIGINS = ["https://*.octopus-it.ru"]
 
 if DEBUG:
     INSTALLED_APPS.extend(["debug_toolbar", "drf_spectacular"])
@@ -155,5 +155,5 @@ if DEBUG:
     }
     TEMPLATES[0].update({"DIRS": [os.path.join(BASE_DIR, "templates/api_doc")]})
     STATICFILES_DIRS = (os.path.join(BASE_DIR, "api_doc/"),)
-    CORS_ALLOWED_ORIGINS = ["http://localhost:8080", "http://127.0.0.1:8080"]
+    CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
     CORS_URLS_REGEX = r"^/api/.*$"
