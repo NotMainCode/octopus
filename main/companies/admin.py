@@ -1,6 +1,14 @@
 from django.contrib import admin
 
-from companies.models import Company, Industry, Phone, Service, ServiceCategory
+from companies.models import (
+    City,
+    Company,
+    FavoritesList,
+    Industry,
+    Phone,
+    Service,
+    ServiceCategory,
+)
 
 
 @admin.register(Industry)
@@ -34,8 +42,16 @@ class CompanyAdmin(admin.ModelAdmin):
 
     inlines = [PhoneInline]
 
+    @admin.display(description="Избранное")
+    def is_favorited(self, obj):
+        return obj.favorite.count()
 
-@admin.register(Phone)
-class PhoneAdmin(admin.ModelAdmin):
-    list_display = ("company", "number")
-    list_filter = ("company__name",)
+
+@admin.register(City)
+class CityAdmin(admin.ModelAdmin):
+    list_display = ("pk", "name")
+
+
+@admin.register(FavoritesList)
+class FavoritesListAdmin(admin.ModelAdmin):
+    list_display = ("pk", "user", "company")
