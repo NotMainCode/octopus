@@ -1,7 +1,7 @@
 """Views decorators for use in documentation."""
 
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
 from rest_framework import status
 
 from api.v1.drf_spectacular.serializers.info.serializers import (

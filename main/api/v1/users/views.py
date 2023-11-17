@@ -1,6 +1,5 @@
 """Views for 'users' endpoints of 'Api' application v1."""
 from django.contrib.auth import get_user_model
-
 from rest_framework import status, views
 from rest_framework.response import Response
 

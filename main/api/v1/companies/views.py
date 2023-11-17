@@ -8,10 +8,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from api.v1.companies.paginations import CustomPagination
-from api.v1.companies.serializers import (
-    CompanyDetailSerializer,
-    CompanySerializer,
-)
+from api.v1.companies.serializers import CompanyDetailSerializer, CompanySerializer
 from companies.models import Company, FavoritesList
 
 
