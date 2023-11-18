@@ -6,24 +6,12 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    initial = True
-
     dependencies = [
         ("companies", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name="favoriteslist",
-            name="user",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE,
-                related_name="favorite",
-                to=settings.AUTH_USER_MODEL,
-                verbose_name="Пользователь",
-            ),
-        ),
         migrations.AddField(
             model_name="company",
             name="city",
@@ -48,12 +36,6 @@ class Migration(migrations.Migration):
             name="services",
             field=models.ManyToManyField(
                 related_name="companies", to="companies.service", verbose_name="Услуги"
-            ),
-        ),
-        migrations.AddConstraint(
-            model_name="favoriteslist",
-            constraint=models.UniqueConstraint(
-                fields=("user", "company"), name="unique_favorite"
             ),
         ),
     ]
