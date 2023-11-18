@@ -23,6 +23,10 @@ class ServiceCategory(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = "Категория сервиса"
+        verbose_name_plural = "Категории сервисов"
+
 
 class Service(models.Model):
     category = models.ForeignKey(
