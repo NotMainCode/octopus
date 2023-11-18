@@ -118,7 +118,7 @@ class UserResetPasswordConfirmSerializer(TokenUIDSerializer):
         attrs = super().validate(attrs)
         if attrs["new_password"] != attrs["re_new_password"]:
             raise serializers.ValidationError("Введены разные пароли.")
-        attrs["new_password"] = self.user.make_password(attrs["new_password"])
+        attrs["new_password"] = make_password(attrs["new_password"])
         return attrs
 
     def validate_new_password(self, value):
