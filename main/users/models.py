@@ -25,7 +25,7 @@ class User(AbstractUser):
         blank=False,
         validators=[validate_first_name_and_last_name_fields],
     )
-    email = models.EmailField(
+    email = models.CharField(
         verbose_name="Почта",
         max_length=settings.MAX_LEN_EMAIL_USER_MODEL,
         blank=False,
