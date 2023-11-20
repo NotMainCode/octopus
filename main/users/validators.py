@@ -58,11 +58,15 @@ def validate_first_name_and_last_name_fields(input_string):
 
 
 def validate_email_field(email):
-    patterns = {
-        "[a-zA-Z0-9._-]+": email.split("@")[0],
-        "[a-zA-Z0-9.-]+": email.split("@")[1].split(".")[0],
-        "[a-zA-Z]{2,63}": email.split(".")[1],
-    }
+    try:
+        patterns = {
+            "[a-zA-Z0-9._-]+": email.split("@")[0],
+            "[a-zA-Z0-9.-]+": email.split("@")[1].split(".")[0],
+            "[a-zA-Z]{2,63}": email.split(".")[1],
+        }
+    except IndexError:
+        raise ValidationError("Адрес почты должен соответствовать шаблону x@xx.xx")
+
     exception = {
         "[a-zA-Z0-9._-]+": "f'До <@> нельзя использовать эти символы <{symbol}>'",
         "[a-zA-Z0-9.-]+": "f'От <@> до <.> нельзя использовать эти символы <{symbol}>'",
