@@ -2,6 +2,8 @@ import re
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.validators import EmailValidator
+from django.utils.regex_helper import _lazy_re_compile
 from django.utils.translation import gettext as _
 
 
@@ -33,7 +35,7 @@ class CustomPasswordValidator:
             raise ValidationError(_("Пароль не должен содержать только цифры!"))
         pattern = r"[a-zA-Zа-яА-Я-+_.!?@#$%^&*\d+=/]"
         symbol = set(password) - set("".join(re.findall(pattern, password)))
-        if len(symbol):
+        if symbol:
             raise ValidationError(_(f"Символы <{''.join(symbol)}> запрещены!"))
 
     def get_help_text(self):
@@ -53,35 +55,14 @@ def validate_first_name_and_last_name_fields(input_string):
     symbol = set(input_string) - set(
         "".join(re.findall(r"[a-zA-Zа-яА-Я- ]", input_string))
     )
-    if len(symbol):
+    if symbol:
         raise ValidationError("Нельзя использовать эти символы <{}>".format(*symbol))
 
 
-def validate_email_field(email):
-    try:
-        patterns = {
-            "[a-zA-Z0-9._-]+": email.split("@")[0],
-            "[a-zA-Z0-9.-]+": email.split("@")[1].split(".")[0],
-            "[a-zA-Z]{2,63}": email.split(".")[1],
-        }
-    except IndexError:
-        raise ValidationError("Адрес почты должен соответствовать шаблону x@xx.xx")
+class CustomEmailValidator(EmailValidator):
+    """Django EmailValidator with custom user_regex."""
 
-    exception = {
-        "[a-zA-Z0-9._-]+": "f'До <@> нельзя использовать эти символы <{symbol}>'",
-        "[a-zA-Z0-9.-]+": "f'От <@> до <.> нельзя использовать эти символы <{symbol}>'",
-        "[a-zA-Z]{2,63}": "f'После <.> нельзя использовать эти символы <{symbol}>'",
-    }
-
-    lower_email = email.lower()
-    if lower_email.startswith(("-", "_", ".")) or lower_email.endswith(("-", "_", ".")):
-        raise ValidationError(
-            "Адрес почты не должен начинаться или заканчиваться символами <-_.>!"
-        )
-    if email.count("@") > 1:
-        raise ValidationError("Нельзя использовать 2 знака <@>!")
-    for key, value in patterns.items():
-        symbol = set(value) - set("".join(re.findall(key, value)))
-        if len(symbol):
-            symbol = "".join(symbol)
-            raise ValidationError(eval(exception[key]))
+    user_regex = _lazy_re_compile(
+        r"(^[-_0-9A-Z]+(\.[-_0-9A-Z]+)*\Z",
+        re.IGNORECASE,
+    )
