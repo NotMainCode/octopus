@@ -1,14 +1,13 @@
 """Database settings of the 'Users' app."""
+
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.mail import send_mail
 from django.db import models
 
+from users.model_fields import CustomEmailField
 from users.user_manager import CustomUserManager
-from users.validators import (
-    validate_email_field,
-    validate_first_name_and_last_name_fields,
-)
+from users.validators import validate_first_name_and_last_name_fields
 
 
 class User(AbstractUser):
@@ -25,12 +24,11 @@ class User(AbstractUser):
         blank=False,
         validators=[validate_first_name_and_last_name_fields],
     )
-    email = models.EmailField(
+    email = CustomEmailField(
         verbose_name="Почта",
         max_length=settings.MAX_LEN_EMAIL_USER_MODEL,
         blank=False,
         unique=True,
-        validators=[validate_email_field],
     )
     password = models.CharField(
         verbose_name="Пароль",
