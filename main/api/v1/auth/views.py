@@ -144,14 +144,10 @@ class UserResetPasswordConfirmView(BaseView, views.APIView):
 
 class UserReSignupConfirmView(BaseView, views.APIView):
     def post(self, request):
-        email = request.data.get("email")
-        password = request.data.get("password")
-        user = User.objects.get(email=email)
-        if not user.check_password(password):
-            raise ValidationError("Неверный email или пароль.", code="invalid")
-        if user.is_active:
-            raise PermissionDenied("User is active.")
         action = resolve(request.path_info).url_name
+        serializer = self.get_serializer_class(action)(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.user
         confirm_url = self._generate_url(action, user, request)
         mail = self._generate_mail(action, confirm_url)
         user.send_mail(user, mail)
