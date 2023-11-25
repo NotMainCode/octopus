@@ -49,6 +49,7 @@ VIEWS_DECORATORS = {
         ),
         put=extend_schema(
             tags=("users",),
+            request=UserSerializer,
             responses={
                 status.HTTP_200_OK: UserSerializer,
                 status.HTTP_400_BAD_REQUEST: Response400Serializer,
