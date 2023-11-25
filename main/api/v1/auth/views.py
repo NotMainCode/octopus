@@ -15,6 +15,7 @@ from api.v1.auth.serializers import (
     TokenUIDSerializer,
     UserResetPasswordConfirmSerializer,
     UserResetPasswordSerializer,
+    UserReSignupConfirmSerializer,
     UserSigninSerializer,
     UserSignupSerializer,
 )
@@ -29,6 +30,7 @@ class BaseView:
         "signup": "registration",
         "signin": "login to your personal account",
         "reset_password": "password change",
+        "re_signup_confirm": "resending registration confirmation",
     }
 
     def _generate_url(self, action, user, request):
@@ -36,9 +38,14 @@ class BaseView:
         token = default_token_generator.make_token(user)
         site = get_current_site(request)
         protocol = "https:/" if request.is_secure() else "http:/"
-        confirm_url = "/".join(
-            (protocol, site.domain, "#", action + "_confirm", uid, str(token))
-        )
+        if action == "re_signup_confirm":
+            confirm_url = "/".join(
+                (protocol, site.domain, "#", action[3:], uid, str(token))
+            )
+        else:
+            confirm_url = "/".join(
+                (protocol, site.domain, "#", action + "_confirm", uid, str(token))
+            )
         return confirm_url
 
     def _generate_mail(self, action, url):
@@ -56,6 +63,8 @@ class BaseView:
             return UserSigninSerializer
         if action == "reset_password":
             return UserResetPasswordSerializer
+        if action == "re_signup_confirm":
+            return UserReSignupConfirmSerializer
         return UserResetPasswordConfirmSerializer
 
 
@@ -131,3 +140,15 @@ class UserResetPasswordConfirmView(BaseView, views.APIView):
         return Response(
             status=status.HTTP_204_NO_CONTENT,
         )
+
+
+class UserReSignupConfirmView(BaseView, views.APIView):
+    def post(self, request):
+        action = resolve(request.path_info).url_name
+        serializer = self.get_serializer_class(action)(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.user
+        confirm_url = self._generate_url(action, user, request)
+        mail = self._generate_mail(action, confirm_url)
+        user.send_mail(user, mail)
+        return Response(status=status.HTTP_204_NO_CONTENT)

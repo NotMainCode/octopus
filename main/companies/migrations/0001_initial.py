@@ -165,32 +165,30 @@ class Migration(migrations.Migration):
                 ),
             ],
         ),
-        migrations.CreateModel(
-            name="FavoritesList",
-            fields=[
-                (
-                    "id",
-                    models.BigAutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
-                (
-                    "company",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name="favorite",
-                        to="companies.company",
-                        verbose_name="Компания",
-                    ),
-                ),
-            ],
-            options={
-                "verbose_name": "Избранное",
-                "verbose_name_plural": "Избранное",
-                "ordering": ("company",),
-            },
+        migrations.AddField(
+            model_name="company",
+            name="city",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="companies",
+                to="companies.city",
+                verbose_name="Город",
+            ),
+        ),
+        migrations.AddField(
+            model_name="company",
+            name="industries",
+            field=models.ManyToManyField(
+                related_name="companies",
+                to="companies.industry",
+                verbose_name="Отрасли",
+            ),
+        ),
+        migrations.AddField(
+            model_name="company",
+            name="services",
+            field=models.ManyToManyField(
+                related_name="companies", to="companies.service", verbose_name="Услуги"
+            ),
         ),
     ]
