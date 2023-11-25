@@ -8,13 +8,8 @@ from api.v1.drf_spectacular.serializers.info.serializers import (
     RequestParameterRequiredResponse400Serializer,
     SearchServicesCompaniesResponse200Serializer,
 )
-from api.v1.drf_spectacular.serializers.users.serializers import (
-    ChangePasswordRequestSerializer,
-    ChangePasswordResponse400Serializer,
-    PutUserResponse400Serializer,
-    UserRequestSerializer,
-    UserResponse200Serializer,
-)
+from api.v1.drf_spectacular.serializers.serializers import Response400Serializer
+from api.v1.users.serializers import ChangePasswordSerializer, UserSerializer
 
 VIEWS_DECORATORS = {
     "InfoAPIView": extend_schema_view(
@@ -49,26 +44,26 @@ VIEWS_DECORATORS = {
         get=extend_schema(
             tags=("users",),
             responses={
-                status.HTTP_200_OK: UserResponse200Serializer,
+                status.HTTP_200_OK: UserSerializer,
             },
         ),
         put=extend_schema(
             tags=("users",),
-            request=UserRequestSerializer,
+            request=UserSerializer,
             description=("You can update one of the fields or both at once"),
             responses={
-                status.HTTP_200_OK: UserResponse200Serializer,
-                status.HTTP_400_BAD_REQUEST: PutUserResponse400Serializer,
+                status.HTTP_200_OK: UserSerializer,
+                status.HTTP_400_BAD_REQUEST: Response400Serializer,
             },
         ),
     ),
     "UserChangePasswordView": extend_schema_view(
         post=extend_schema(
             tags=("users",),
-            request=ChangePasswordRequestSerializer,
+            request=ChangePasswordSerializer,
             responses={
                 status.HTTP_204_NO_CONTENT: "",
-                status.HTTP_400_BAD_REQUEST: ChangePasswordResponse400Serializer,
+                status.HTTP_400_BAD_REQUEST: Response400Serializer,
             },
         ),
     ),

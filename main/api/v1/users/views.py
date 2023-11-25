@@ -20,7 +20,7 @@ class UserOwnPageView(views.APIView):
 
     def put(self, request):
         serializer = UserSerializer(
-            request.user, data=request.data, context={"request": request}, partial=True
+            request.user, data=request.data, context={"request": request}
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
