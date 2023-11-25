@@ -66,8 +66,8 @@ class CompanySerializer(serializers.ModelSerializer):
     def get_favorited(self, obj):
         request = self.context.get("request")
         return (
-            request.user.is_authenticated
-            and FavoritesList.objects.filter(user=request.user, company=obj).exists()
+            not request.user.is_authenticated
+            or FavoritesList.objects.filter(user=request.user, company=obj).exists()
         )
 
 
@@ -106,8 +106,8 @@ class CompanyDetailSerializer(serializers.ModelSerializer):
     def get_favorited(self, obj):
         request = self.context.get("request")
         return (
-            request.user.is_authenticated
-            and FavoritesList.objects.filter(user=request.user, company=obj).exists()
+            not request.user.is_authenticated
+            or FavoritesList.objects.filter(user=request.user, company=obj).exists()
         )
 
     def to_representation(self, instance):
