@@ -3,11 +3,13 @@
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
 from rest_framework import status
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 
 from api.v1.drf_spectacular.serializers.info.serializers import (
     RequestParameterRequiredResponse400Serializer,
     SearchServicesCompaniesResponse200Serializer,
 )
+from api.v1.drf_spectacular.serializers.serializers import Response401Serializer
 
 VIEWS_DECORATORS = {
     "InfoAPIView": extend_schema_view(
@@ -37,5 +39,14 @@ VIEWS_DECORATORS = {
             status.HTTP_200_OK: SearchServicesCompaniesResponse200Serializer,
             status.HTTP_400_BAD_REQUEST: RequestParameterRequiredResponse400Serializer,
         },
+    ),
+    "TokenRefreshView": extend_schema_view(
+        post=extend_schema(
+            tags=("tokens",),
+            responses={
+                status.HTTP_200_OK: TokenRefreshSerializer,
+                status.HTTP_401_UNAUTHORIZED: Response401Serializer,
+            },
+        ),
     ),
 }
