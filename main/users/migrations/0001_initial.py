@@ -79,6 +79,7 @@ class Migration(migrations.Migration):
                     models.EmailField(
                         max_length=254,
                         unique=True,
+                        validators=[users.validators.validate_email_field],
                         verbose_name="Почта",
                     ),
                 ),
