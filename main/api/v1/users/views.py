@@ -13,9 +13,9 @@ class UserOwnPageView(views.APIView):
         serializer = UserSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def put(self, request):
+    def patch(self, request):
         serializer = UserSerializer(
-            request.user, data=request.data, context={"request": request}
+            request.user, data=request.data, context={"request": request}, partial=True
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()

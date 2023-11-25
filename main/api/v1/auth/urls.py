@@ -4,7 +4,6 @@ from django.urls import path
 from api.v1.auth.views import (
     UserResetPasswordConfirmView,
     UserResetPasswordView,
-    UserReSignupConfirmView,
     UserSigninView,
     UserSignupConfirmView,
     UserSignupView,
@@ -19,10 +18,5 @@ urlpatterns = [
         "reset_password_confirm/",
         UserResetPasswordConfirmView.as_view(),
         name="reset_password_confirm",
-    ),
-    path(
-        "re_signup_confirm/",
-        UserReSignupConfirmView.as_view(),
-        name="re_signup_confirm",
     ),
 ]

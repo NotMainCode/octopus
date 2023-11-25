@@ -21,20 +21,21 @@ class InfoSearchFilter(filters.SearchFilter):
     def filter_queryset(self, request, queryset, view):
         name = request.query_params.get(self.search_param)
         if resolve(request.path_info).url_name in SEARCH_PARAM_REQUIRED_URL_NAMES:
-            if name is None or len(name.strip()) < 3:
+            if name is None or len(name) < 3:
                 raise ValidationError({"query_param": SEARCH_PARAM_REQUIRED_MESSAGE})
 
-        if name is not None:
-            name = name.strip()
-            queryset = queryset.annotate(
+        if name is None:
+            return queryset
+
+        return (
+            queryset.annotate(
                 relevance_to_search=Case(
                     When(name__istartswith=name, then=Value(1)),
                     When(name__icontains=name, then=Value(2)),
                     default=0,
                     output_field=IntegerField(),
                 )
-            ).exclude(relevance_to_search=0).order_by("relevance_to_search", "name")
-        else:
-            queryset = queryset
-
-        return queryset
+            )
+            .exclude(relevance_to_search=0)
+            .order_by("relevance_to_search", "name")
+        )

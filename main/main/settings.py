@@ -128,14 +128,13 @@ MAX_LEN_PASSWORD_USER_MODEL: int = 30
 MAX_LEN_HASH_PASSWORD_USER_MODEL: int = 128
 
 # EMAIL
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 EMAIL_USE_SSL = True
-EMAIL_HOST = "mail.hosting.reg.ru"
+EMAIL_HOST = "smtp.rambler.ru"
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = 465
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 CSRF_TRUSTED_ORIGINS = ["https://*.octopus-it.ru"]
 
