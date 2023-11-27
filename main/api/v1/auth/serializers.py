@@ -86,10 +86,6 @@ class UserSigninSerializer(serializers.Serializer):
             raise PermissionDenied("User is inactive.")
         return attrs
 
-    def validate_password(self, value):
-        validator.validate(value)
-        return value
-
 
 class UserResetPasswordSerializer(serializers.Serializer):
     def __init__(self, *args, **kwargs):
@@ -124,3 +120,21 @@ class UserResetPasswordConfirmSerializer(TokenUIDSerializer):
     def validate_new_password(self, value):
         validator.validate(value)
         return value
+
+
+class UserReSignupConfirmSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        try:
+            self.user = User.objects.get(email=attrs["email"])
+        except User.DoesNotExist:
+            raise serializers.ValidationError(
+                {"email": "Неверный email или пользователь не существует."}
+            )
+        if not self.user.check_password(attrs["password"]):
+            raise serializers.ValidationError({"password": "Неверный пароль."})
+        if self.user.is_active:
+            raise PermissionDenied("User is active.")
+        return attrs
