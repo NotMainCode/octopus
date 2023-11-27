@@ -10,8 +10,8 @@ from api.v1.drf_spectacular.serializers.info.serializers import (
     SearchServicesCompaniesResponse200Serializer,
 )
 from api.v1.drf_spectacular.serializers.serializers import (
-    Response401Serializer,
     Response400Serializer,
+    Response401Serializer,
 )
 
 VIEWS_DECORATORS = {
