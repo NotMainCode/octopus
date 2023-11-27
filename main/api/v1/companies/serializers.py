@@ -27,13 +27,13 @@ class ServiceCategorySerializer(serializers.ModelSerializer):
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
-        fields = ("id", "name")
+        fields = ("id", )
 
 
 class IndustrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Industry
-        fields = ("id", "name")
+        fields = ("id", )
 
 
 class CustomServiceSerializer(ServiceSerializer):
@@ -47,8 +47,10 @@ class CustomServiceSerializer(ServiceSerializer):
 class CompanySerializer(serializers.ModelSerializer):
     """Сериализатор получения компании."""
 
-    city = CitySerializer()
+    # city = CitySerializer()
     services = ServiceSerializer(many=True)
+    num_matches_services = serializers.IntegerField(default = 0)
+    # industries = IndustrySerializer(many = True)
     is_favorited = serializers.SerializerMethodField(method_name="get_favorited")
 
     class Meta:
@@ -56,10 +58,12 @@ class CompanySerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
-            "logo",
-            "city",
-            "description",
+            # "logo",
+            # "city",
+            # "description",
+            "num_matches_services",
             "services",
+            # "industries",
             "is_favorited",
         )
 
