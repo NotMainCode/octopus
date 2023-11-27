@@ -103,9 +103,6 @@ class UserSigninView(BaseView, views.APIView):
         serializer = self.get_serializer_class(action)(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.user
-        confirm_url = self._generate_url(action, user, request)
-        mail = self._generate_mail(action, confirm_url)
-        user.send_mail(user, mail)
         token = RefreshToken.for_user(user)
         return Response(
             {"access": str(token.access_token), "refresh": str(token)},
