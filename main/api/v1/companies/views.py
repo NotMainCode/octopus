@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
+from api.v1.companies.filters import CompanyFilterSet
 from api.v1.companies.paginations import CustomPagination
 from api.v1.companies.serializers import CompanyDetailSerializer, CompanySerializer
 from companies.models import Company, FavoritesList
@@ -17,7 +18,14 @@ class CompanyViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPagination
     permission_classes = (AllowAny,)
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ("city", "services", "industries")
+    filterset_class = CompanyFilterSet
+
+    filterset_fields = {
+        "city": ["exact"],
+        "industry": ["exact"],
+        "service": ["exact"],
+        "is_favorited": ["exact"],
+    }
 
     def get_serializer_class(self):
         if self.action == "list":
