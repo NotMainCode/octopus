@@ -9,7 +9,7 @@ from api.v1.drf_spectacular.serializers.info.serializers import (
     RequestParameterRequiredResponse400Serializer,
     SearchServicesCompaniesResponse200Serializer,
 )
-from api.v1.drf_spectacular.serializers.serializers import Response401Serializer
+from api.v1.drf_spectacular.serializers.serializers import Response401Serializer, Response400Serializer
 
 VIEWS_DECORATORS = {
     "InfoAPIView": extend_schema_view(
@@ -40,11 +40,12 @@ VIEWS_DECORATORS = {
             status.HTTP_400_BAD_REQUEST: RequestParameterRequiredResponse400Serializer,
         },
     ),
-    "TokenRefreshView": extend_schema_view(
+    "CustomTokenRefreshView": extend_schema_view(
         post=extend_schema(
             tags=("tokens",),
             responses={
                 status.HTTP_200_OK: TokenRefreshSerializer,
+                status.HTTP_400_BAD_REQUEST: Response400Serializer,
                 status.HTTP_401_UNAUTHORIZED: Response401Serializer,
             },
         ),
