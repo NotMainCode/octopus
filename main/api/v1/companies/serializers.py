@@ -49,6 +49,7 @@ class CompanySerializer(serializers.ModelSerializer):
 
     city = CitySerializer()
     services = ServiceSerializer(many=True)
+    industries = IndustrySerializer(many=True)
     is_favorited = serializers.SerializerMethodField(method_name="get_favorited")
 
     class Meta:
@@ -60,6 +61,7 @@ class CompanySerializer(serializers.ModelSerializer):
             "city",
             "description",
             "services",
+            "industries",
             "is_favorited",
         )
 

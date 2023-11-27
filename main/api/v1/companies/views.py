@@ -19,13 +19,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = CompanyFilterSet
-
-    filterset_fields = {
-        "city": ["exact"],
-        "industry": ["exact"],
-        "service": ["exact"],
-        "is_favorited": ["exact"],
-    }
+    filterset_fields = ("city", "service", "is_favorited")
 
     def get_serializer_class(self):
         if self.action == "list":
