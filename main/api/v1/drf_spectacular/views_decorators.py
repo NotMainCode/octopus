@@ -9,7 +9,10 @@ from api.v1.drf_spectacular.serializers.info.serializers import (
     RequestParameterRequiredResponse400Serializer,
     SearchServicesCompaniesResponse200Serializer,
 )
-from api.v1.drf_spectacular.serializers.serializers import Response401Serializer, Response400Serializer
+from api.v1.drf_spectacular.serializers.serializers import (
+    Response401Serializer,
+    Response400Serializer,
+)
 
 VIEWS_DECORATORS = {
     "InfoAPIView": extend_schema_view(
