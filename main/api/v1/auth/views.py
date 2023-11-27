@@ -33,6 +33,19 @@ class BaseView:
         "re_signup_confirm": "resending registration confirmation",
     }
 
+    def get_serializer_class(self, action):
+        if action == "signup":
+            return UserSignupSerializer
+        if action == "signup_confirm":
+            return TokenUIDSerializer
+        if action == "signin":
+            return UserSigninSerializer
+        if action == "reset_password":
+            return UserResetPasswordSerializer
+        if action == "re_signup_confirm":
+            return UserReSignupConfirmSerializer
+        return UserResetPasswordConfirmSerializer
+
     def _generate_url(self, action, user, request):
         uid = force_str(urlsafe_base64_encode(force_bytes(user.id)))
         token = default_token_generator.make_token(user)
@@ -53,19 +66,6 @@ class BaseView:
         mail["subject"] = self.action_list[action]
         mail["message"] = url
         return mail
-
-    def get_serializer_class(self, action):
-        if action == "signup":
-            return UserSignupSerializer
-        if action == "signup_confirm":
-            return TokenUIDSerializer
-        if action == "signin":
-            return UserSigninSerializer
-        if action == "reset_password":
-            return UserResetPasswordSerializer
-        if action == "re_signup_confirm":
-            return UserReSignupConfirmSerializer
-        return UserResetPasswordConfirmSerializer
 
 
 class UserSignupView(BaseView, views.APIView):
