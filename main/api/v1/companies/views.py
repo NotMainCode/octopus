@@ -29,9 +29,9 @@ class CompanyViewSet(viewsets.ModelViewSet):
     @action(
         detail=True, methods=["post", "delete"], permission_classes=(IsAuthenticated,)
     )
-    def favorite(self, request, **kwargs):
+    def favorite(self, request):
         user = request.user
-        company = get_object_or_404(Company, id=kwargs["pk"])
+        company = self.get_object()
         if request.method == "POST":
             if FavoritesList.objects.filter(user=user, company=company).exists():
                 raise exceptions.ValidationError(
