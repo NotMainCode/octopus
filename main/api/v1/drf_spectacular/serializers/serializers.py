@@ -1,14 +1,21 @@
 """Serializers describing responses for use in documentation."""
+
 from rest_framework import serializers
 
 
-class Response400Serializer(serializers.Serializer):
+class ResponseErrorSerializer(serializers.Serializer):
+    """Response with errors."""
+
+    detail = serializers.CharField(default="error text")
+
+
+class Response400Serializer(ResponseErrorSerializer):
     """400 response: Invalid field value."""
 
-    detail = serializers.CharField(default="error text")
 
-
-class Response401Serializer(serializers.Serializer):
+class Response401Serializer(ResponseErrorSerializer):
     """401 response: Invalid token value."""
 
-    detail = serializers.CharField(default="error text")
+
+class Response404Serializer(ResponseErrorSerializer):
+    """404 response: Not found."""

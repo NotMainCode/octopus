@@ -10,6 +10,9 @@ from rest_framework.views import APIView
 from api.v1.companies.filters import CompanyFilterSet
 from api.v1.companies.paginations import CustomPagination
 from api.v1.companies.serializers import CompanyDetailSerializer, CompanySerializer
+from api.v1.drf_spectacular.custom_decorators import (
+    activate_drf_spectacular_view_decorator,
+)
 from companies.models import Company, Favorite
 
 
@@ -29,6 +32,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
         return CompanyDetailSerializer
 
 
+@activate_drf_spectacular_view_decorator
 class FavoriteAPIView(APIView):
     """URL requests handler to 'FavoritesList' resource endpoints."""
 
