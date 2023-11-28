@@ -148,6 +148,7 @@ class UserResetPasswordConfirmView(BaseView, views.APIView):
         )
 
 
+@activate_drf_spectacular_view_decorator
 class UserReSignupConfirmView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name

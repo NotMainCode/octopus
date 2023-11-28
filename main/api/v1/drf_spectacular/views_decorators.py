@@ -14,7 +14,7 @@ from api.v1.auth.serializers import (
     TokenUIDSerializer,
     UserResetPasswordConfirmSerializer,
     UserResetPasswordSerializer,
-    UserSigninSerializer,
+    UserReSignupConfirmSerializer, UserSigninSerializer,
     UserSignupSerializer,
 )
 from api.v1.companies.serializers import CompanyDetailSerializer, CompanySerializer
@@ -194,6 +194,17 @@ VIEWS_DECORATORS = {
                 status.HTTP_204_NO_CONTENT: "",
                 status.HTTP_400_BAD_REQUEST: Response400Serializer,
                 status.HTTP_403_FORBIDDEN: Response403InactiveSerializer,
+            },
+        ),
+    ),
+    "UserReSignupConfirmView": extend_schema_view(
+        post = extend_schema(
+            tags = ("auth",),
+            request = UserReSignupConfirmSerializer,
+            responses = {
+                status.HTTP_204_NO_CONTENT: OpenApiResponse(),
+                status.HTTP_400_BAD_REQUEST: Response400Serializer,
+                status.HTTP_403_FORBIDDEN: Response403ActiveSerializer,
             },
         ),
     ),
