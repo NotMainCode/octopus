@@ -9,8 +9,12 @@ class ResponseErrorSerializer(serializers.Serializer):
     detail = serializers.CharField(default="error text")
 
 
-class Response400Serializer(ResponseErrorSerializer):
+class Response400Serializer(serializers.Serializer):
     """400 response: Invalid field value."""
+
+    field_name = serializers.ListField(
+        child=serializers.CharField(default="field_error")
+    )
 
 
 class Response401Serializer(ResponseErrorSerializer):

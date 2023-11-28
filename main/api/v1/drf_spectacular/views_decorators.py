@@ -8,9 +8,24 @@ from drf_spectacular.utils import (
     extend_schema_view,
 )
 from rest_framework import status
-from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from rest_framework_simplejwt.serializers import (
+    TokenObtainPairSerializer,
+    TokenRefreshSerializer,
+)
 
+from api.v1.auth.serializers import (
+    TokenUIDSerializer,
+    UserResetPasswordConfirmSerializer,
+    UserResetPasswordSerializer,
+    UserReSignupConfirmSerializer,
+    UserSigninSerializer,
+    UserSignupSerializer,
+)
 from api.v1.companies.serializers import CompanyDetailSerializer, CompanySerializer
+from api.v1.drf_spectacular.serializers.auth.serializers import (
+    Response403ActiveSerializer,
+    Response403InactiveSerializer,
+)
 from api.v1.drf_spectacular.serializers.company.examples import (
     Response200CompaniesDetailExample,
 )
@@ -129,6 +144,71 @@ VIEWS_DECORATORS = {
                 status.HTTP_400_BAD_REQUEST: Response400Serializer,
                 status.HTTP_401_UNAUTHORIZED: Response401Serializer,
                 status.HTTP_404_NOT_FOUND: Response404Serializer,
+            },
+        ),
+    ),
+    "UserSignupView": extend_schema_view(
+        post=extend_schema(
+            tags=("auth",),
+            request=UserSignupSerializer,
+            responses={
+                status.HTTP_204_NO_CONTENT: OpenApiResponse(),
+                status.HTTP_400_BAD_REQUEST: Response400Serializer,
+            },
+        ),
+    ),
+    "UserSignupConfirmView": extend_schema_view(
+        post=extend_schema(
+            tags=("auth",),
+            request=TokenUIDSerializer,
+            responses={
+                status.HTTP_204_NO_CONTENT: "",
+                status.HTTP_400_BAD_REQUEST: Response400Serializer,
+                status.HTTP_403_FORBIDDEN: Response403ActiveSerializer,
+            },
+        ),
+    ),
+    "UserSigninView": extend_schema_view(
+        post=extend_schema(
+            tags=("auth",),
+            request=UserSigninSerializer,
+            responses={
+                status.HTTP_200_OK: TokenObtainPairSerializer,
+                status.HTTP_400_BAD_REQUEST: Response400Serializer,
+                status.HTTP_403_FORBIDDEN: Response403InactiveSerializer,
+            },
+        ),
+    ),
+    "UserResetPasswordView": extend_schema_view(
+        post=extend_schema(
+            tags=("auth",),
+            request=UserResetPasswordSerializer,
+            responses={
+                status.HTTP_204_NO_CONTENT: "",
+                status.HTTP_400_BAD_REQUEST: Response400Serializer,
+                status.HTTP_403_FORBIDDEN: Response403InactiveSerializer,
+            },
+        ),
+    ),
+    "UserResetPasswordConfirmView": extend_schema_view(
+        post=extend_schema(
+            tags=("auth",),
+            request=UserResetPasswordConfirmSerializer,
+            responses={
+                status.HTTP_204_NO_CONTENT: "",
+                status.HTTP_400_BAD_REQUEST: Response400Serializer,
+                status.HTTP_403_FORBIDDEN: Response403InactiveSerializer,
+            },
+        ),
+    ),
+    "UserReSignupConfirmView": extend_schema_view(
+        post=extend_schema(
+            tags=("auth",),
+            request=UserReSignupConfirmSerializer,
+            responses={
+                status.HTTP_204_NO_CONTENT: OpenApiResponse(),
+                status.HTTP_400_BAD_REQUEST: Response400Serializer,
+                status.HTTP_403_FORBIDDEN: Response403ActiveSerializer,
             },
         ),
     ),

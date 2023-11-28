@@ -1,4 +1,5 @@
 """Views for 'auth' endpoints of 'Api' application v1."""
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
@@ -18,6 +19,9 @@ from api.v1.auth.serializers import (
     UserReSignupConfirmSerializer,
     UserSigninSerializer,
     UserSignupSerializer,
+)
+from api.v1.drf_spectacular.custom_decorators import (
+    activate_drf_spectacular_view_decorator,
 )
 
 User = get_user_model()
@@ -68,6 +72,7 @@ class BaseView:
         return mail
 
 
+@activate_drf_spectacular_view_decorator
 class UserSignupView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -82,6 +87,7 @@ class UserSignupView(BaseView, views.APIView):
         )
 
 
+@activate_drf_spectacular_view_decorator
 class UserSignupConfirmView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -97,6 +103,7 @@ class UserSignupConfirmView(BaseView, views.APIView):
         )
 
 
+@activate_drf_spectacular_view_decorator
 class UserSigninView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -110,6 +117,7 @@ class UserSigninView(BaseView, views.APIView):
         )
 
 
+@activate_drf_spectacular_view_decorator
 class UserResetPasswordView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -124,6 +132,7 @@ class UserResetPasswordView(BaseView, views.APIView):
         )
 
 
+@activate_drf_spectacular_view_decorator
 class UserResetPasswordConfirmView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -139,6 +148,7 @@ class UserResetPasswordConfirmView(BaseView, views.APIView):
         )
 
 
+@activate_drf_spectacular_view_decorator
 class UserReSignupConfirmView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
