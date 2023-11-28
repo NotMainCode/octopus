@@ -16,20 +16,20 @@ from api.v1.drf_spectacular.custom_decorators import (
 )
 from api.v1.info.filters import InfoSearchFilter
 from api.v1.info.serializers import (
-    CitySerializer,
-    CompanyBriefSerializer,
-    IndustrySerializer,
-    ServiceBriefSerializer,
-    ServiceCategorySerializer,
-    ServiceSerializer,
+    InfoCitySerializer,
+    InfoCompanyBriefSerializer,
+    InfoIndustrySerializer,
+    InfoServiceBriefSerializer,
+    InfoServiceCategorySerializer,
+    InfoServiceSerializer,
 )
 from companies.models import City, Company, Industry, Service, ServiceCategory
 
 INFO_API_VIEW_SERIALIZERS = {
-    "industries_list": IndustrySerializer,
-    "service_categories_list": ServiceCategorySerializer,
-    "services_list": ServiceSerializer,
-    "cities_list": CitySerializer,
+    "industries_list": InfoIndustrySerializer,
+    "service_categories_list": InfoServiceCategorySerializer,
+    "services_list": InfoServiceSerializer,
+    "cities_list": InfoCitySerializer,
 }
 
 INFO_API_VIEW_QUERYSET = {
@@ -65,7 +65,7 @@ def search_services_companies(request):
     filter_companies = InfoSearchFilter().filter_queryset(
         request, companies, search_services_companies
     )
-    companies_serializer = CompanyBriefSerializer(filter_companies, many=True)
+    companies_serializer = InfoCompanyBriefSerializer(filter_companies, many=True)
 
     services = (
         Service.objects.filter(companies__isnull=False).distinct().values("id", "name")
@@ -73,7 +73,7 @@ def search_services_companies(request):
     filter_services = InfoSearchFilter().filter_queryset(
         request, services, search_services_companies
     )
-    services_serializer = ServiceBriefSerializer(filter_services, many=True)
+    services_serializer = InfoServiceBriefSerializer(filter_services, many=True)
 
     return Response(
         data={
