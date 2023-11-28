@@ -1,7 +1,12 @@
 """Views decorators for use in documentation."""
 
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view, OpenApiResponse
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    extend_schema,
+    extend_schema_view,
+)
 from rest_framework import status
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 
@@ -11,7 +16,8 @@ from api.v1.drf_spectacular.serializers.info.serializers import (
 )
 from api.v1.drf_spectacular.serializers.serializers import (
     Response400Serializer,
-    Response401Serializer, Response404Serializer,
+    Response401Serializer,
+    Response404Serializer,
 )
 from api.v1.users.serializers import ChangePasswordSerializer, UserSerializer
 
