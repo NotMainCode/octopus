@@ -1,18 +1,24 @@
 """Views for 'companies' endpoints of 'Api' application v1."""
 
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import exceptions, status, viewsets
-from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from api.v1.companies.filters import CompanyFilterSet
 from api.v1.companies.paginations import CustomPagination
 from api.v1.companies.serializers import CompanyDetailSerializer, CompanySerializer
-from companies.models import Company, FavoritesList
+from api.v1.drf_spectacular.custom_decorators import (
+    activate_drf_spectacular_view_decorator,
+)
+from companies.models import Company, Favorite
 
 
 class CompanyViewSet(viewsets.ModelViewSet):
+    """URL requests handler to 'Company' resource endpoints."""
+
     queryset = Company.objects.all()
     pagination_class = CustomPagination
     permission_classes = (AllowAny,)
@@ -25,34 +31,30 @@ class CompanyViewSet(viewsets.ModelViewSet):
             return CompanySerializer
         return CompanyDetailSerializer
 
-    @action(
-        detail=True, methods=["post", "delete"], permission_classes=(IsAuthenticated,)
-    )
-    def favorite(self, request):
+
+@activate_drf_spectacular_view_decorator
+class FavoriteAPIView(APIView):
+    """URL requests handler to 'FavoritesList' resource endpoints."""
+
+    def post(self, request, **kwargs):
         user = request.user
-        company = self.get_object()
-        if request.method == "POST":
-            if FavoritesList.objects.filter(user=user, company=company).exists():
-                raise exceptions.ValidationError(
-                    "Компания добавлена в избранное ранее."
-                )
-            FavoritesList.objects.create(user=user, company=company)
-            CompanySerializer(
-                company,
-                context={"request": request},
+        company = get_object_or_404(Company, id=kwargs["id"])
+        if Favorite.objects.filter(user=user, company=company).exists():
+            raise exceptions.ValidationError(
+                {"detail": "Компания добавлена в избранное ранее."}
             )
-            return Response(status=status.HTTP_201_CREATED)
-        if request.method == "DELETE":
-            favoriteslist = FavoritesList.objects.filter(
-                user=user, company=company
-            ).first()
-            if not favoriteslist:
-                return Response(
-                    {"detail": "Компании не было в избранном"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            favoriteslist.delete()
-            return Response(
-                {"detail": "Компания успешно удалена из избранного."},
-                status=status.HTTP_204_NO_CONTENT,
+
+        Favorite.objects.create(user=user, company=company)
+        return Response(status=status.HTTP_201_CREATED)
+
+    def delete(self, request, **kwargs):
+        user = request.user
+        company = get_object_or_404(Company, id=kwargs["id"])
+        favorite = Favorite.objects.filter(user=user, company=company).first()
+        if not favorite:
+            raise exceptions.ValidationError(
+                {"detail": "Компании не было в избранном."}
             )
+
+        favorite.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

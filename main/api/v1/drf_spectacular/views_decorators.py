@@ -1,7 +1,12 @@
 """Views decorators for use in documentation."""
 
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    extend_schema,
+    extend_schema_view,
+)
 from rest_framework import status
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 
@@ -12,6 +17,7 @@ from api.v1.drf_spectacular.serializers.info.serializers import (
 from api.v1.drf_spectacular.serializers.serializers import (
     Response400Serializer,
     Response401Serializer,
+    Response404Serializer,
 )
 from api.v1.users.serializers import ChangePasswordSerializer, UserSerializer
 
@@ -75,8 +81,28 @@ VIEWS_DECORATORS = {
             tags=("users",),
             request=ChangePasswordSerializer,
             responses={
-                status.HTTP_204_NO_CONTENT: "",
+                status.HTTP_204_NO_CONTENT: OpenApiResponse(),
                 status.HTTP_400_BAD_REQUEST: Response400Serializer,
+            },
+        ),
+    ),
+    "FavoriteAPIView": extend_schema_view(
+        post=extend_schema(
+            tags=("favorite",),
+            responses={
+                status.HTTP_201_CREATED: OpenApiResponse(),
+                status.HTTP_400_BAD_REQUEST: Response400Serializer,
+                status.HTTP_401_UNAUTHORIZED: Response401Serializer,
+                status.HTTP_404_NOT_FOUND: Response404Serializer,
+            },
+        ),
+        delete=extend_schema(
+            tags=("favorite",),
+            responses={
+                status.HTTP_204_NO_CONTENT: OpenApiResponse(),
+                status.HTTP_400_BAD_REQUEST: Response400Serializer,
+                status.HTTP_401_UNAUTHORIZED: Response401Serializer,
+                status.HTTP_404_NOT_FOUND: Response404Serializer,
             },
         ),
     ),
