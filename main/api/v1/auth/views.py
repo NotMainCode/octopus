@@ -5,6 +5,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import resolve
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode
+
 from rest_framework import status, views
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import AllowAny
@@ -17,6 +18,9 @@ from api.v1.auth.serializers import (
     UserResetPasswordSerializer,
     UserSigninSerializer,
     UserSignupSerializer,
+)
+from api.v1.drf_spectacular.custom_decorators import (
+    activate_drf_spectacular_view_decorator,
 )
 
 User = get_user_model()
@@ -59,6 +63,7 @@ class BaseView:
         return UserResetPasswordConfirmSerializer
 
 
+@activate_drf_spectacular_view_decorator
 class UserSignupView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -73,6 +78,7 @@ class UserSignupView(BaseView, views.APIView):
         )
 
 
+@activate_drf_spectacular_view_decorator
 class UserSignupConfirmView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -88,6 +94,7 @@ class UserSignupConfirmView(BaseView, views.APIView):
         )
 
 
+@activate_drf_spectacular_view_decorator
 class UserSigninView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -104,6 +111,7 @@ class UserSigninView(BaseView, views.APIView):
         )
 
 
+@activate_drf_spectacular_view_decorator
 class UserResetPasswordView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -118,6 +126,7 @@ class UserResetPasswordView(BaseView, views.APIView):
         )
 
 
+@activate_drf_spectacular_view_decorator
 class UserResetPasswordConfirmView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
