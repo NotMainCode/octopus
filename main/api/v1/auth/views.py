@@ -20,9 +20,7 @@ from api.v1.auth.serializers import (
     UserSigninSerializer,
     UserSignupSerializer,
 )
-from api.v1.drf_spectacular.custom_decorators import (
-    activate_drf_spectacular_view_decorator,
-)
+from api.v1.drf_spectacular.custom_decorators import get_drf_spectacular_view_decorator
 
 User = get_user_model()
 
@@ -72,7 +70,7 @@ class BaseView:
         return mail
 
 
-@activate_drf_spectacular_view_decorator
+@get_drf_spectacular_view_decorator("auth")
 class UserSignupView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -87,7 +85,7 @@ class UserSignupView(BaseView, views.APIView):
         )
 
 
-@activate_drf_spectacular_view_decorator
+@get_drf_spectacular_view_decorator("auth")
 class UserSignupConfirmView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -103,7 +101,7 @@ class UserSignupConfirmView(BaseView, views.APIView):
         )
 
 
-@activate_drf_spectacular_view_decorator
+@get_drf_spectacular_view_decorator("auth")
 class UserSigninView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -117,7 +115,7 @@ class UserSigninView(BaseView, views.APIView):
         )
 
 
-@activate_drf_spectacular_view_decorator
+@get_drf_spectacular_view_decorator("auth")
 class UserResetPasswordView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -132,7 +130,7 @@ class UserResetPasswordView(BaseView, views.APIView):
         )
 
 
-@activate_drf_spectacular_view_decorator
+@get_drf_spectacular_view_decorator("auth")
 class UserResetPasswordConfirmView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -148,7 +146,7 @@ class UserResetPasswordConfirmView(BaseView, views.APIView):
         )
 
 
-@activate_drf_spectacular_view_decorator
+@get_drf_spectacular_view_decorator("auth")
 class UserReSignupConfirmView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name

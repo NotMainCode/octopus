@@ -156,17 +156,17 @@ class Migration(migrations.Migration):
                 ),
                 ("number", models.CharField(max_length=18, null=True)),
                 (
-                    "company",
+                    "companies",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="phones",
-                        to="companies.company",
+                        to="companies.companies",
                     ),
                 ),
             ],
         ),
         migrations.AddField(
-            model_name="company",
+            model_name="companies",
             name="city",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
@@ -176,7 +176,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="company",
+            model_name="companies",
             name="industries",
             field=models.ManyToManyField(
                 related_name="companies",
@@ -185,7 +185,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="company",
+            model_name="companies",
             name="services",
             field=models.ManyToManyField(
                 related_name="companies", to="companies.service", verbose_name="Услуги"
