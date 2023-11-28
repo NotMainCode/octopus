@@ -1,11 +1,11 @@
 """Views for 'auth' endpoints of 'Api' application v1."""
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import resolve
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode
-
 from rest_framework import status, views
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import AllowAny

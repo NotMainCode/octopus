@@ -84,7 +84,7 @@ class CompanyDetailSerializer(serializers.ModelSerializer):
     industries = IndustrySerializer(many=True)
     services = CustomServiceSerializer(many=True)
     is_favorited = serializers.SerializerMethodField(method_name="get_favorited")
-    phones = (PhoneSerializer(many=True))
+    phones = PhoneSerializer(many=True)
 
     class Meta:
         model = Company

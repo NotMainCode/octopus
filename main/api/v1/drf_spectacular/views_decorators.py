@@ -8,13 +8,17 @@ from drf_spectacular.utils import (
     extend_schema_view,
 )
 from rest_framework import status
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
+from rest_framework_simplejwt.serializers import (
+    TokenObtainPairSerializer,
+    TokenRefreshSerializer,
+)
 
 from api.v1.auth.serializers import (
     TokenUIDSerializer,
     UserResetPasswordConfirmSerializer,
     UserResetPasswordSerializer,
-    UserReSignupConfirmSerializer, UserSigninSerializer,
+    UserReSignupConfirmSerializer,
+    UserSigninSerializer,
     UserSignupSerializer,
 )
 from api.v1.companies.serializers import CompanyDetailSerializer, CompanySerializer
@@ -144,20 +148,20 @@ VIEWS_DECORATORS = {
         ),
     ),
     "UserSignupView": extend_schema_view(
-        post = extend_schema(
-            tags = ("auth",),
-            request = UserSignupSerializer,
-            responses = {
+        post=extend_schema(
+            tags=("auth",),
+            request=UserSignupSerializer,
+            responses={
                 status.HTTP_204_NO_CONTENT: OpenApiResponse(),
                 status.HTTP_400_BAD_REQUEST: Response400Serializer,
             },
         ),
     ),
     "UserSignupConfirmView": extend_schema_view(
-        post = extend_schema(
-            tags = ("auth",),
-            request = TokenUIDSerializer,
-            responses = {
+        post=extend_schema(
+            tags=("auth",),
+            request=TokenUIDSerializer,
+            responses={
                 status.HTTP_204_NO_CONTENT: "",
                 status.HTTP_400_BAD_REQUEST: Response400Serializer,
                 status.HTTP_403_FORBIDDEN: Response403ActiveSerializer,
@@ -165,10 +169,10 @@ VIEWS_DECORATORS = {
         ),
     ),
     "UserSigninView": extend_schema_view(
-        post = extend_schema(
-            tags = ("auth",),
-            request = UserSigninSerializer,
-            responses = {
+        post=extend_schema(
+            tags=("auth",),
+            request=UserSigninSerializer,
+            responses={
                 status.HTTP_200_OK: TokenObtainPairSerializer,
                 status.HTTP_400_BAD_REQUEST: Response400Serializer,
                 status.HTTP_403_FORBIDDEN: Response403InactiveSerializer,
@@ -176,10 +180,10 @@ VIEWS_DECORATORS = {
         ),
     ),
     "UserResetPasswordView": extend_schema_view(
-        post = extend_schema(
-            tags = ("auth",),
-            request = UserResetPasswordSerializer,
-            responses = {
+        post=extend_schema(
+            tags=("auth",),
+            request=UserResetPasswordSerializer,
+            responses={
                 status.HTTP_204_NO_CONTENT: "",
                 status.HTTP_400_BAD_REQUEST: Response400Serializer,
                 status.HTTP_403_FORBIDDEN: Response403InactiveSerializer,
@@ -187,10 +191,10 @@ VIEWS_DECORATORS = {
         ),
     ),
     "UserResetPasswordConfirmView": extend_schema_view(
-        post = extend_schema(
-            tags = ("auth",),
-            request = UserResetPasswordConfirmSerializer,
-            responses = {
+        post=extend_schema(
+            tags=("auth",),
+            request=UserResetPasswordConfirmSerializer,
+            responses={
                 status.HTTP_204_NO_CONTENT: "",
                 status.HTTP_400_BAD_REQUEST: Response400Serializer,
                 status.HTTP_403_FORBIDDEN: Response403InactiveSerializer,
@@ -198,10 +202,10 @@ VIEWS_DECORATORS = {
         ),
     ),
     "UserReSignupConfirmView": extend_schema_view(
-        post = extend_schema(
-            tags = ("auth",),
-            request = UserReSignupConfirmSerializer,
-            responses = {
+        post=extend_schema(
+            tags=("auth",),
+            request=UserReSignupConfirmSerializer,
+            responses={
                 status.HTTP_204_NO_CONTENT: OpenApiResponse(),
                 status.HTTP_400_BAD_REQUEST: Response400Serializer,
                 status.HTTP_403_FORBIDDEN: Response403ActiveSerializer,
