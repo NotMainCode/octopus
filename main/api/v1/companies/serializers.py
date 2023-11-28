@@ -4,7 +4,7 @@ from rest_framework import serializers
 from companies.models import (
     City,
     Company,
-    FavoritesList,
+    Favorite,
     Industry,
     Phone,
     Service,
@@ -69,7 +69,7 @@ class CompanySerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         return (
             request.user.is_authenticated
-            and FavoritesList.objects.filter(user=request.user, company=obj).exists()
+            and Favorite.objects.filter(user=request.user, company=obj).exists()
         )
 
 
@@ -109,7 +109,7 @@ class CompanyDetailSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         return (
             request.user.is_authenticated
-            and FavoritesList.objects.filter(user=request.user, company=obj).exists()
+            and Favorite.objects.filter(user=request.user, company=obj).exists()
         )
 
     def to_representation(self, instance):

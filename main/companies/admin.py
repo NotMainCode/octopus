@@ -3,7 +3,7 @@ from django.contrib import admin
 from companies.models import (
     City,
     Company,
-    FavoritesList,
+    Favorite,
     Industry,
     Phone,
     Service,
@@ -52,6 +52,6 @@ class CityAdmin(admin.ModelAdmin):
     list_display = ("pk", "name")
 
 
-@admin.register(FavoritesList)
-class FavoritesListAdmin(admin.ModelAdmin):
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
     list_display = ("pk", "user", "company")
