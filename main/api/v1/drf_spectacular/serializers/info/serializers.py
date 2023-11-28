@@ -3,14 +3,17 @@
 from rest_framework import serializers
 
 from api.v1.info.filters import SEARCH_PARAM_REQUIRED_MESSAGE
-from api.v1.info.serializers import CompanyBriefSerializer, ServiceBriefSerializer
+from api.v1.info.serializers import (
+    InfoCompanyBriefSerializer,
+    InfoServiceBriefSerializer,
+)
 
 
 class SearchServicesCompaniesResponse200Serializer(serializers.Serializer):
     """Response 200: search_services_companies/ endpoint."""
 
-    companies = CompanyBriefSerializer(many=True)
-    services = ServiceBriefSerializer(many=True)
+    companies = InfoCompanyBriefSerializer(many=True)
+    services = InfoServiceBriefSerializer(many=True)
 
 
 class RequestParameterRequiredResponse400Serializer(serializers.Serializer):

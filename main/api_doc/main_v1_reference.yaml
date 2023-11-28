@@ -76,7 +76,42 @@ paths:
                     type: string
                     example:
                       "User is active"
-
+  /api/v1/auth/re_signup_confirm/:
+    post:
+      summary: Повторная отправка письма для подтверждения регистрации
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+      responses:
+        '204':
+          description: >-
+            На почту отправлено письмо со ссылкой подтверждения регистрации.
+            <br> Регистрация будет завершена после запроса к эндпоинту signup_confirm/
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '403':
+          description: Пользователь неактивен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example:
+                      "User is active"
   /api/v1/auth/signin/:
     post:
       summary: Вход в систему
@@ -186,17 +221,6 @@ paths:
           description: Пароль успешно изменен
         '400':
           $ref: '#/components/responses/ValidationError'
-        '403':
-          description: Пользователь неактивен
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  detail:
-                    type: string
-                    example:
-                      "User is inactive"
   /api/v1/users/me/:
     get:
       summary: ЛК текущего пользователя
@@ -216,18 +240,7 @@ paths:
           description: ''
         '401':
           $ref: '#/components/responses/AuthenticationError'
-        '403':
-          description: Пользователь неактивен
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  detail:
-                    type: string
-                    example:
-                      "User is inactive"
-    patch:
+    put:
       summary: Изменение информации о текущем пользователе
       operationId: Изменение информации о текущем пользователе
       tags:
@@ -263,18 +276,7 @@ paths:
           $ref: '#/components/responses/ValidationError'
         '401':
           $ref: '#/components/responses/AuthenticationError'
-        '403':
-          description: Пользователь неактивен
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  detail:
-                    type: string
-                    example:
-                      "User is inactive"
-  /api/v1/users/me/change_password/:
+  /api/v1/users/change_password/:
     post:
       summary: Изменение пароля текущего пользователя
       description: Доступно авторизованным по токену
@@ -308,18 +310,7 @@ paths:
           $ref: '#/components/responses/ValidationError'
         '401':
           $ref: '#/components/responses/AuthenticationError'
-        '403':
-          description: Пользователь неактивен
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  detail:
-                    type: string
-                    example:
-                      "User is inactive"
-  /api/v1/refresh/:
+  /api/v1/tokens/refresh/:
     post:
       summary: Обновление JWT токенов
       tags:
@@ -348,7 +339,16 @@ paths:
                   refresh:
                     type: string
         '401':
-          $ref: '#/components/responses/AuthenticationError'
+          description: Токен некорректен или срок его действия истек.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    description: Описание ошибки
+                    example: Токен некорректен или срок его действия истек.
+                    type: string
   /api/v1/info/industries/:
     get:
       summary: Список объектов Industry
@@ -544,7 +544,7 @@ paths:
           in: query
           description: >-
             Уникальный идентификатор города <br>
-            Фильтр по id города
+            Множественный фильтр по id города
           schema:
             type: integer
         - name: service
@@ -553,6 +553,14 @@ paths:
           description: >-
             Уникальный идентификатор услуги <br>
             Множественный фильтр по id услуг (в ответе компании как минимум с одним совпадением id услуги)
+          schema:
+            type: integer
+        - name: industry
+          required: false
+          in: query
+          description: >-
+            Уникальный идентификатор индустрии <br>
+            Множественный фильтр по id индустрии (в ответе компании как минимум с одним совпадением id индустрии)
           schema:
             type: integer
         - name: is_favorited
@@ -566,7 +574,7 @@ paths:
         - Companies
       responses:
         '200':
-          description: 'сортировка по количеству совпадений фильтра service (сначала больше)'
+          description: 'сортировка по количеству совпадений фильтра (сначала больше)'
           content:
             application/json:
               schema:
@@ -734,17 +742,6 @@ paths:
                       "Компания добавлена в избранное ранее"
         '401':
           $ref: '#/components/responses/AuthenticationError'
-        '403':
-          description: Пользователь неактивен
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  detail:
-                    type: string
-                    example:
-                      "User is inactive"
     delete:
       summary: Удалить компанию из избранного
       description: Доступно авторизованным по токену
@@ -775,17 +772,6 @@ paths:
                       "Компании не было в избранном"
         '401':
           $ref: '#/components/responses/AuthenticationError'
-        '403':
-          description: Пользователь неактивен
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  detail:
-                    type: string
-                    example:
-                      "User is inactive"
 components:
   schemas:
     User:

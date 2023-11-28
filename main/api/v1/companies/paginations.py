@@ -19,3 +19,31 @@ class CustomPagination(PageNumberPagination):
                 "results": data,
             }
         )
+
+    def get_paginated_response_schema(self, schema):
+        return {
+            "type": "object",
+            "properties": {
+                "total_pages": {
+                    "type": "integer",
+                    "example": 10,
+                },
+                "next_page": {
+                    "type": "string",
+                    "nullable": True,
+                    "format": "uri",
+                    "example": "http://api.example.org/accounts/?{page_query_param}=4".format(
+                        page_query_param=self.page_query_param
+                    ),
+                },
+                "previous_page": {
+                    "type": "string",
+                    "nullable": True,
+                    "format": "uri",
+                    "example": "http://api.example.org/accounts/?{page_query_param}=2".format(
+                        page_query_param=self.page_query_param
+                    ),
+                },
+                "results": schema,
+            },
+        }

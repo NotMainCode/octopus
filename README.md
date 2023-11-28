@@ -72,9 +72,13 @@ DB_PORT=<db port>
 DEBUG=<boolean>
 DJANGO_SECRET_KEY=<secret key>
 ALLOWED_HOSTS=<ip address> <domain name>
+PASSWORD_RESET_TIMEOUT=<seconds> # confirmation link lifetime
 
 ACCESS_TOKEN_LIFETIME=<seconds>
 REFRESH_TOKEN_LIFETIME=<seconds>
+
+EMAIL_HOST_USER = <email address>
+EMAIL_HOST_PASSWORD = <email password>
 ```
 7. Выполнить миграции:
 ```

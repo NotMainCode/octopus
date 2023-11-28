@@ -95,7 +95,7 @@ class Company(models.Model):
         return self.name
 
 
-class FavoritesList(models.Model):
+class Favorite(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
