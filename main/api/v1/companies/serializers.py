@@ -65,7 +65,7 @@ class CompanySerializer(serializers.ModelSerializer):
             "is_favorited",
         )
 
-    def get_favorited(self, obj):
+    def get_favorited(self, obj) -> bool:
         request = self.context.get("request")
         return (
             request.user.is_authenticated
@@ -84,7 +84,7 @@ class CompanyDetailSerializer(serializers.ModelSerializer):
     industries = IndustrySerializer(many=True)
     services = CustomServiceSerializer(many=True)
     is_favorited = serializers.SerializerMethodField(method_name="get_favorited")
-    phones = PhoneSerializer(many=True)
+    phones = (PhoneSerializer(many=True))
 
     class Meta:
         model = Company
@@ -105,7 +105,7 @@ class CompanyDetailSerializer(serializers.ModelSerializer):
             "is_favorited",
         )
 
-    def get_favorited(self, obj):
+    def get_favorited(self, obj) -> bool:
         request = self.context.get("request")
         return (
             request.user.is_authenticated

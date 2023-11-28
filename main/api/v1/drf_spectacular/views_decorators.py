@@ -10,6 +10,10 @@ from drf_spectacular.utils import (
 from rest_framework import status
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 
+from api.v1.companies.serializers import CompanyDetailSerializer, CompanySerializer
+from api.v1.drf_spectacular.serializers.company.examples import (
+    Response200CompaniesDetailExample,
+)
 from api.v1.drf_spectacular.serializers.info.serializers import (
     RequestParameterRequiredResponse400Serializer,
     SearchServicesCompaniesResponse200Serializer,
@@ -86,9 +90,31 @@ VIEWS_DECORATORS = {
             },
         ),
     ),
+    "CompanyViewSet": extend_schema_view(
+        list=extend_schema(
+            tags=("companies",),
+            responses={
+                status.HTTP_200_OK: CompanySerializer,
+                status.HTTP_400_BAD_REQUEST: Response400Serializer,
+                status.HTTP_404_NOT_FOUND: Response404Serializer,
+            },
+        ),
+        retrieve=extend_schema(
+            tags=("companies",),
+            responses={
+                status.HTTP_200_OK: CompanyDetailSerializer,
+                status.HTTP_400_BAD_REQUEST: Response400Serializer,
+                status.HTTP_404_NOT_FOUND: Response404Serializer,
+            },
+            examples=[
+                Response200CompaniesDetailExample,
+            ],
+        ),
+    ),
     "FavoriteAPIView": extend_schema_view(
         post=extend_schema(
             tags=("favorite",),
+            request=None,
             responses={
                 status.HTTP_201_CREATED: OpenApiResponse(),
                 status.HTTP_400_BAD_REQUEST: Response400Serializer,

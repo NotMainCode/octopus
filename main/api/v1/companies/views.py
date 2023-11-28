@@ -2,10 +2,11 @@
 
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import exceptions, status, viewsets
+from rest_framework import exceptions, mixins, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 
 from api.v1.companies.filters import CompanyFilterSet
 from api.v1.companies.paginations import CustomPagination
@@ -16,7 +17,8 @@ from api.v1.drf_spectacular.custom_decorators import (
 from companies.models import Company, Favorite
 
 
-class CompanyViewSet(viewsets.ModelViewSet):
+@activate_drf_spectacular_view_decorator
+class CompanyViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericViewSet):
     """URL requests handler to 'Company' resource endpoints."""
 
     queryset = Company.objects.all()
@@ -34,7 +36,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
 
 @activate_drf_spectacular_view_decorator
 class FavoriteAPIView(APIView):
-    """URL requests handler to 'FavoritesList' resource endpoints."""
+    """URL requests handler to 'Favorite' resource endpoints."""
 
     def post(self, request, **kwargs):
         user = request.user
