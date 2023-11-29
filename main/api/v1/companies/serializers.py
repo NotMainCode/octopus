@@ -1,15 +1,8 @@
 """Serializers for the 'companies' endpoints of 'Api' application v1."""
+
 from rest_framework import serializers
 
-from companies.models import (
-    City,
-    Company,
-    Favorite,
-    Industry,
-    Phone,
-    Service,
-    ServiceCategory,
-)
+from companies.models import City, Company, Industry, Phone, Service, ServiceCategory
 
 
 class CitySerializer(serializers.ModelSerializer):
@@ -50,7 +43,7 @@ class CompanySerializer(serializers.ModelSerializer):
     city = CitySerializer()
     services = ServiceSerializer(many=True)
     industries = IndustrySerializer(many=True)
-    is_favorited = serializers.SerializerMethodField(method_name="get_favorited")
+    is_favorited = serializers.BooleanField(read_only=True, default=False)
 
     class Meta:
         model = Company
@@ -65,13 +58,6 @@ class CompanySerializer(serializers.ModelSerializer):
             "is_favorited",
         )
 
-    def get_favorited(self, obj) -> bool:
-        request = self.context.get("request")
-        return (
-            request.user.is_authenticated
-            and Favorite.objects.filter(user=request.user, company=obj).exists()
-        )
-
 
 class PhoneSerializer(serializers.ModelSerializer):
     class Meta:
@@ -83,7 +69,7 @@ class CompanyDetailSerializer(serializers.ModelSerializer):
     city = CitySerializer()
     industries = IndustrySerializer(many=True)
     services = CustomServiceSerializer(many=True)
-    is_favorited = serializers.SerializerMethodField(method_name="get_favorited")
+    is_favorited = serializers.BooleanField(read_only=True, default=False)
     phones = PhoneSerializer(many=True)
 
     class Meta:
@@ -103,13 +89,6 @@ class CompanyDetailSerializer(serializers.ModelSerializer):
             "team_size",
             "year_founded",
             "is_favorited",
-        )
-
-    def get_favorited(self, obj) -> bool:
-        request = self.context.get("request")
-        return (
-            request.user.is_authenticated
-            and Favorite.objects.filter(user=request.user, company=obj).exists()
         )
 
     def to_representation(self, instance):
