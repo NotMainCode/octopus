@@ -1,5 +1,6 @@
 """Views for 'companies' endpoints of 'Api' application v1."""
 
+from django.db.models import Exists, OuterRef
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import exceptions, mixins, status
@@ -19,7 +20,6 @@ from companies.models import Company, Favorite
 class CompanyViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericViewSet):
     """URL requests handler to 'Company' resource endpoints."""
 
-    queryset = Company.objects.all()
     pagination_class = CustomPagination
     permission_classes = (AllowAny,)
     filter_backends = (DjangoFilterBackend,)
@@ -30,6 +30,19 @@ class CompanyViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericVi
         if self.action == "list":
             return CompanySerializer
         return CompanyDetailSerializer
+
+    def get_queryset(self):
+        user_id = self.request.user.id or None
+        subquery_favorite = Favorite.objects.filter(
+            user_id=user_id, company=OuterRef("pk")
+        )
+        return (
+            Company.objects.select_related("city")
+            .prefetch_related("services", "industries")
+            .annotate(
+                is_favorited=(Exists(subquery_favorite)),
+            )
+        )
 
 
 @get_drf_spectacular_view_decorator("companies")
