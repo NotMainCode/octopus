@@ -61,7 +61,6 @@ class CustomPagination(PageNumberPagination):
 
         return self.get_validated_page_size(page_size)
 
-
     def get_validated_page_size(self, page_size):
         try:
             if isinstance(page_size, float):
