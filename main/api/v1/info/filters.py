@@ -22,7 +22,7 @@ class InfoSearchFilter(filters.SearchFilter):
         name = request.query_params.get(self.search_param)
         if resolve(request.path_info).url_name in SEARCH_PARAM_REQUIRED_URL_NAMES:
             if name is None or len(name.strip()) < 3:
-                raise ValidationError({"query_param": SEARCH_PARAM_REQUIRED_MESSAGE})
+                raise ValidationError({"name": SEARCH_PARAM_REQUIRED_MESSAGE})
 
         if name is not None:
             name = name.strip()
