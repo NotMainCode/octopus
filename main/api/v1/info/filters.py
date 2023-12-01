@@ -24,21 +24,22 @@ class InfoSearchFilter(filters.SearchFilter):
             if name is None or len(name.strip()) < 3:
                 raise ValidationError({"name": SEARCH_PARAM_REQUIRED_MESSAGE})
 
-        if name is not None:
-            name = name.strip()
-            queryset = (
-                queryset.annotate(
-                    relevance_to_search=Case(
-                        When(name__istartswith=name, then=Value(1)),
-                        When(name__icontains=name, then=Value(2)),
-                        default=0,
-                        output_field=IntegerField(),
-                    )
-                )
-                .exclude(relevance_to_search=0)
-                .order_by("relevance_to_search", "name")
-            )
-        else:
-            queryset = queryset
+        if name is None:
+            return queryset
 
-        return queryset
+        name = name.strip()
+        if not name:
+            return []
+
+        return (
+            queryset.annotate(
+                relevance_to_search=Case(
+                    When(name__istartswith=name, then=Value(1)),
+                    When(name__icontains=name, then=Value(2)),
+                    default=0,
+                    output_field=IntegerField(),
+                )
+            )
+            .exclude(relevance_to_search=0)
+            .order_by("relevance_to_search", "name")
+        )
