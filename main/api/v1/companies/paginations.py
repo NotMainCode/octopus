@@ -52,12 +52,15 @@ class CustomPagination(PageNumberPagination):
         }
 
     def get_page_size(self, request):
-        if self.page_size_query_param is not None:
-            return self.get_validated_page_size(
-                request.query_params[self.page_size_query_param]
-            )
+        if self.page_size_query_param is None:
+            return self.page_size
 
-        return self.page_size
+        page_size = request.query_params.get(self.page_size_query_param)
+        if page_size is None:
+            return self.page_size
+
+        return self.get_validated_page_size(page_size)
+
 
     def get_validated_page_size(self, page_size):
         try:
