@@ -1,3 +1,6 @@
+"""Pagination for the 'Api' application v1."""
+
+from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
@@ -47,3 +50,24 @@ class CustomPagination(PageNumberPagination):
                 "results": schema,
             },
         }
+
+    def get_page_size(self, request):
+        if self.page_size_query_param is not None:
+            return self.get_validated_page_size(
+                request.query_params[self.page_size_query_param]
+            )
+
+        return self.page_size
+
+    def get_validated_page_size(self, page_size):
+        try:
+            if isinstance(page_size, float):
+                raise ValueError
+            validated_page_size = int(page_size)
+        except (TypeError, ValueError):
+            raise ValidationError({"page_size": "page_size value is not an integer."})
+
+        if validated_page_size < 1:
+            raise ValidationError({"page_size": "page_size value is less than 1."})
+
+        return min(validated_page_size, self.max_page_size)

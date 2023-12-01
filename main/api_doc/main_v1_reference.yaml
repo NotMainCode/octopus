@@ -503,16 +503,18 @@ paths:
                           name:
                             type: string
         '400':
-          description: Недопустимый параметр запроса
+          description: Некорректное значение параметра запроса
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  query_param:
-                    type: string
+                  request_param_name:
+                    type: array
+                    items:
+                      type: string
                     example:
-                      "The 'name' query parameter must contain at least three characters."
+                      - <query_param_error>
   /api/v1/companies/:
     get:
       summary: Список компаний с краткой информацией
