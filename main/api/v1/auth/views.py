@@ -1,4 +1,5 @@
 """Views for 'auth' endpoints of 'Api' application v1."""
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
@@ -19,6 +20,7 @@ from api.v1.auth.serializers import (
     UserSigninSerializer,
     UserSignupSerializer,
 )
+from api.v1.drf_spectacular.custom_decorators import get_drf_spectacular_view_decorator
 
 User = get_user_model()
 
@@ -32,6 +34,19 @@ class BaseView:
         "reset_password": "password change",
         "re_signup_confirm": "resending registration confirmation",
     }
+
+    def get_serializer_class(self, action):
+        if action == "signup":
+            return UserSignupSerializer
+        if action == "signup_confirm":
+            return TokenUIDSerializer
+        if action == "signin":
+            return UserSigninSerializer
+        if action == "reset_password":
+            return UserResetPasswordSerializer
+        if action == "re_signup_confirm":
+            return UserReSignupConfirmSerializer
+        return UserResetPasswordConfirmSerializer
 
     def _generate_url(self, action, user, request):
         uid = force_str(urlsafe_base64_encode(force_bytes(user.id)))
@@ -54,20 +69,8 @@ class BaseView:
         mail["message"] = url
         return mail
 
-    def get_serializer_class(self, action):
-        if action == "signup":
-            return UserSignupSerializer
-        if action == "signup_confirm":
-            return TokenUIDSerializer
-        if action == "signin":
-            return UserSigninSerializer
-        if action == "reset_password":
-            return UserResetPasswordSerializer
-        if action == "re_signup_confirm":
-            return UserReSignupConfirmSerializer
-        return UserResetPasswordConfirmSerializer
 
-
+@get_drf_spectacular_view_decorator("auth")
 class UserSignupView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -82,6 +85,7 @@ class UserSignupView(BaseView, views.APIView):
         )
 
 
+@get_drf_spectacular_view_decorator("auth")
 class UserSignupConfirmView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -97,15 +101,13 @@ class UserSignupConfirmView(BaseView, views.APIView):
         )
 
 
+@get_drf_spectacular_view_decorator("auth")
 class UserSigninView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
         serializer = self.get_serializer_class(action)(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.user
-        confirm_url = self._generate_url(action, user, request)
-        mail = self._generate_mail(action, confirm_url)
-        user.send_mail(user, mail)
         token = RefreshToken.for_user(user)
         return Response(
             {"access": str(token.access_token), "refresh": str(token)},
@@ -113,6 +115,7 @@ class UserSigninView(BaseView, views.APIView):
         )
 
 
+@get_drf_spectacular_view_decorator("auth")
 class UserResetPasswordView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -127,6 +130,7 @@ class UserResetPasswordView(BaseView, views.APIView):
         )
 
 
+@get_drf_spectacular_view_decorator("auth")
 class UserResetPasswordConfirmView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
@@ -142,6 +146,7 @@ class UserResetPasswordConfirmView(BaseView, views.APIView):
         )
 
 
+@get_drf_spectacular_view_decorator("auth")
 class UserReSignupConfirmView(BaseView, views.APIView):
     def post(self, request):
         action = resolve(request.path_info).url_name
