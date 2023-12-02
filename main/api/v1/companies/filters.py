@@ -1,7 +1,7 @@
 from django.db.models import Count
 from django_filters import rest_framework as filters
 
-from companies.models import City, Company, Service
+from companies.models import City, Company, Industry, Service
 
 
 class CompanyFilterSet(filters.FilterSet):
@@ -11,13 +11,12 @@ class CompanyFilterSet(filters.FilterSet):
     city = filters.ModelMultipleChoiceFilter(
         field_name="city", to_field_name="id", queryset=City.objects.all()
     )
+    industry = filters.ModelMultipleChoiceFilter(
+        field_name="industries", to_field_name="id", queryset=Industry.objects.all()
+    )
     is_favorited = filters.BooleanFilter(
         field_name="is_favorited", method="get_is_favorited_filter"
     )
-
-    class Meta:
-        model = Company
-        fields = ("city", "service", "is_favorited")
 
     def get_is_favorited_filter(self, queryset, name, value):
         user = self.request.user
@@ -25,9 +24,14 @@ class CompanyFilterSet(filters.FilterSet):
             return queryset.filter(in_favorite__user=user)
         return queryset
 
-    def filter_queryset(self, queryset):
-        queryset = super().filter_queryset(queryset)
-        queryset = queryset.annotate(num_matches_services=Count("services")).order_by(
-            "-num_matches_services"
-        )
+    @property
+    def qs(self):
+        queryset = super().qs
+        queryset = queryset.annotate(num_matches=Count("services"))
+        queryset = queryset.annotate(num_matches=Count("industries"))
+        queryset = queryset.order_by("-num_matches")
         return queryset
+
+    class Meta:
+        model = Company
+        fields = ("city", "service", "industry", "is_favorited")

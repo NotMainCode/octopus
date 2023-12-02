@@ -11,23 +11,25 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from api.v1.drf_spectacular.custom_decorators import get_drf_spectacular_view_decorator
+from api.v1.drf_spectacular.custom_decorators import (
+    activate_drf_spectacular_view_decorator,
+)
 from api.v1.info.filters import InfoSearchFilter
 from api.v1.info.serializers import (
-    InfoCitySerializer,
-    InfoCompanyBriefSerializer,
-    InfoIndustrySerializer,
-    InfoServiceBriefSerializer,
-    InfoServiceCategorySerializer,
-    InfoServiceSerializer,
+    CitySerializer,
+    CompanyBriefSerializer,
+    IndustrySerializer,
+    ServiceBriefSerializer,
+    ServiceCategorySerializer,
+    ServiceSerializer,
 )
 from companies.models import City, Company, Industry, Service, ServiceCategory
 
 INFO_API_VIEW_SERIALIZERS = {
-    "industries_list": InfoIndustrySerializer,
-    "service_categories_list": InfoServiceCategorySerializer,
-    "services_list": InfoServiceSerializer,
-    "cities_list": InfoCitySerializer,
+    "industries_list": IndustrySerializer,
+    "service_categories_list": ServiceCategorySerializer,
+    "services_list": ServiceSerializer,
+    "cities_list": CitySerializer,
 }
 
 INFO_API_VIEW_QUERYSET = {
@@ -38,7 +40,7 @@ INFO_API_VIEW_QUERYSET = {
 }
 
 
-@get_drf_spectacular_view_decorator("info")
+@activate_drf_spectacular_view_decorator
 class InfoAPIView(ListAPIView):
     """URL requests handler for Info endpoints except search_services_companies."""
 
@@ -53,7 +55,7 @@ class InfoAPIView(ListAPIView):
         return INFO_API_VIEW_SERIALIZERS[resolve(self.request.path_info).url_name]
 
 
-@get_drf_spectacular_view_decorator("info")
+@activate_drf_spectacular_view_decorator
 @api_view()
 @authentication_classes(())
 @permission_classes((AllowAny,))
@@ -63,7 +65,7 @@ def search_services_companies(request):
     filter_companies = InfoSearchFilter().filter_queryset(
         request, companies, search_services_companies
     )
-    companies_serializer = InfoCompanyBriefSerializer(filter_companies, many=True)
+    companies_serializer = CompanyBriefSerializer(filter_companies, many=True)
 
     services = (
         Service.objects.filter(companies__isnull=False).distinct().values("id", "name")
@@ -71,7 +73,7 @@ def search_services_companies(request):
     filter_services = InfoSearchFilter().filter_queryset(
         request, services, search_services_companies
     )
-    services_serializer = InfoServiceBriefSerializer(filter_services, many=True)
+    services_serializer = ServiceBriefSerializer(filter_services, many=True)
 
     return Response(
         data={

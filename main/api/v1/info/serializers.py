@@ -5,7 +5,7 @@ from rest_framework import serializers
 from companies.models import City, Company, Industry, Service, ServiceCategory
 
 
-class InfoIndustrySerializer(serializers.ModelSerializer):
+class IndustrySerializer(serializers.ModelSerializer):
     """Serializer for working with Industry resource."""
 
     class Meta:
@@ -13,7 +13,7 @@ class InfoIndustrySerializer(serializers.ModelSerializer):
         fields = ("id", "name")
 
 
-class InfoServiceBriefSerializer(serializers.ModelSerializer):
+class ServiceBriefSerializer(serializers.ModelSerializer):
     """Brief serializer for working with Service resource."""
 
     class Meta:
@@ -21,7 +21,7 @@ class InfoServiceBriefSerializer(serializers.ModelSerializer):
         fields = ("id", "name")
 
 
-class InfoServiceCategoryBriefSerializer(serializers.ModelSerializer):
+class ServiceCategoryBriefSerializer(serializers.ModelSerializer):
     """Brief serializer for working with ServiceCategory resource."""
 
     class Meta:
@@ -29,27 +29,27 @@ class InfoServiceCategoryBriefSerializer(serializers.ModelSerializer):
         fields = ("id", "name")
 
 
-class InfoServiceCategorySerializer(InfoServiceCategoryBriefSerializer):
+class ServiceCategorySerializer(ServiceCategoryBriefSerializer):
     """Serializer for working with ServiceCategory resource."""
 
-    services = InfoServiceBriefSerializer(many=True)
+    services = ServiceBriefSerializer(many=True)
 
     class Meta:
         model = ServiceCategory
-        fields = (*InfoServiceCategoryBriefSerializer.Meta.fields, "services")
+        fields = (*ServiceCategoryBriefSerializer.Meta.fields, "services")
 
 
-class InfoServiceSerializer(InfoServiceCategoryBriefSerializer):
+class ServiceSerializer(ServiceCategoryBriefSerializer):
     """Serializer for working with Service resource."""
 
-    category = InfoServiceCategoryBriefSerializer()
+    category = ServiceCategoryBriefSerializer()
 
     class Meta:
         model = Service
-        fields = (*InfoServiceCategoryBriefSerializer.Meta.fields, "category")
+        fields = (*ServiceCategoryBriefSerializer.Meta.fields, "category")
 
 
-class InfoCitySerializer(serializers.ModelSerializer):
+class CitySerializer(serializers.ModelSerializer):
     """Serializer for working with City resource."""
 
     class Meta:
@@ -57,7 +57,7 @@ class InfoCitySerializer(serializers.ModelSerializer):
         fields = ("id", "name")
 
 
-class InfoCompanyBriefSerializer(serializers.ModelSerializer):
+class CompanyBriefSerializer(serializers.ModelSerializer):
     """Brief serializer for working with Company resource."""
 
     class Meta:

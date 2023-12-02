@@ -1,73 +1,65 @@
 """Views for 'companies' endpoints of 'Api' application v1."""
 
-from django.db.models import Exists, OuterRef
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import exceptions, mixins, status
-from rest_framework.permissions import AllowAny
+from rest_framework import exceptions, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.viewsets import GenericViewSet
 
 from api.v1.companies.filters import CompanyFilterSet
 from api.v1.companies.paginations import CustomPagination
 from api.v1.companies.serializers import CompanyDetailSerializer, CompanySerializer
-from api.v1.drf_spectacular.custom_decorators import get_drf_spectacular_view_decorator
-from companies.models import Company, Favorite
+from companies.models import Company, FavoritesList
 
 
-@get_drf_spectacular_view_decorator("companies")
-class CompanyViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericViewSet):
-    """URL requests handler to 'Company' resource endpoints."""
-
+class CompanyViewSet(viewsets.ModelViewSet):
+    queryset = Company.objects.all()
     pagination_class = CustomPagination
     permission_classes = (AllowAny,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = CompanyFilterSet
-    filterset_fields = ("city", "service", "is_favorited")
+
+    filterset_fields = {
+        "city": ["exact"],
+        "industry": ["exact"],
+        "service": ["exact"],
+        "is_favorited": ["exact"],
+    }
 
     def get_serializer_class(self):
         if self.action == "list":
             return CompanySerializer
         return CompanyDetailSerializer
 
-    def get_queryset(self):
-        user_id = self.request.user.id or None
-        subquery_favorite = Favorite.objects.filter(
-            user_id=user_id, company=OuterRef("pk")
-        )
-        return (
-            Company.objects.select_related("city")
-            .prefetch_related("services", "industries")
-            .annotate(
-                is_favorited=(Exists(subquery_favorite)),
-            )
-        )
-
-
-@get_drf_spectacular_view_decorator("companies")
-class FavoriteAPIView(APIView):
-    """URL requests handler to 'Favorite' resource endpoints."""
-
-    def post(self, request, **kwargs):
+    @action(
+        detail=True, methods=["post", "delete"], permission_classes=(IsAuthenticated,)
+    )
+    def favorite(self, request, **kwargs):
         user = request.user
-        company = get_object_or_404(Company, id=kwargs["id"])
-        if Favorite.objects.filter(user=user, company=company).exists():
-            raise exceptions.ValidationError(
-                {"detail": "Компания добавлена в избранное ранее."}
+        company = get_object_or_404(Company, id=kwargs["pk"])
+        if request.method == "POST":
+            if FavoritesList.objects.filter(user=user, company=company).exists():
+                raise exceptions.ValidationError(
+                    "Компания добавлена в избранное ранее."
+                )
+            FavoritesList.objects.create(user=user, company=company)
+            CompanySerializer(
+                company,
+                context={"request": request},
             )
-
-        Favorite.objects.create(user=user, company=company)
-        return Response(status=status.HTTP_201_CREATED)
-
-    def delete(self, request, **kwargs):
-        user = request.user
-        company = get_object_or_404(Company, id=kwargs["id"])
-        favorite = Favorite.objects.filter(user=user, company=company).first()
-        if not favorite:
-            raise exceptions.ValidationError(
-                {"detail": "Компании не было в избранном."}
+            return Response(status=status.HTTP_201_CREATED)
+        if request.method == "DELETE":
+            favoriteslist = FavoritesList.objects.filter(
+                user=user, company=company
+            ).first()
+            if not favoriteslist:
+                return Response(
+                    {"detail": "Компании не было в избранном"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            favoriteslist.delete()
+            return Response(
+                {"detail": "Компания успешно удалена из избранного."},
+                status=status.HTTP_204_NO_CONTENT,
             )
-
-        favorite.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
