@@ -22,23 +22,24 @@ class InfoSearchFilter(filters.SearchFilter):
         name = request.query_params.get(self.search_param)
         if resolve(request.path_info).url_name in SEARCH_PARAM_REQUIRED_URL_NAMES:
             if name is None or len(name.strip()) < 3:
-                raise ValidationError({"query_param": SEARCH_PARAM_REQUIRED_MESSAGE})
+                raise ValidationError({"name": SEARCH_PARAM_REQUIRED_MESSAGE})
 
-        if name is not None:
-            name = name.strip()
-            queryset = (
-                queryset.annotate(
-                    relevance_to_search=Case(
-                        When(name__istartswith=name, then=Value(1)),
-                        When(name__icontains=name, then=Value(2)),
-                        default=0,
-                        output_field=IntegerField(),
-                    )
+        if name is None:
+            return queryset
+
+        name = name.strip()
+        if not name:
+            return []
+
+        return (
+            queryset.annotate(
+                relevance_to_search=Case(
+                    When(name__istartswith=name, then=Value(1)),
+                    When(name__icontains=name, then=Value(2)),
+                    default=0,
+                    output_field=IntegerField(),
                 )
-                .exclude(relevance_to_search=0)
-                .order_by("relevance_to_search", "name")
             )
-        else:
-            queryset = queryset
-
-        return queryset
+            .exclude(relevance_to_search=0)
+            .order_by("relevance_to_search", "name")
+        )

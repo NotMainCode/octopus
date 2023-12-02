@@ -25,11 +25,11 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "companies",
+                    "company",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="in_favorite",
-                        to="companies.companies",
+                        to="companies.company",
                         verbose_name="Компания",
                     ),
                 ),
@@ -46,13 +46,13 @@ class Migration(migrations.Migration):
             options={
                 "verbose_name": "Избранное",
                 "verbose_name_plural": "Избранное",
-                "ordering": ("companies",),
+                "ordering": ("company",),
             },
         ),
         migrations.AddConstraint(
             model_name="favoriteslist",
             constraint=models.UniqueConstraint(
-                fields=("user", "companies"), name="unique_favorite"
+                fields=("user", "company"), name="unique_favorite"
             ),
         ),
     ]
