@@ -577,6 +577,8 @@ paths:
                     type: string
                     format: url
                     example: https://api.example.org/accounts/?page=3
+                  total_objects:
+                    type: integer
                   results:
                     type: array
                     items:
