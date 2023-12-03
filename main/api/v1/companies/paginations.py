@@ -1,4 +1,5 @@
 """Pagination for the 'Api' application v1."""
+from collections import OrderedDict
 
 from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination
@@ -11,16 +12,16 @@ class CustomPagination(PageNumberPagination):
     max_page_size = 100
 
     def get_paginated_response(self, data):
-        next_page = self.get_next_link()
-        previous_page = self.get_previous_link()
-        total_pages = self.page.paginator.num_pages
         return Response(
-            {
-                "total_pages": total_pages,
-                "next_page": next_page,
-                "previous_page": previous_page,
-                "results": data,
-            }
+            OrderedDict(
+                [
+                    ("total_pages", self.page.paginator.num_pages),
+                    ("next_page", self.get_next_link()),
+                    ("previous_page", self.get_previous_link()),
+                    ("total_objects", self.page.paginator.count),
+                    ("results", data),
+                ]
+            )
         )
 
     def get_paginated_response_schema(self, schema):
@@ -46,6 +47,10 @@ class CustomPagination(PageNumberPagination):
                     "example": "http://api.example.org/accounts/?{page_query_param}=2".format(
                         page_query_param=self.page_query_param
                     ),
+                },
+                "total_objects": {
+                    "type": "integer",
+                    "example": 100,
                 },
                 "results": schema,
             },
