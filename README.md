@@ -105,3 +105,13 @@ python manage.py runserver 8008
 ```
 
 ## Команда проекта
+
+[NotMainCode](https://github.com/NotMainCode)
+
+[Stryukov](https://github.com/Stryukov)
+
+[zemtsov-dm](https://github.com/zemtsov-dm)
+
+[aleksandrkomyagin](https://github.com/aleksandrkomyagin)
+
+[olees-orlenko](https://github.com/olees-orlenko)

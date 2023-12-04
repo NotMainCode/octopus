@@ -1,15 +1,15 @@
-"""Views decorators for use in documentation."""
+"""Views decorators of Info endpoints for use in documentation."""
 
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
 from rest_framework import status
 
-from api.v1.drf_spectacular.serializers.info.serializers import (
-    RequestParameterRequiredResponse400Serializer,
-    SearchServicesCompaniesResponse200Serializer,
+from api.v1.drf_spectacular.info.serializers import (
+    Response200SearchServicesCompaniesSerializer,
+    Response400RequestParameterRequiredSerializer,
 )
 
-VIEWS_DECORATORS = {
+INFO_VIEW_DECORATORS = {
     "InfoAPIView": extend_schema_view(
         get=extend_schema(
             tags=("info",),
@@ -28,14 +28,14 @@ VIEWS_DECORATORS = {
                 location=OpenApiParameter.QUERY,
                 required=True,
                 description=(
-                    "Search by company and service names (partial match). "
+                    "Search by companies and service names (partial match). "
                     "At least three characters are required"
                 ),
             ),
         ],
         responses={
-            status.HTTP_200_OK: SearchServicesCompaniesResponse200Serializer,
-            status.HTTP_400_BAD_REQUEST: RequestParameterRequiredResponse400Serializer,
+            status.HTTP_200_OK: Response200SearchServicesCompaniesSerializer,
+            status.HTTP_400_BAD_REQUEST: Response400RequestParameterRequiredSerializer,
         },
     ),
 }

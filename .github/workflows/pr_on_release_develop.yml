@@ -3,6 +3,7 @@ name: PR to release or develop branch
 on:
   pull_request:
     branches:
+      - 'develop'
       - 'release/*'
     types:
       - closed  

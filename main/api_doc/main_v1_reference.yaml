@@ -102,7 +102,7 @@ paths:
         '400':
           $ref: '#/components/responses/ValidationError'
         '403':
-          description: Пользователь неактивен
+          description: Регистрация подтверждена ранее
           content:
             application/json:
               schema:
@@ -338,17 +338,10 @@ paths:
                     type: string
                   refresh:
                     type: string
+        '400':
+          $ref: '#/components/responses/ValidationError'
         '401':
-          description: Токен некорректен или срок его действия истек.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  detail:
-                    description: Описание ошибки
-                    example: Токен некорректен или срок его действия истек.
-                    type: string
+          $ref: '#/components/responses/AuthenticationError'
   /api/v1/info/industries/:
     get:
       summary: Список объектов Industry
@@ -510,16 +503,18 @@ paths:
                           name:
                             type: string
         '400':
-          description: Недопустимый параметр запроса
+          description: Некорректное значение параметра запроса
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  query_param:
-                    type: string
+                  request_param_name:
+                    type: array
+                    items:
+                      type: string
                     example:
-                      "The 'name' query parameter must contain at least three characters."
+                      - <query_param_error>
   /api/v1/companies/:
     get:
       summary: Список компаний с краткой информацией
@@ -555,14 +550,6 @@ paths:
             Множественный фильтр по id услуг (в ответе компании как минимум с одним совпадением id услуги)
           schema:
             type: integer
-        - name: industry
-          required: false
-          in: query
-          description: >-
-            Уникальный идентификатор индустрии <br>
-            Множественный фильтр по id индустрии (в ответе компании как минимум с одним совпадением id индустрии)
-          schema:
-            type: integer
         - name: is_favorited
           required: false
           in: query
@@ -590,6 +577,8 @@ paths:
                     type: string
                     format: url
                     example: https://api.example.org/accounts/?page=3
+                  total_objects:
+                    type: integer
                   results:
                     type: array
                     items:
@@ -623,6 +612,31 @@ paths:
                         is_favorited:
                           type: boolean
                           description: 'Находится ли в избранном'
+        '400':
+          description: Некорректное значение параметра запроса
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_param_name:
+                    type: array
+                    items:
+                      type: string
+                    example:
+                      - <query_param_error>
+        '404':
+          description: Некорректное значение параметра запроса page (несуществущий номер страницы или значение не является числом)
+          content:
+            application/json:
+              schema:
+                description: Объект не найден
+                type: object
+                properties:
+                  detail:
+                    description: Описание ошибки
+                    example: Invalid page
+                    type: string
   /api/v1/companies/{id}/:
     get:
       summary: Подробная информация о компании
@@ -633,14 +647,6 @@ paths:
           name: id
           description: Уникальный идентификатор компании
           required: true
-          schema:
-            type: integer
-        - name: city
-          in: query
-          description: >-
-            Уникальный идентификатор города <br>
-            Поиск компании с указанным id в городе с указанным id
-          required: false
           schema:
             type: integer
       responses:
@@ -742,6 +748,8 @@ paths:
                       "Компания добавлена в избранное ранее"
         '401':
           $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
     delete:
       summary: Удалить компанию из избранного
       description: Доступно авторизованным по токену
@@ -772,6 +780,8 @@ paths:
                       "Компании не было в избранном"
         '401':
           $ref: '#/components/responses/AuthenticationError'
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   schemas:
     User:
@@ -810,12 +820,12 @@ components:
           items:
             type: string
     AuthenticationError:
-      description: Пользователь не авторизован
+      description: Ошибки аутентификации
       type: object
       properties:
         detail:
           description: Описание ошибки
-          example: Учетные данные не были предоставлены.
+          example: message
           type: string
     NotFound:
       description: Объект не найден
@@ -833,7 +843,7 @@ components:
           schema:
             $ref: '#/components/schemas/ValidationError'
     AuthenticationError:
-      description: Пользователь не авторизован
+      description: Ошибки аутентификации
       content:
         application/json:
           schema:

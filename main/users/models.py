@@ -3,6 +3,7 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.mail import send_mail
+from django.core.validators import MinLengthValidator
 from django.db import models
 
 from users.model_fields import CustomEmailField
@@ -16,13 +17,19 @@ class User(AbstractUser):
         verbose_name="Имя",
         max_length=settings.MAX_LEN_FULL_NAME_USER_MODEL,
         blank=False,
-        validators=[validate_first_name_and_last_name_fields],
+        validators=(
+            validate_first_name_and_last_name_fields,
+            MinLengthValidator(settings.MIN_LEN_FULL_NAME_USER_MODEL),
+        ),
     )
     last_name = models.CharField(
         verbose_name="Фамилия",
         max_length=settings.MAX_LEN_FULL_NAME_USER_MODEL,
         blank=False,
-        validators=[validate_first_name_and_last_name_fields],
+        validators=(
+            validate_first_name_and_last_name_fields,
+            MinLengthValidator(settings.MIN_LEN_FULL_NAME_USER_MODEL),
+        ),
     )
     email = CustomEmailField(
         verbose_name="Почта",
