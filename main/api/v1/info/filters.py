@@ -9,7 +9,7 @@ from rest_framework.exceptions import ValidationError
 SEARCH_PARAM_REQUIRED_URL_NAMES = {"search_services_companies_list"}
 
 SEARCH_PARAM_REQUIRED_MESSAGE = (
-    "The 'name' query parameter must contain at least three characters."
+    "The 'name' query parameter must contain at least two characters."
 )
 
 
@@ -21,7 +21,7 @@ class InfoSearchFilter(filters.SearchFilter):
     def filter_queryset(self, request, queryset, view):
         name = request.query_params.get(self.search_param)
         if resolve(request.path_info).url_name in SEARCH_PARAM_REQUIRED_URL_NAMES:
-            if name is None or len(name.strip()) < 3:
+            if name is None or len(name.strip()) < 2:
                 raise ValidationError({"name": SEARCH_PARAM_REQUIRED_MESSAGE})
 
         if name is None:
