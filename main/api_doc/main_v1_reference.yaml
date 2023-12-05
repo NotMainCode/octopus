@@ -469,7 +469,7 @@ paths:
         - in: query
           required: true
           name: name
-          description: Поиск по именам компании и сервиса (частичное совпадение). Минимум три символа
+          description: Поиск по именам компании и сервиса (частичное совпадение). Минимум два символа
           schema:
             type: string
       tags:

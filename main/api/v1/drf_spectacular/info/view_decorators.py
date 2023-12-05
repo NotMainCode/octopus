@@ -29,7 +29,7 @@ INFO_VIEW_DECORATORS = {
                 required=True,
                 description=(
                     "Search by companies and service names (partial match). "
-                    "At least three characters are required"
+                    "At least two characters are required"
                 ),
             ),
         ],
