@@ -8,7 +8,10 @@ from django.db import models
 
 from users.model_fields import CustomEmailField
 from users.user_manager import CustomUserManager
-from users.validators import validate_first_name_and_last_name_fields
+from users.validators import (
+    UniqueStringInLowercaseValidator,
+    validate_first_name_and_last_name_fields,
+)
 
 
 class User(AbstractUser):
@@ -36,6 +39,13 @@ class User(AbstractUser):
         max_length=settings.MAX_LEN_EMAIL_USER_MODEL,
         blank=False,
         unique=True,
+        validators=(
+            (
+                UniqueStringInLowercaseValidator(
+                    app_label="users", model_name="User", field_name="email"
+                )
+            ),
+        ),
     )
     password = models.CharField(
         verbose_name="Пароль",
@@ -53,6 +63,17 @@ class User(AbstractUser):
     EMAIL_FIELD = "email"
     REQUIRED_FIELDS = []
 
+    class Meta:
+        verbose_name = "пользователь"
+        verbose_name_plural = "пользователи"
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+    def save(self, *args, **kwargs):
+        self.email = self.email.lower()
+        super().save(*args, **kwargs)
+
     @staticmethod
     def send_mail(self, mail):
         subject = mail["subject"]
@@ -65,6 +86,3 @@ class User(AbstractUser):
             ],
             from_email=settings.EMAIL_HOST_USER,
         )
-
-    def __str__(self):
-        return f"{self.first_name} {self.last_name}"
