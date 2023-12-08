@@ -73,6 +73,9 @@ class BaseView:
 @get_drf_spectacular_view_decorator("auth")
 class UserSignupView(BaseView, views.APIView):
     def post(self, request):
+        email = request.data.get("email")
+        if email is not None:
+            request.data["email"] = User.objects.normalize_email(email)
         action = resolve(request.path_info).url_name
         serializer = self.get_serializer_class(action)(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -104,6 +107,9 @@ class UserSignupConfirmView(BaseView, views.APIView):
 @get_drf_spectacular_view_decorator("auth")
 class UserSigninView(BaseView, views.APIView):
     def post(self, request):
+        email = request.data.get("email")
+        if email is not None:
+            request.data["email"] = User.objects.normalize_email(email)
         action = resolve(request.path_info).url_name
         serializer = self.get_serializer_class(action)(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -118,6 +124,9 @@ class UserSigninView(BaseView, views.APIView):
 @get_drf_spectacular_view_decorator("auth")
 class UserResetPasswordView(BaseView, views.APIView):
     def post(self, request):
+        email = request.data.get("email")
+        if email is not None:
+            request.data["email"] = User.objects.normalize_email(email)
         action = resolve(request.path_info).url_name
         serializer = self.get_serializer_class(action)(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -149,6 +158,9 @@ class UserResetPasswordConfirmView(BaseView, views.APIView):
 @get_drf_spectacular_view_decorator("auth")
 class UserReSignupConfirmView(BaseView, views.APIView):
     def post(self, request):
+        email = request.data.get("email")
+        if email is not None:
+            request.data["email"] = User.objects.normalize_email(email)
         action = resolve(request.path_info).url_name
         serializer = self.get_serializer_class(action)(data=request.data)
         serializer.is_valid(raise_exception=True)
