@@ -25,7 +25,4 @@ class CustomUserManager(BaseUserManager):
     def normalize_email(cls, email):
         """Normalize the email address by lowercase."""
         email = email or ""
-        if "@" not in email:
-            return email
-
         return email.lower()
