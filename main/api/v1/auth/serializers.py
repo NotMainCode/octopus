@@ -7,7 +7,7 @@ from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 
-from users.validators import CustomPasswordValidator
+from users.validators import CustomEmailValidator, CustomPasswordValidator
 
 User = get_user_model()
 validator = CustomPasswordValidator()
@@ -52,6 +52,13 @@ class UserSignupSerializer(serializers.ModelSerializer):
             "password",
             "re_password",
         )
+        extra_kwargs = {"email": {"validators": (CustomEmailValidator(),)}}
+
+    def validate_email(self, value):
+        normalized_email = User.objects.normalize_email(value)
+        if User.objects.filter(email=normalized_email).exists():
+            raise serializers.ValidationError("User with this email already exists.")
+        return normalized_email
 
     def validate(self, attrs):
         if attrs["password"] != attrs["re_password"]:
@@ -74,8 +81,9 @@ class UserSigninSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, label="Пароль")
 
     def validate(self, attrs):
+        normalized_email = User.objects.normalize_email(attrs["email"])
         try:
-            self.user = User.objects.get(email=attrs["email"])
+            self.user = User.objects.get(email=normalized_email)
         except User.DoesNotExist:
             raise serializers.ValidationError(
                 {"email": "Неверный email или пользователь не существует."}
@@ -95,8 +103,9 @@ class UserResetPasswordSerializer(serializers.Serializer):
     email = serializers.CharField()
 
     def validate(self, attrs):
+        normalized_email = User.objects.normalize_email(attrs["email"])
         try:
-            self.user = User.objects.get(email=attrs["email"])
+            self.user = User.objects.get(email=normalized_email)
         except User.DoesNotExist:
             raise serializers.ValidationError(
                 {"email": "Неверный email или пользователь не существует."}
@@ -127,8 +136,9 @@ class UserReSignupConfirmSerializer(serializers.Serializer):
     password = serializers.CharField()
 
     def validate(self, attrs):
+        normalized_email = User.objects.normalize_email(attrs["email"])
         try:
-            self.user = User.objects.get(email=attrs["email"])
+            self.user = User.objects.get(email=normalized_email)
         except User.DoesNotExist:
             raise serializers.ValidationError(
                 {"email": "Неверный email или пользователь не существует."}

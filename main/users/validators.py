@@ -2,7 +2,6 @@
 
 import re
 
-from django.apps import apps
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator, validate_ipv46_address
@@ -133,30 +132,4 @@ class CustomEmailValidator:
             and (self.domain_allowlist == other.domain_allowlist)
             and (self.message == other.message)
             and (self.code == other.code)
-        )
-
-
-@deconstructible
-class UniqueStringInLowercaseValidator:
-    """Validate the uniqueness of a lowercase string field."""
-
-    error_messages = {
-        "uniqueness_error": "The lowercase value of the field is not unique."
-    }
-
-    def __init__(self, app_label: str, model_name: str, field_name: str) -> None:
-        self.app_label = app_label
-        self.model_name = model_name
-        self.field_name = field_name
-
-    def __call__(self, value: str) -> None:
-        model = apps.get_model(self.app_label, self.model_name)
-        if model.objects.filter(**{self.field_name: value.lower()}).exists():
-
-            raise ValidationError(self.error_messages["uniqueness_error"])
-
-    def __eq__(self, other: object) -> bool:
-        return (
-            isinstance(other, UniqueStringInLowercaseValidator)
-            and self.error_messages == other.error_messages
         )
