@@ -82,6 +82,7 @@ EMAIL_HOST_PASSWORD = <email password>
 EMAIL_USE_SSL=<boolean>
 EMAIL_HOST=<mail server domain name>
 EMAIL_PORT=<mail port>
+FROM_EMAIL=<sender name>
 ```
 7. Выполнить миграции:
 ```
