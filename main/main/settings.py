@@ -131,11 +131,11 @@ MAX_LEN_HASH_PASSWORD_USER_MODEL: int = 128
 # EMAIL
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-EMAIL_USE_SSL = True
-EMAIL_HOST = "mail.hosting.reg.ru"
+EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "True") == "True"
+EMAIL_HOST = os.getenv("EMAIL_HOST")
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-EMAIL_PORT = 465
+EMAIL_PORT = os.getenv("EMAIL_PORT", 465)
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "https://*.octopus-it.ru").split(" ")
