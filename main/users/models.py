@@ -70,5 +70,5 @@ class User(AbstractUser):
             recipient_list=[
                 self.email,
             ],
-            from_email=settings.FROM_EMAIL,
+            from_email=settings.DEFAULT_FROM_EMAIL,
         )
