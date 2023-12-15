@@ -1,5 +1,6 @@
 """Admin site settings of the Companies app."""
 
+from django import forms
 from django.contrib import admin
 
 from companies.models import (
@@ -17,22 +18,25 @@ from companies.models import (
 class IndustryAdmin(admin.ModelAdmin):
     """Settings of Industry table on the admin site."""
 
-    list_display = ("name",)
+    list_display = ("pk", "name")
+    search_fields = ("name",)
 
 
 @admin.register(ServiceCategory)
 class ServiceCategoryAdmin(admin.ModelAdmin):
     """Settings of ServiceCategory table on the admin site."""
 
-    list_display = ("name",)
+    list_display = ("pk", "name")
+    search_fields = ("name",)
 
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
     """Settings of Service table on the admin site."""
 
-    list_display = ("name", "category")
+    list_display = ("pk", "name", "category")
     list_filter = ("category",)
+    search_fields = ("name",)
 
 
 class PhoneInline(admin.TabularInline):
@@ -46,16 +50,18 @@ class PhoneInline(admin.TabularInline):
 class CompanyAdmin(admin.ModelAdmin):
     """Settings of Company table on the admin site."""
 
-    list_display = ("name", "email", "year_founded")
+    list_display = ("pk", "name", "email", "year_founded")
     list_filter = ("industries", "services")
-    search_fields = ("name", "description", "email")
+    search_fields = ("name", "email")
     filter_horizontal = ("industries", "services")
     list_per_page = 20
-    inlines = [PhoneInline]
+    inlines = (PhoneInline,)
 
-    @admin.display(description="Избранное")
-    def is_favorited(self, obj):
-        return obj.favorite.count()
+    def get_form(self, request, obj=None, change=False, **kwargs):
+        kwargs["widgets"] = {
+            "address": forms.Textarea(attrs={"cols": "40", "rows": "5"})
+        }
+        return super().get_form(request, obj, change, **kwargs)
 
 
 @admin.register(City)
@@ -63,6 +69,7 @@ class CityAdmin(admin.ModelAdmin):
     """Settings of City table on the admin site."""
 
     list_display = ("pk", "name")
+    search_fields = ("name",)
 
 
 @admin.register(Favorite)
@@ -70,3 +77,11 @@ class FavoriteAdmin(admin.ModelAdmin):
     """Settings of Favorite table on the admin site."""
 
     list_display = ("pk", "user", "company")
+
+
+@admin.register(Phone)
+class PhoneAdmin(admin.ModelAdmin):
+    """Settings of Phone table on the admin site."""
+
+    list_display = ("pk", "company")
+    search_fields = ("number",)

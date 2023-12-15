@@ -12,10 +12,17 @@ User = get_user_model()
 class UserAdmin(DjangoUserAdmin):
     """Settings of User table on the admin site."""
 
-    list_display = ("email", "first_name", "last_name")
-    list_filter = ()
-    empty_value_display = "-пусто-"
-    search_fields = ("email", "first_name", "last_name")
+    list_display = (
+        "pk",
+        "email",
+        "first_name",
+        "last_name",
+        "is_active",
+        "is_staff",
+        "is_superuser",
+    )
+    list_editable = ("is_active", "is_staff", "is_superuser")
+    search_fields = ("email",)
     ordering = ("email",)
     fieldsets = (
         (
