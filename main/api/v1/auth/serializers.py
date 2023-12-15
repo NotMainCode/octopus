@@ -39,8 +39,8 @@ class TokenUIDSerializer(serializers.Serializer):
 
 
 class UserSignupSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, label="Пароль")
-    re_password = serializers.CharField(write_only=True, label="Повтор пароля")
+    password = serializers.CharField(write_only=True)
+    re_password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
@@ -57,7 +57,9 @@ class UserSignupSerializer(serializers.ModelSerializer):
     def validate_email(self, value):
         normalized_email = User.objects.normalize_email(value)
         if User.objects.filter(email=normalized_email).exists():
-            raise serializers.ValidationError("Пользователь с таким email уже существует.")
+            raise serializers.ValidationError(
+                "Пользователь с таким email уже существует."
+            )
         return normalized_email
 
     def validate(self, attrs):
@@ -78,7 +80,7 @@ class UserSigninSerializer(serializers.Serializer):
         self.user = None
 
     email = serializers.CharField()
-    password = serializers.CharField(write_only=True, label="Пароль")
+    password = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
         normalized_email = User.objects.normalize_email(attrs["email"])
@@ -116,8 +118,8 @@ class UserResetPasswordSerializer(serializers.Serializer):
 
 
 class UserResetPasswordConfirmSerializer(TokenUIDSerializer):
-    new_password = serializers.CharField(write_only=True, label="Пароль")
-    re_new_password = serializers.CharField(write_only=True, label="Повтор пароля")
+    new_password = serializers.CharField(write_only=True)
+    re_new_password = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
         attrs = super().validate(attrs)

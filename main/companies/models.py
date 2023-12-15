@@ -126,7 +126,7 @@ class Phone(models.Model):
         Company,
         on_delete=models.CASCADE,
         related_name="phones",
-        verbose_name = "company",
+        verbose_name="company",
     )
     number = models.CharField("number", max_length=18)
 
