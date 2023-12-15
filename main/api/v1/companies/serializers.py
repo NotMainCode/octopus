@@ -69,14 +69,6 @@ class CompanyBriefSerializer(serializers.ModelSerializer):
         )
 
 
-class PhoneBriefSerializer(serializers.ModelSerializer):
-    """Brief serializer for working with Phone resource."""
-
-    class Meta:
-        model = Phone
-        fields = ("number",)
-
-
 class CompanySerializer(serializers.ModelSerializer):
     """Serializer for working with Company resource."""
 
@@ -84,7 +76,7 @@ class CompanySerializer(serializers.ModelSerializer):
     industries = IndustrySerializer(many=True)
     services = ServiceSerializer(many=True)
     is_favorited = serializers.BooleanField(read_only=True, default=False)
-    phones = PhoneBriefSerializer(many=True)
+    phones = serializers.SerializerMethodField()
 
     class Meta:
         model = Company
@@ -105,9 +97,5 @@ class CompanySerializer(serializers.ModelSerializer):
             "is_favorited",
         )
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        phones = representation.get("phones", [])
-        phone_numbers = [phone["number"] for phone in phones]
-        representation["phones"] = phone_numbers
-        return representation
+    def get_phones(self, obj):
+        return obj.phones.values_list("number", flat=True)
