@@ -14,7 +14,7 @@ from users.validators import validate_first_name_and_last_name_fields
 class User(AbstractUser):
     username = None
     first_name = models.CharField(
-        verbose_name="Имя",
+        verbose_name="first name",
         max_length=settings.MAX_LEN_FULL_NAME_USER_MODEL,
         blank=False,
         validators=(
@@ -23,7 +23,7 @@ class User(AbstractUser):
         ),
     )
     last_name = models.CharField(
-        verbose_name="Фамилия",
+        verbose_name="last name",
         max_length=settings.MAX_LEN_FULL_NAME_USER_MODEL,
         blank=False,
         validators=(
@@ -32,18 +32,18 @@ class User(AbstractUser):
         ),
     )
     email = CustomEmailField(
-        verbose_name="Почта",
+        verbose_name="email",
         max_length=settings.MAX_LEN_EMAIL_USER_MODEL,
         blank=False,
         unique=True,
     )
     password = models.CharField(
-        verbose_name="Пароль",
+        verbose_name="password",
         max_length=settings.MAX_LEN_HASH_PASSWORD_USER_MODEL,
         blank=False,
     )
     is_active = models.BooleanField(
-        "Активный",
+        "activity status",
         default=False,
     )
 
@@ -54,8 +54,8 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     class Meta:
-        verbose_name = "пользователь"
-        verbose_name_plural = "пользователи"
+        verbose_name = "user"
+        verbose_name_plural = "users"
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -66,7 +66,7 @@ class User(AbstractUser):
         message = mail["message"]
         send_mail(
             subject=f"Confirmation of {subject}",
-            message=f"Перейдите по ссылке, чтобы подтвердить действие: {message}",
+            message=f"Please go to the following link to confirm the action {message}",
             recipient_list=[
                 self.email,
             ],

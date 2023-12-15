@@ -57,7 +57,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
     def validate_email(self, value):
         normalized_email = User.objects.normalize_email(value)
         if User.objects.filter(email=normalized_email).exists():
-            raise serializers.ValidationError("User with this email already exists.")
+            raise serializers.ValidationError("Пользователь с таким email уже существует.")
         return normalized_email
 
     def validate(self, attrs):

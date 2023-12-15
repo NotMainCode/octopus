@@ -10,8 +10,8 @@ class Industry(models.Model):
     name = models.CharField(max_length=200)
 
     class Meta:
-        verbose_name = "Отрасль"
-        verbose_name_plural = "Отрасли"
+        verbose_name = "industry"
+        verbose_name_plural = "industries"
 
     def __str__(self):
         return self.name
@@ -24,8 +24,8 @@ class ServiceCategory(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = "Категория сервиса"
-        verbose_name_plural = "Категории сервисов"
+        verbose_name = "service category"
+        verbose_name_plural = "service categories"
 
 
 class Service(models.Model):
@@ -35,8 +35,8 @@ class Service(models.Model):
     name = models.CharField(max_length=100)
 
     class Meta:
-        verbose_name = "Услуга"
-        verbose_name_plural = "Услуги"
+        verbose_name = "service"
+        verbose_name_plural = "services"
 
     def __str__(self):
         return self.name
@@ -46,8 +46,8 @@ class City(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
     class Meta:
-        verbose_name = "Город"
-        verbose_name_plural = "Города"
+        verbose_name = "city"
+        verbose_name_plural = "cities"
         ordering = ("name",)
 
     def __str__(self):
@@ -55,25 +55,25 @@ class City(models.Model):
 
 
 class Company(models.Model):
-    name = models.CharField("Название компании", max_length=100)
-    description = models.TextField("Описание")
-    email = models.EmailField("E-mail адрес")
-    address = models.CharField("Адрес", max_length=200)
-    logo = models.ImageField("Логотип компании", upload_to="companies/logo/")
-    website = models.URLField("Сайт компании")
+    name = models.CharField("name", max_length=100)
+    description = models.TextField("description")
+    email = models.EmailField("email")
+    address = models.CharField("address", max_length=200)
+    logo = models.ImageField("logo", upload_to="companies/logo/")
+    website = models.URLField("website")
     services = models.ManyToManyField(
         Service,
         related_name="companies",
-        verbose_name="Услуги",
+        verbose_name="services",
     )
     industries = models.ManyToManyField(
         Industry,
         related_name="companies",
-        verbose_name="Отрасли",
+        verbose_name="industries",
     )
-    team_size = models.PositiveIntegerField("Численность компании")
+    team_size = models.PositiveIntegerField("team size")
     year_founded = models.PositiveIntegerField(
-        "Год основания",
+        "year founded",
         validators=[
             MinValueValidator(1900),
             MaxValueValidator(2100),
@@ -82,13 +82,13 @@ class Company(models.Model):
     city = models.ForeignKey(
         City,
         on_delete=models.CASCADE,
-        verbose_name="Город",
+        verbose_name="city",
         related_name="companies",
     )
 
     class Meta:
-        verbose_name = "Компания"
-        verbose_name_plural = "Компании"
+        verbose_name = "company"
+        verbose_name_plural = "companies"
         ordering = ("id",)
 
     def __str__(self):
@@ -99,19 +99,19 @@ class Favorite(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        verbose_name="Пользователь",
+        verbose_name="user",
         related_name="favorite",
     )
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
-        verbose_name="Компания",
+        verbose_name="company",
         related_name="in_favorite",
     )
 
     class Meta:
-        verbose_name = "Избранное"
-        verbose_name_plural = "Избранное"
+        verbose_name = "favorite"
+        verbose_name_plural = "favorite"
         ordering = ("company",)
         constraints = [
             models.UniqueConstraint(fields=["user", "company"], name="unique_favorite")
@@ -126,8 +126,9 @@ class Phone(models.Model):
         Company,
         on_delete=models.CASCADE,
         related_name="phones",
+        verbose_name = "company",
     )
-    number = models.CharField(max_length=18)
+    number = models.CharField("number", max_length=18)
 
     def __str__(self):
         return self.number
