@@ -77,12 +77,13 @@ PASSWORD_RESET_TIMEOUT=<seconds> # confirmation link lifetime
 ACCESS_TOKEN_LIFETIME=<seconds>
 REFRESH_TOKEN_LIFETIME=<seconds>
 
-EMAIL_HOST_USER = <email address>
-EMAIL_HOST_PASSWORD = <email password>
+EMAIL_BACKEND=<email backend>
+EMAIL_HOST_USER=<email address>
+EMAIL_HOST_PASSWORD=<email password>
 EMAIL_USE_SSL=<boolean>
-EMAIL_HOST=<mail server domain name>
-EMAIL_PORT=<mail port>
-FROM_EMAIL=<sender name>
+EMAIL_HOST=<email server domain name>
+EMAIL_PORT=<email port>
+FROM_EMAIL=<senders email>
 ```
 7. Выполнить миграции:
 ```
