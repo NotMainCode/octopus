@@ -16,7 +16,7 @@ SECRET_KEY = os.getenv(
 
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost 127.0.0.1").split(" ")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost 127.0.0.1").split(" ")
 
 INTERNAL_IPS = ["127.0.0.1"]
 
@@ -128,9 +128,9 @@ MIN_LEN_PASSWORD_USER_MODEL: int = 8
 MAX_LEN_PASSWORD_USER_MODEL: int = 30
 MAX_LEN_HASH_PASSWORD_USER_MODEL: int = 128
 
-# EMAIL
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-
+EMAIL_BACKEND = os.getenv(
+    "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
+)
 EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "True") == "True"
 EMAIL_HOST = os.getenv("EMAIL_HOST")
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
@@ -138,7 +138,9 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = os.getenv("EMAIL_PORT", 465)
 DEFAULT_FROM_EMAIL = os.getenv("FROM_EMAIL", EMAIL_HOST_USER)
 
-CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "https://*.octopus-it.ru").split(" ")
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    "CSRF_TRUSTED_ORIGINS", "http://localhost http://127.0.0.1"
+).split(" ")
 
 if DEBUG:
     INSTALLED_APPS.extend(["debug_toolbar", "drf_spectacular"])
