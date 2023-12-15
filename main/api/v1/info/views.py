@@ -40,7 +40,7 @@ INFO_API_VIEW_QUERYSET = {
 
 @get_drf_spectacular_view_decorator("info")
 class InfoAPIView(ListAPIView):
-    """URL requests handler for Info endpoints except search_services_companies."""
+    """Handler of URL requests to the endpoints /info/ except search_services_companies."""
 
     authentication_classes = ()
     permission_classes = (AllowAny,)
@@ -58,7 +58,7 @@ class InfoAPIView(ListAPIView):
 @authentication_classes(())
 @permission_classes((AllowAny,))
 def search_services_companies(request):
-    """URL requests handler for the search_services_companies/ endpoint."""
+    """Return response to request to /search_services_companies/ endpoint."""
     companies = Company.objects.values("id", "name")
     filter_companies = InfoSearchFilter().filter_queryset(
         request, companies, search_services_companies

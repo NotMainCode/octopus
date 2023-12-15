@@ -1,4 +1,5 @@
 """URLs configuration of the 'auth' endpoints of 'Api' app v1."""
+
 from django.urls import path
 
 from api.v1.auth.views import (

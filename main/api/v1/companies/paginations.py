@@ -1,4 +1,5 @@
-"""Pagination for the 'Api' application v1."""
+"""Pagination for the 'companies' endpoints of 'Api' application v1."""
+
 from collections import OrderedDict
 
 from rest_framework.exceptions import ValidationError
@@ -7,6 +8,8 @@ from rest_framework.response import Response
 
 
 class CustomPagination(PageNumberPagination):
+    """Modified Django PageNumberPagination."""
+
     page_size = 10
     page_size_query_param = "page_size"
     max_page_size = 100

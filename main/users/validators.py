@@ -11,6 +11,8 @@ from django.utils.translation import gettext as _
 
 
 class CustomPasswordValidator:
+    """User password validation."""
+
     def __init__(
         self,
         min_length=settings.MIN_LEN_PASSWORD_USER_MODEL,
@@ -20,6 +22,7 @@ class CustomPasswordValidator:
         self.max_length = max_length
 
     def validate(self, password, user=None):
+        """Validate user password."""
         if not password:
             return
         if len(password) < self.min_length:
@@ -44,6 +47,7 @@ class CustomPasswordValidator:
             raise ValidationError(_(f"Символы <{''.join(symbol)}> запрещены!"))
 
     def get_help_text(self):
+        """Get help text for the password field."""
         return _(
             f"Ваш пароль должен содержать не менее {self.min_length} и "
             f"не более {self.max_length} символов. "
@@ -53,6 +57,7 @@ class CustomPasswordValidator:
 
 
 def validate_first_name_and_last_name_fields(input_string):
+    """Validate the user's first and last name."""
     if re.search(r"[\d]", input_string) is not None:
         raise ValidationError("Нельзя использовать цифры!")
     if input_string.count("-") > 1 or input_string.count(" ") > 1:
@@ -98,6 +103,7 @@ class CustomEmailValidator:
             self.domain_allowlist = allowlist
 
     def __call__(self, value):
+        """Validate email."""
         if not value or "@" not in value:
             raise ValidationError(self.message, code=self.code, params={"value": value})
 
@@ -112,6 +118,7 @@ class CustomEmailValidator:
             raise ValidationError(self.message, code=self.code, params={"value": value})
 
     def validate_domain_part(self, domain_part):
+        """Validate domain part of email."""
         if self.domain_regex.match(domain_part):
             return True
 

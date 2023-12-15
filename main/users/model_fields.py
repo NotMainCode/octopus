@@ -1,4 +1,4 @@
-"""Custom model fields."""
+"""Custom fields of the Users app models."""
 
 from django.db import models
 

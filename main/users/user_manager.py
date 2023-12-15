@@ -1,9 +1,13 @@
 """User manager model module."""
+
 from django.contrib.auth.models import BaseUserManager
 
 
 class CustomUserManager(BaseUserManager):
+    """UserManager for creating user and superuser without username field."""
+
     def create_user(self, email, password, first_name, last_name):
+        """Create user without username field."""
         user = self.model(email=self.normalize_email(email))
         user.first_name = first_name
         user.last_name = last_name
@@ -12,6 +16,7 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password):
+        """Create superuser without username field."""
         user = self.model(email=self.normalize_email(email))
         user.is_staff = True
         user.is_superuser = True

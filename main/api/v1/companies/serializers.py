@@ -6,42 +6,52 @@ from companies.models import City, Company, Industry, Phone, Service, ServiceCat
 
 
 class CitySerializer(serializers.ModelSerializer):
+    """Serializer for working with City resource."""
+
     class Meta:
         model = City
         fields = ("id", "name")
 
 
-class ServiceCategorySerializer(serializers.ModelSerializer):
+class ServiceCategoryBriefSerializer(serializers.ModelSerializer):
+    """Brief serializer for working with ServiceCategory resource."""
+
     class Meta:
         model = ServiceCategory
         fields = ("id", "name")
 
 
-class ServiceSerializer(serializers.ModelSerializer):
+class ServiceBriefSerializer(serializers.ModelSerializer):
+    """Brief serializer for working with Service resource."""
+
     class Meta:
         model = Service
         fields = ("id", "name")
 
 
 class IndustrySerializer(serializers.ModelSerializer):
+    """Serializer for working with Industry resource."""
+
     class Meta:
         model = Industry
         fields = ("id", "name")
 
 
-class CustomServiceSerializer(ServiceSerializer):
-    category = ServiceCategorySerializer()
+class ServiceSerializer(ServiceBriefSerializer):
+    """Serializer for working with Service resource."""
+
+    category = ServiceCategoryBriefSerializer()
 
     class Meta:
         model = Service
-        fields = ("id", "name", "category")
+        fields = (*ServiceBriefSerializer.Meta.fields, "category")
 
 
-class CompanySerializer(serializers.ModelSerializer):
-    """Сериализатор получения компании."""
+class CompanyBriefSerializer(serializers.ModelSerializer):
+    """Brief serializer for working with Company resource."""
 
     city = CitySerializer()
-    services = ServiceSerializer(many=True)
+    services = ServiceBriefSerializer(many=True)
     industries = IndustrySerializer(many=True)
     is_favorited = serializers.BooleanField(read_only=True, default=False)
 
@@ -59,18 +69,22 @@ class CompanySerializer(serializers.ModelSerializer):
         )
 
 
-class PhoneSerializer(serializers.ModelSerializer):
+class PhoneBriefSerializer(serializers.ModelSerializer):
+    """Brief serializer for working with Phone resource."""
+
     class Meta:
         model = Phone
         fields = ("number",)
 
 
-class CompanyDetailSerializer(serializers.ModelSerializer):
+class CompanySerializer(serializers.ModelSerializer):
+    """Serializer for working with Company resource."""
+
     city = CitySerializer()
     industries = IndustrySerializer(many=True)
-    services = CustomServiceSerializer(many=True)
+    services = ServiceSerializer(many=True)
     is_favorited = serializers.BooleanField(read_only=True, default=False)
-    phones = PhoneSerializer(many=True)
+    phones = PhoneBriefSerializer(many=True)
 
     class Meta:
         model = Company

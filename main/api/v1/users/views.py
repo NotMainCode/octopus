@@ -12,6 +12,8 @@ User = get_user_model()
 
 @get_drf_spectacular_view_decorator("users")
 class UserOwnPageView(views.APIView):
+    """Handler of URL requests to the endpoint /me/."""
+
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -27,6 +29,8 @@ class UserOwnPageView(views.APIView):
 
 @get_drf_spectacular_view_decorator("users")
 class UserChangePasswordView(views.APIView):
+    """Handler of URL requests to the endpoint /change_password/."""
+
     def post(self, request):
         serializer = ChangePasswordSerializer(
             request.user, data=request.data, context={"request": request}

@@ -1,5 +1,4 @@
-"""Filters for endpoints of the Info group."""
-
+"""Filters for 'info' endpoints."""
 
 from django.db.models import Case, IntegerField, Value, When
 from django.urls import resolve
@@ -14,7 +13,7 @@ SEARCH_PARAM_REQUIRED_MESSAGE = (
 
 
 class InfoSearchFilter(filters.SearchFilter):
-    """Filter for endpoints of the Info group."""
+    """Filter for 'info' endpoints."""
 
     search_param = "name"
 

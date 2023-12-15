@@ -1,4 +1,5 @@
 """Serializers for the 'auth' endpoints of 'Api' application v1."""
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.tokens import default_token_generator
@@ -14,6 +15,8 @@ validator = CustomPasswordValidator()
 
 
 class TokenUIDSerializer(serializers.Serializer):
+    """Serializer for processing requests containing uid, token."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.user = None
@@ -39,6 +42,8 @@ class TokenUIDSerializer(serializers.Serializer):
 
 
 class UserSignupSerializer(serializers.ModelSerializer):
+    """Serializer for requests to the endpoint /signup/."""
+
     password = serializers.CharField(write_only=True)
     re_password = serializers.CharField(write_only=True)
 
@@ -75,6 +80,8 @@ class UserSignupSerializer(serializers.ModelSerializer):
 
 
 class UserSigninSerializer(serializers.Serializer):
+    """Serializer for requests to the endpoint /signin/."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.user = None
@@ -98,6 +105,8 @@ class UserSigninSerializer(serializers.Serializer):
 
 
 class UserResetPasswordSerializer(serializers.Serializer):
+    """Serializer for requests to the endpoint /reset_password/."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.user = None
@@ -118,6 +127,8 @@ class UserResetPasswordSerializer(serializers.Serializer):
 
 
 class UserResetPasswordConfirmSerializer(TokenUIDSerializer):
+    """Serializer for requests to the endpoint /reset_password_confirm/."""
+
     new_password = serializers.CharField(write_only=True)
     re_new_password = serializers.CharField(write_only=True)
 
@@ -134,6 +145,8 @@ class UserResetPasswordConfirmSerializer(TokenUIDSerializer):
 
 
 class UserReSignupConfirmSerializer(serializers.Serializer):
+    """Serializer for requests to the endpoint /re_signup_confirm/."""
+
     email = serializers.CharField()
     password = serializers.CharField()
 

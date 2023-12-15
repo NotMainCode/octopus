@@ -1,4 +1,5 @@
 """URLs configuration of the 'users' endpoints of 'Api' app v1."""
+
 from django.urls import path
 
 from api.v1.users.views import UserChangePasswordView, UserOwnPageView

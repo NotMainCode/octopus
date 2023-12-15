@@ -12,6 +12,8 @@ from users.validators import validate_first_name_and_last_name_fields
 
 
 class User(AbstractUser):
+    """User table settings."""
+
     username = None
     first_name = models.CharField(
         verbose_name="first name",

@@ -7,6 +7,8 @@ from users.models import User
 
 
 class Industry(models.Model):
+    """Industry table settings."""
+
     name = models.CharField(max_length=200)
 
     class Meta:
@@ -18,6 +20,8 @@ class Industry(models.Model):
 
 
 class ServiceCategory(models.Model):
+    """ServiceCategory table settings."""
+
     name = models.CharField(max_length=100)
 
     def __str__(self):
@@ -29,6 +33,8 @@ class ServiceCategory(models.Model):
 
 
 class Service(models.Model):
+    """Service table settings."""
+
     category = models.ForeignKey(
         ServiceCategory, on_delete=models.CASCADE, related_name="services"
     )
@@ -43,6 +49,8 @@ class Service(models.Model):
 
 
 class City(models.Model):
+    """City table settings."""
+
     name = models.CharField(max_length=100, unique=True)
 
     class Meta:
@@ -55,6 +63,8 @@ class City(models.Model):
 
 
 class Company(models.Model):
+    """Company table settings."""
+
     name = models.CharField("name", max_length=100)
     description = models.TextField("description")
     email = models.EmailField("email")
@@ -96,6 +106,8 @@ class Company(models.Model):
 
 
 class Favorite(models.Model):
+    """Favorite table settings."""
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -122,6 +134,8 @@ class Favorite(models.Model):
 
 
 class Phone(models.Model):
+    """Phone table settings."""
+
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,

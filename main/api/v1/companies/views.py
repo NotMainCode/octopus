@@ -11,14 +11,14 @@ from rest_framework.viewsets import GenericViewSet
 
 from api.v1.companies.filters import CompanyFilterSet
 from api.v1.companies.paginations import CustomPagination
-from api.v1.companies.serializers import CompanyDetailSerializer, CompanySerializer
+from api.v1.companies.serializers import CompanyBriefSerializer, CompanySerializer
 from api.v1.drf_spectacular.custom_decorators import get_drf_spectacular_view_decorator
 from companies.models import Company, Favorite
 
 
 @get_drf_spectacular_view_decorator("companies")
 class CompanyViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericViewSet):
-    """URL requests handler to 'Company' resource endpoints."""
+    """Handler for URL requests to the Company resource endpoints."""
 
     pagination_class = CustomPagination
     permission_classes = (AllowAny,)
@@ -28,8 +28,8 @@ class CompanyViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericVi
 
     def get_serializer_class(self):
         if self.action == "list":
-            return CompanySerializer
-        return CompanyDetailSerializer
+            return CompanyBriefSerializer
+        return CompanySerializer
 
     def get_queryset(self):
         user_id = self.request.user.id or None
@@ -47,7 +47,7 @@ class CompanyViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, GenericVi
 
 @get_drf_spectacular_view_decorator("companies")
 class FavoriteAPIView(APIView):
-    """URL requests handler to 'Favorite' resource endpoints."""
+    """Handler for URL requests to the Favorite resource endpoints."""
 
     def post(self, request, **kwargs):
         user = request.user

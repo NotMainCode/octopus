@@ -1,4 +1,5 @@
 """Serializers for the 'users' endpoints of 'Api' application v1."""
+
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
@@ -10,6 +11,8 @@ validator = CustomPasswordValidator()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """Serializer for requests to the endpoint /me/."""
+
     class Meta:
         model = User
         fields = ("id", "first_name", "last_name", "email")
@@ -17,6 +20,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ChangePasswordSerializer(serializers.Serializer):
+    """Serializer for requests to the endpoint /users/change_password/."""
+
     current_password = serializers.CharField(write_only=True)
     new_password = serializers.CharField(write_only=True)
     re_new_password = serializers.CharField(write_only=True)
