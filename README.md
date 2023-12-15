@@ -5,7 +5,7 @@
 
 ## Документация API
 
-Статическая:
+Статическая (reference):
 
 http://127.0.0.1:8008/api/redoc/v1/
 
@@ -69,10 +69,21 @@ POSTGRES_PASSWORD=<postgres password>
 DB_HOST=<db host>
 DB_PORT=<db port>
 
+DEBUG=<boolean>
 DJANGO_SECRET_KEY=<secret key>
+ALLOWED_HOSTS=<ip address> <domain name>
+PASSWORD_RESET_TIMEOUT=<seconds> # confirmation link lifetime
 
 ACCESS_TOKEN_LIFETIME=<seconds>
 REFRESH_TOKEN_LIFETIME=<seconds>
+
+EMAIL_BACKEND=<email backend>
+EMAIL_HOST_USER=<email address>
+EMAIL_HOST_PASSWORD=<email password>
+EMAIL_USE_SSL=<boolean>
+EMAIL_HOST=<email server domain name>
+EMAIL_PORT=<email port>
+FROM_EMAIL=<senders email>
 ```
 7. Выполнить миграции:
 ```
@@ -107,3 +118,13 @@ python manage.py runserver 8008
 ```
 
 ## Команда проекта
+
+[NotMainCode](https://github.com/NotMainCode)
+
+[Stryukov](https://github.com/Stryukov)
+
+[zemtsov-dm](https://github.com/zemtsov-dm)
+
+[aleksandrkomyagin](https://github.com/aleksandrkomyagin)
+
+[olees-orlenko](https://github.com/olees-orlenko)
