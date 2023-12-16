@@ -6,8 +6,8 @@ from django.core.mail import send_mail
 from django.core.validators import MinLengthValidator
 from django.db import models
 
-from users.model_fields import CustomEmailField
-from users.user_manager import CustomUserManager
+from users.fields import CustomEmailField
+from users.managers import CustomUserManager
 from users.validators import validate_first_name_and_last_name_fields
 
 

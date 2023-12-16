@@ -3,7 +3,7 @@
 import django.core.validators
 from django.db import migrations, models
 import django.utils.timezone
-import users.model_fields
+import users.fields
 import users.validators
 
 
@@ -79,7 +79,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "email",
-                    users.model_fields.CustomEmailField(
+                    users.fields.CustomEmailField(
                         max_length=254, unique=True, verbose_name="email"
                     ),
                 ),

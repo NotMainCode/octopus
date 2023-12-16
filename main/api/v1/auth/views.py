@@ -13,11 +13,11 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.v1.auth.serializers import (
-    TokenUIDSerializer,
     UserResetPasswordConfirmSerializer,
     UserResetPasswordSerializer,
     UserReSignupConfirmSerializer,
     UserSigninSerializer,
+    UserSignupConfirmSerializer,
     UserSignupSerializer,
 )
 from api.v1.drf_spectacular.custom_decorators import get_drf_spectacular_view_decorator
@@ -39,7 +39,7 @@ class BaseView:
         if action == "signup":
             return UserSignupSerializer
         if action == "signup_confirm":
-            return TokenUIDSerializer
+            return UserSignupConfirmSerializer
         if action == "signin":
             return UserSigninSerializer
         if action == "reset_password":
@@ -92,8 +92,6 @@ class UserSignupConfirmView(BaseView, views.APIView):
         serializer = self.get_serializer_class(action)(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.user
-        if user.is_active:
-            raise PermissionDenied("User is active.")
         user.is_active = True
         user.save(update_fields=["is_active"])
         return Response(
@@ -139,7 +137,7 @@ class UserResetPasswordConfirmView(BaseView, views.APIView):
         user = serializer.user
         if not user.is_active:
             raise PermissionDenied("User is inactive.")
-        user.password = serializer.validated_data["new_password"]
+        user.set_password(serializer.validated_data["new_password"])
         user.save(update_fields=["password"])
         return Response(
             status=status.HTTP_204_NO_CONTENT,
