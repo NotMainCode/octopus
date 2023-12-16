@@ -39,7 +39,7 @@ class CustomPasswordValidator:
             raise ValidationError("Пароль не должен содержать только цифры!")
 
         unacceptable_simbols = "".join(
-            set(re.sub(r"^[a-zA-Zа-яА-ЯёЁ+-_.!?@%#№$^&*\d+=/]$", "", password))
+            set(re.sub(r"[a-zA-Zа-яА-ЯёЁ+-_.!?@%#№$^&*\d+=/]", "", password))
         )
         if unacceptable_simbols:
             raise ValidationError(
@@ -65,7 +65,7 @@ def validate_first_name_and_last_name_fields(value):
     if value.count("-") > 1 or value.count(" ") > 1:
         raise ValidationError("Нельзя использовать 2 знака <-> или два пробела!")
 
-    unacceptable_simbols = "".join(set(re.sub(r"^[a-zA-Zа-яА-Я- ]$", "", value)))
+    unacceptable_simbols = "".join(set(re.sub(r"[a-zA-Zа-яА-Я- ]", "", value)))
     if unacceptable_simbols:
         raise ValidationError(
             "Нельзя использовать эти символы <{unacceptable_simbols}>".format(

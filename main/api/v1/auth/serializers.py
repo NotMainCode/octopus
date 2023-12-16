@@ -3,6 +3,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.tokens import default_token_generator
+from django.db import transaction, utils
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
@@ -68,15 +69,23 @@ class UserSignupSerializer(serializers.ModelSerializer):
         return normalized_email
 
     def validate(self, attrs):
-        if attrs["password"] != attrs["re_password"]:
+        if attrs["password"] != attrs.pop("re_password"):
             raise serializers.ValidationError("Введены разные пароли.")
-        attrs["password"] = make_password(attrs["password"])
-        attrs.pop("re_password")
         return attrs
 
     def validate_password(self, value):
         validator.validate(value)
         return value
+
+    def create(self, validated_data):
+        try:
+            return self.perform_create(validated_data)
+        except utils.IntegrityError:
+            self.fail("cannot_create_user")
+
+    @transaction.atomic
+    def perform_create(self, validated_data):
+        return User.objects.create_user(**validated_data)
 
 
 class UserSigninSerializer(serializers.Serializer):

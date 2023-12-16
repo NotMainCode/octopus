@@ -1,33 +1,43 @@
 """User manager model module."""
 
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import BaseUserManager
 
 
 class CustomUserManager(BaseUserManager):
     """UserManager for creating user and superuser without username field."""
 
-    def create_user(self, email, password, first_name, last_name):
+    def create_user(self, email, password, **extra_fields):
         """Create user without username field."""
-        user = self.model(email=self.normalize_email(email))
-        user.first_name = first_name
-        user.last_name = last_name
-        user.password = password
-        user.save(using=self._db)
-        return user
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
+        return self._create_user(email, password, **extra_fields)
 
-    def create_superuser(self, email, password):
+    def create_superuser(self, email, password, **extra_fields):
         """Create superuser without username field."""
-        user = self.model(email=self.normalize_email(email))
-        user.is_staff = True
-        user.is_superuser = True
-        user.is_active = True
-        user.password = password
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_active", True)
+
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
+        if extra_fields.get("is_active") is not True:
+            raise ValueError("Superuser must have is_active=True.")
+
+        return self._create_user(email, password, **extra_fields)
 
     @classmethod
     def normalize_email(cls, email):
         """Normalize the email address by lowercase."""
         email = email or ""
         return email.lower()
+
+    def _create_user(self, email, password, **extra_fields):
+        """Create and save user without username field."""
+        normalize_email = self.normalize_email(email)
+        user = self.model(email=normalize_email, **extra_fields)
+        user.password = make_password(password)
+        user.save(using=self._db)
+        return user
