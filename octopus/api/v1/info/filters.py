@@ -1,0 +1,44 @@
+"""Filters for 'info' endpoints."""
+
+from django.db.models import Case, IntegerField, Value, When
+from django.urls import resolve
+from rest_framework import filters
+from rest_framework.exceptions import ValidationError
+
+SEARCH_PARAM_REQUIRED_URL_NAMES = {"search_services_companies_list"}
+
+SEARCH_PARAM_REQUIRED_MESSAGE = (
+    "The 'name' query parameter must contain at least two characters."
+)
+
+
+class InfoSearchFilter(filters.SearchFilter):
+    """Filter for 'info' endpoints."""
+
+    search_param = "name"
+
+    def filter_queryset(self, request, queryset, view):
+        name = request.query_params.get(self.search_param)
+        if resolve(request.path_info).url_name in SEARCH_PARAM_REQUIRED_URL_NAMES:
+            if name is None or len(name.strip()) < 2:
+                raise ValidationError({"name": SEARCH_PARAM_REQUIRED_MESSAGE})
+
+        if name is None:
+            return queryset
+
+        name = name.strip()
+        if not name:
+            return []
+
+        return (
+            queryset.annotate(
+                relevance_to_search=Case(
+                    When(name__istartswith=name, then=Value(1)),
+                    When(name__icontains=name, then=Value(2)),
+                    default=0,
+                    output_field=IntegerField(),
+                )
+            )
+            .exclude(relevance_to_search=0)
+            .order_by("relevance_to_search", "name")
+        )
