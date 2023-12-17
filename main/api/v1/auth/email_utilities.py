@@ -29,7 +29,7 @@ def get_confirm_link(action: str, user: User, request: Request) -> str:
     token = default_token_generator.make_token(user)
     site = get_current_site(request)
     protocol = "https:/" if request.is_secure() else "http:/"
-    return "/".join((protocol, site.domain, "#", action, uid, str(token)))
+    return "/".join((protocol, site.domain, "#", URL_PARTS_TO_CONFIRM[action], uid, str(token)))
 
 
 def send_email_to_confirm(action: str, user: User, request: Request) -> None:

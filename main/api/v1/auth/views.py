@@ -66,7 +66,7 @@ def reset_password(request):
     """Email the user to confirm password reset."""
     serializer = UserResetPasswordSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    send_email_to_confirm("reset_password", serializer.instance, request)
+    send_email_to_confirm("reset_password", serializer.user, request)
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -89,5 +89,5 @@ def re_signup_confirm(request):
     """Re-confirm user registration and activate user."""
     serializer = UserReSignupConfirmSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    send_email_to_confirm("re_signup_confirm", serializer.instance, request)
+    send_email_to_confirm("re_signup_confirm", serializer.user, request)
     return Response(status=status.HTTP_204_NO_CONTENT)
