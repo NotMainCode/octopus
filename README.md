@@ -91,20 +91,28 @@ python manage.py makemigrations
 
 python manage.py migrate
 ```
+8. Использовать csv файлы с тестовыми данными о компаниях (csv файлы находятся в папке `db_test_data/csv_files/companies/`)
+```
+Импортировать тестовые данные о компаниях из csv файлов в БД 
+    python manage.py import_data_companies
+    
+Дамп БД
+    python -Xutf8 ./manage.py dumpdata > ../test_data_companies.json
+```
 
-8. Импортировать тестовые данные о компаниях
+9. Импортировать данные о компаниях из json файла в БД
 ```
 python manage.py loaddata ../test_data_companies.json
 
-Содержимое папки 'test_data_companies_media' скопировать в папку 'main/media'
+Содержимое папки db_test_data/media/ скопировать в папку media/
 ```
 
-9. Создать суперпользователя:
+10. Создать суперпользователя:
 ```
 python manage.py createsuperuser
 ```
 
-10.Запустить проект:
+11. Запустить проект:
 ```
 python manage.py runserver 8008
 ```
