@@ -94,6 +94,7 @@ class UserSignupConfirmSerializer(TokenUIDSerializer):
         super().validate(attrs)
         if self.user.is_active:
             raise PermissionDenied("User is active.")
+        return attrs
 
 
 class UserSigninSerializer(serializers.Serializer):
@@ -159,6 +160,8 @@ class UserResetPasswordConfirmSerializer(TokenUIDSerializer):
         super().validate(attrs)
         if attrs["new_password"] != attrs["re_new_password"]:
             raise serializers.ValidationError("Введены разные пароли.")
+        if not self.user.is_active:
+            raise PermissionDenied("User is inactive.")
         return attrs
 
     def validate_new_password(self, value):

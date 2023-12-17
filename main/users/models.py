@@ -61,16 +61,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-
-    @staticmethod
-    def send_mail(self, mail):
-        subject = mail["subject"]
-        message = mail["message"]
-        send_mail(
-            subject=f"Confirmation of {subject}",
-            message=f"Please go to the following link to confirm the action {message}",
-            recipient_list=[
-                self.email,
-            ],
-            from_email=settings.DEFAULT_FROM_EMAIL,
-        )

@@ -1,17 +1,13 @@
 """Views for 'auth' endpoints of 'Api' application v1."""
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.sites.shortcuts import get_current_site
-from django.urls import resolve
-from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_encode
-from rest_framework import status, views
-from rest_framework.exceptions import PermissionDenied
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from api.v1.auth.email_utilities import send_email_to_confirm
 from api.v1.auth.serializers import (
     UserResetPasswordConfirmSerializer,
     UserResetPasswordSerializer,
@@ -25,133 +21,73 @@ from api.v1.drf_spectacular.custom_decorators import get_drf_spectacular_view_de
 User = get_user_model()
 
 
-class BaseView:
-    permission_classes = (AllowAny,)
-
-    action_list = {
-        "signup": "registration",
-        "signin": "login to your personal account",
-        "reset_password": "password change",
-        "re_signup_confirm": "resending registration confirmation",
-    }
-
-    def get_serializer_class(self, action):
-        if action == "signup":
-            return UserSignupSerializer
-        if action == "signup_confirm":
-            return UserSignupConfirmSerializer
-        if action == "signin":
-            return UserSigninSerializer
-        if action == "reset_password":
-            return UserResetPasswordSerializer
-        if action == "re_signup_confirm":
-            return UserReSignupConfirmSerializer
-        return UserResetPasswordConfirmSerializer
-
-    def _generate_url(self, action, user, request):
-        uid = force_str(urlsafe_base64_encode(force_bytes(user.id)))
-        token = default_token_generator.make_token(user)
-        site = get_current_site(request)
-        protocol = "https:/" if request.is_secure() else "http:/"
-        if action == "re_signup_confirm":
-            confirm_url = "/".join(
-                (protocol, site.domain, "#", action[3:], uid, str(token))
-            )
-        else:
-            confirm_url = "/".join(
-                (protocol, site.domain, "#", action + "_confirm", uid, str(token))
-            )
-        return confirm_url
-
-    def _generate_mail(self, action, url):
-        mail = {}
-        mail["subject"] = self.action_list[action]
-        mail["message"] = url
-        return mail
+@get_drf_spectacular_view_decorator("auth")
+@api_view(("POST",))
+@permission_classes((AllowAny,))
+def signup(request):
+    """Create user instance and email the user to confirm registration."""
+    serializer = UserSignupSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    send_email_to_confirm("signup", serializer.instance, request)
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @get_drf_spectacular_view_decorator("auth")
-class UserSignupView(BaseView, views.APIView):
-    def post(self, request):
-        action = resolve(request.path_info).url_name
-        serializer = self.get_serializer_class(action)(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        confirm_url = self._generate_url(action, user, request)
-        mail = self._generate_mail(action, confirm_url)
-        user.send_mail(user, mail)
-        return Response(
-            status=status.HTTP_204_NO_CONTENT,
-        )
+@api_view(("POST",))
+@permission_classes((AllowAny,))
+def signup_confirm(request):
+    """Confirm user registration and activate user."""
+    serializer = UserSignupConfirmSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.user.is_active = True
+    serializer.user.save(update_fields=["is_active"])
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @get_drf_spectacular_view_decorator("auth")
-class UserSignupConfirmView(BaseView, views.APIView):
-    def post(self, request):
-        action = resolve(request.path_info).url_name
-        serializer = self.get_serializer_class(action)(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.user
-        user.is_active = True
-        user.save(update_fields=["is_active"])
-        return Response(
-            status=status.HTTP_204_NO_CONTENT,
-        )
+@api_view(("POST",))
+@permission_classes((AllowAny,))
+def signin(request):
+    """Authenticate user and issue JWT-tokens."""
+    serializer = UserSigninSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    refresh_token = RefreshToken.for_user(serializer.user)
+    return Response(
+        {"access": str(refresh_token.access_token), "refresh": str(refresh_token)},
+        status=status.HTTP_200_OK,
+    )
 
 
 @get_drf_spectacular_view_decorator("auth")
-class UserSigninView(BaseView, views.APIView):
-    def post(self, request):
-        action = resolve(request.path_info).url_name
-        serializer = self.get_serializer_class(action)(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.user
-        token = RefreshToken.for_user(user)
-        return Response(
-            {"access": str(token.access_token), "refresh": str(token)},
-            status=status.HTTP_200_OK,
-        )
+@api_view(("POST",))
+@permission_classes((AllowAny,))
+def reset_password(request):
+    """Email the user to confirm password reset."""
+    serializer = UserResetPasswordSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    send_email_to_confirm("reset_password", serializer.instance, request)
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @get_drf_spectacular_view_decorator("auth")
-class UserResetPasswordView(BaseView, views.APIView):
-    def post(self, request):
-        action = resolve(request.path_info).url_name
-        serializer = self.get_serializer_class(action)(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.user
-        confirm_url = self._generate_url(action, user, request)
-        mail = self._generate_mail(action, confirm_url)
-        user.send_mail(user, mail)
-        return Response(
-            status=status.HTTP_204_NO_CONTENT,
-        )
+@api_view(("POST",))
+@permission_classes((AllowAny,))
+def reset_password_confirm(request):
+    """Reset user password."""
+    serializer = UserResetPasswordConfirmSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.user.set_password(serializer.validated_data["new_password"])
+    serializer.user.save(update_fields=["password"])
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @get_drf_spectacular_view_decorator("auth")
-class UserResetPasswordConfirmView(BaseView, views.APIView):
-    def post(self, request):
-        action = resolve(request.path_info).url_name
-        serializer = self.get_serializer_class(action)(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.user
-        if not user.is_active:
-            raise PermissionDenied("User is inactive.")
-        user.set_password(serializer.validated_data["new_password"])
-        user.save(update_fields=["password"])
-        return Response(
-            status=status.HTTP_204_NO_CONTENT,
-        )
-
-
-@get_drf_spectacular_view_decorator("auth")
-class UserReSignupConfirmView(BaseView, views.APIView):
-    def post(self, request):
-        action = resolve(request.path_info).url_name
-        serializer = self.get_serializer_class(action)(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.user
-        confirm_url = self._generate_url(action, user, request)
-        mail = self._generate_mail(action, confirm_url)
-        user.send_mail(user, mail)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+@api_view(("POST",))
+@permission_classes((AllowAny,))
+def re_signup_confirm(request):
+    """Re-confirm user registration and activate user."""
+    serializer = UserReSignupConfirmSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    send_email_to_confirm("re_signup_confirm", serializer.instance, request)
+    return Response(status=status.HTTP_204_NO_CONTENT)

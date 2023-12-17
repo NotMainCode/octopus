@@ -3,27 +3,21 @@
 from django.urls import path
 
 from api.v1.auth.views import (
-    UserResetPasswordConfirmView,
-    UserResetPasswordView,
-    UserReSignupConfirmView,
-    UserSigninView,
-    UserSignupConfirmView,
-    UserSignupView,
+    re_signup_confirm,
+    reset_password,
+    reset_password_confirm,
+    signin,
+    signup,
+    signup_confirm,
 )
 
 urlpatterns = [
-    path("signup/", UserSignupView.as_view(), name="signup"),
-    path("signup_confirm/", UserSignupConfirmView.as_view(), name="signup_confirm"),
-    path("signin/", UserSigninView.as_view(), name="signin"),
-    path("reset_password/", UserResetPasswordView.as_view(), name="reset_password"),
+    path("signup/", signup, name="signup"),
+    path("signup_confirm/", signup_confirm, name="signup_confirm"),
+    path("signin/", signin, name="signin"),
+    path("reset_password/", reset_password, name="reset_password"),
     path(
-        "reset_password_confirm/",
-        UserResetPasswordConfirmView.as_view(),
-        name="reset_password_confirm",
+        "reset_password_confirm/", reset_password_confirm, name="reset_password_confirm"
     ),
-    path(
-        "re_signup_confirm/",
-        UserReSignupConfirmView.as_view(),
-        name="re_signup_confirm",
-    ),
+    path("re_signup_confirm/", re_signup_confirm, name="re_signup_confirm"),
 ]
