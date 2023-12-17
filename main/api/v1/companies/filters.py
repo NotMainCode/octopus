@@ -23,7 +23,6 @@ class CompanyFilterSet(filters.FilterSet):
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
-        queryset = queryset.annotate(num_matches_services=Count("services")).order_by(
+        return queryset.annotate(num_matches_services=Count("services")).order_by(
             "-num_matches_services"
         )
-        return queryset

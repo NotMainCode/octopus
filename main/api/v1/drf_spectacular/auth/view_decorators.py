@@ -1,6 +1,6 @@
 """Views decorators of Auth endpoints for use in documentation."""
 
-from drf_spectacular.utils import extend_schema, OpenApiResponse
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 

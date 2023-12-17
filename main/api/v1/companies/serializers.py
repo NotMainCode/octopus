@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 
-from companies.models import City, Company, Industry, Phone, Service, ServiceCategory
+from companies.models import City, Company, Industry, Service, ServiceCategory
 
 
 class CitySerializer(serializers.ModelSerializer):
