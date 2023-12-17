@@ -6,7 +6,7 @@ COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY ./main/ .
+COPY ./octopus/ .
 
 COPY ./test_data_companies_media/ ./media/
 

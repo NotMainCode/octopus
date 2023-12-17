@@ -244,5 +244,3 @@ fabric.properties
 #Media files
 **/media/*
 !**/media/static
-# static
-main/backend_static
