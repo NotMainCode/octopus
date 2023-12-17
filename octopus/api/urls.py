@@ -22,8 +22,8 @@ if settings.DEBUG:
         ),
         path(
             "redoc/v1/",
-            TemplateView.as_view(template_name="main_v1_redoc.html"),
-            name="main_v1_redoc",
+            TemplateView.as_view(template_name="octopus_v1_redoc.html"),
+            name="octopus_v1_redoc",
         ),
         path(
             "redoc/v1/dynamic/",
@@ -32,8 +32,8 @@ if settings.DEBUG:
         ),
         path(
             "swagger/v1/",
-            TemplateView.as_view(template_name="main_v1_swagger.html"),
-            name="main_v1_swagger",
+            TemplateView.as_view(template_name="octopus_v1_swagger.html"),
+            name="octopus_v1_swagger",
         ),
         path(
             "swagger/v1/dynamic/",

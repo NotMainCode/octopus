@@ -97,5 +97,5 @@ class CompanySerializer(serializers.ModelSerializer):
             "is_favorited",
         )
 
-    def get_phones(self, obj):
+    def get_phones(self, obj) -> list[str]:
         return obj.phones.values_list("number", flat=True)

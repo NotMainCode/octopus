@@ -1,4 +1,4 @@
-"""URL configuration of the 'main' application."""
+"""URL configuration of the 'octopus' application."""
 
 from django.conf import settings
 from django.conf.urls.static import static

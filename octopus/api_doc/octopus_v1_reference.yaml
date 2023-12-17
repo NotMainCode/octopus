@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: Main Server API
+  title: Octopus Server API
   version: 1.0.0
-  description: Main Server for 'Octopus' app
+  description: Server for 'Octopus' app
 paths:
   /api/v1/auth/signup/:
     post:

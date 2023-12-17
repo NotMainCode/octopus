@@ -155,8 +155,8 @@ if DEBUG:
         }
     )
     SPECTACULAR_SETTINGS = {
-        "TITLE": "Main Server API",
-        "DESCRIPTION": "Main Server for 'Octopus' app",
+        "TITLE": "Octopus Server API",
+        "DESCRIPTION": "Server for 'Octopus' app",
         "VERSION": "1.0.0",
         "SERVE_INCLUDE_SCHEMA": False,
     }
