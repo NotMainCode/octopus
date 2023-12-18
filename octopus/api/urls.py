@@ -11,7 +11,19 @@ from drf_spectacular.views import (
 
 app_name = "api"
 
-urlpatterns = [path("v1/", include("api.v1.urls"))]
+urlpatterns = [
+    path("v1/", include("api.v1.urls")),
+    path(
+        "redoc/v1/",
+        TemplateView.as_view(template_name="octopus_v1_redoc.html"),
+        name="octopus_v1_redoc",
+    ),
+    path(
+        "swagger/v1/",
+        TemplateView.as_view(template_name="octopus_v1_swagger.html"),
+        name="octopus_v1_swagger",
+    ),
+]
 
 if settings.DEBUG:
     urlpatterns += (
@@ -21,19 +33,9 @@ if settings.DEBUG:
             name="schema",
         ),
         path(
-            "redoc/v1/",
-            TemplateView.as_view(template_name="octopus_v1_redoc.html"),
-            name="octopus_v1_redoc",
-        ),
-        path(
             "redoc/v1/dynamic/",
             SpectacularRedocView.as_view(url_name="api:schema"),
             name="redoc_dynamic",
-        ),
-        path(
-            "swagger/v1/",
-            TemplateView.as_view(template_name="octopus_v1_swagger.html"),
-            name="octopus_v1_swagger",
         ),
         path(
             "swagger/v1/dynamic/",

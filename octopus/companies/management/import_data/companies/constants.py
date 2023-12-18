@@ -4,7 +4,9 @@ import os
 
 from django.conf import settings
 
-PATH_TO_DATA_FILES_DIR = os.path.join(settings.BASE_DIR, "db_test_data/csv_files/companies")
+PATH_TO_DATA_FILES_DIR = os.path.join(
+    settings.BASE_DIR, "db_test_data/csv_files/companies"
+)
 
 FILE_PATHS = {
     "companies": os.path.join(PATH_TO_DATA_FILES_DIR, "companies.csv"),
