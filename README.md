@@ -1,4 +1,4 @@
-# Сервер Main приложения Octopus
+# Octopus
 
 ## Описание
 
@@ -11,7 +11,7 @@ http://127.0.0.1:8008/api/redoc/v1/
 
 http://127.0.0.1:8008/api/swagger/v1/
 
-Динамическая:
+Динамическая (генерируется библиотекой drf-spectacular, доступна при DEBUG=True):
 
 http://127.0.0.1:8008/api/dynamic_doc/v1/download/
 

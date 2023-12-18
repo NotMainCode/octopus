@@ -52,7 +52,7 @@ ROOT_URLCONF = "octopus.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "templates/api_doc")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -90,9 +90,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "backend_static/static/")
-
-MEDIA_URL = "media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "api_doc/")]
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -159,12 +157,9 @@ if DEBUG:
     )
     SPECTACULAR_SETTINGS = {
         "TITLE": "Octopus Server API",
-        "DESCRIPTION": "Server for 'Octopus' app",
         "VERSION": "1.0.0",
         "SERVE_INCLUDE_SCHEMA": False,
     }
-    TEMPLATES[0].update({"DIRS": [os.path.join(BASE_DIR, "templates/api_doc")]})
-    STATICFILES_DIRS = (os.path.join(BASE_DIR, "api_doc/"),)
     CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
     CORS_URLS_REGEX = r"^/api/.*$"
     CORS_ALLOW_HEADERS = [*default_headers, "x-xsrf-token"]
