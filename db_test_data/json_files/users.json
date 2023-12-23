@@ -1,0 +1,23 @@
+[
+  {
+    "model":"users.user",
+    "pk":1,
+    "fields":{
+      "last_login":"2023-12-23T12:46:29.310Z",
+      "is_superuser":true,
+      "is_staff":true,
+      "date_joined":"2023-12-17T11:27:54.984Z",
+      "first_name":"",
+      "last_name":"",
+      "email":"su@su.su",
+      "password":"pbkdf2_sha256$390000$uleLaxtJhA08YGzuv7oyPl$Ra15S3aTqEi3wOcjby3twp2XC627MNzTJwJqLjG6WVg=",
+      "is_active":true,
+      "groups":[
+        
+      ],
+      "user_permissions":[
+        
+      ]
+    }
+  }
+]
