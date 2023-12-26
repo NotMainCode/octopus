@@ -1,0 +1,47 @@
+version: "3.8"
+
+volumes:
+  octopus_postgres_data:
+  octopus_static:
+  octopus_media:
+
+services:
+  octopus_postgres:
+    container_name: octopus_postgres
+    image: postgres:16.1-alpine
+    env_file:
+      - ../.env
+    restart: on-failure
+    volumes:
+      - octopus_postgres_data:/var/lib/postgresql/data/
+
+  octopus_back:
+    container_name: octopus_back_dev
+    image: notmaincode/octopus_back_dev
+    env_file:
+      - ../.env
+    ports:
+      - "8008:8008"
+    restart: on-failure
+    volumes:
+      - octopus_static:/app/static/
+      - octopus_media:/app/media/
+    depends_on:
+      - octopus_postgres
+    command: [
+      "./wait-for-it.sh", "octopus_postgres:5432", "--strict", "--timeout=300", "--", "./run_app.dev.sh"
+    ]
+
+  nginx:
+    container_name: nginx
+    image: nginx:1.25-alpine
+    env_file:
+      - ../.env
+    ports:
+      - "80:80"
+    volumes:
+      - ../nginx.conf:/etc/nginx/conf.d/default.conf
+      - octopus_static:/var/html/octopus/static/
+      - octopus_media:/var/html/octopus/media/
+    depends_on:
+      - octopus_back
