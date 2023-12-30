@@ -20,8 +20,8 @@ services:
     image: notmaincode/octopus_back_dev
     env_file:
       - ../.env
-    ports:
-      - "8008:8008"
+    expose:
+      - "8008"
     restart: on-failure
     volumes:
       - octopus_static:/app/static/

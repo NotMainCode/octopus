@@ -4,7 +4,7 @@
     <option name="pathToExecutable" value="/snap/bin/black" />
     <option name="sdkName" value="Python 3.11 (octopus)" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (octopus) (2)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (octopus)" project-jdk-type="Python SDK" />
   <component name="PyCharmProfessionalAdvertiser">
     <option name="shown" value="true" />
   </component>
