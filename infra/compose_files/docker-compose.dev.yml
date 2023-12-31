@@ -17,7 +17,7 @@ services:
 
   octopus_back:
     container_name: octopus_back_dev
-    image: notmaincode/octopus_back_dev
+    image: notmaincode/octopus_back_dev:latest
     env_file:
       - ../.env
     expose:

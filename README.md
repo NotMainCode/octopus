@@ -78,10 +78,10 @@ ACCESS_TOKEN_LIFETIME=<seconds>
 REFRESH_TOKEN_LIFETIME=<seconds>
 
 EMAIL_BACKEND=<email backend>
-EMAIL_HOST_USER=<email address>
-EMAIL_HOST_PASSWORD=<email password>
 EMAIL_USE_SSL=<boolean>
 EMAIL_HOST=<email server domain name>
+EMAIL_HOST_USER=<email address>
+EMAIL_HOST_PASSWORD=<email password>
 EMAIL_PORT=<email port>
 FROM_EMAIL=<senders email>
 ```

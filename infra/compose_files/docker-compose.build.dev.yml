@@ -15,8 +15,8 @@ services:
     volumes:
       - octopus_postgres_data:/var/lib/postgresql/data/
 
-  octopus_back_dev_build:
-    container_name: octopus_back_dev_build
+  octopus_back:
+    container_name: octopus_back_build_dev
     build:
       context: ../..
       target: dev
@@ -46,4 +46,4 @@ services:
       - octopus_static:/var/html/octopus/static/
       - octopus_media:/var/html/octopus/media/
     depends_on:
-      - octopus_back_dev_build
+      - octopus_back

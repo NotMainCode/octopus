@@ -130,7 +130,7 @@ MAX_LEN_PASSWORD_USER_MODEL = 30
 MAX_LEN_HASH_PASSWORD_USER_MODEL = 128
 
 EMAIL_BACKEND = os.getenv(
-    "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
+    "EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend"
 )
 EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "True") == "True"
 EMAIL_HOST = os.getenv("EMAIL_HOST")
