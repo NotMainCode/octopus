@@ -78,10 +78,10 @@ ACCESS_TOKEN_LIFETIME=<seconds>
 REFRESH_TOKEN_LIFETIME=<seconds>
 
 EMAIL_BACKEND=<email backend>
-EMAIL_HOST_USER=<email address>
-EMAIL_HOST_PASSWORD=<email password>
 EMAIL_USE_SSL=<boolean>
 EMAIL_HOST=<email server domain name>
+EMAIL_HOST_USER=<email address>
+EMAIL_HOST_PASSWORD=<email password>
 EMAIL_PORT=<email port>
 FROM_EMAIL=<senders email>
 ```
@@ -96,13 +96,13 @@ python manage.py migrate
 Импортировать тестовые данные о компаниях из csv файлов в БД 
     python manage.py import_data_companies
     
-Дамп БД
-    python -Xutf8 ./manage.py dumpdata > ../test_data_companies.json
+Сохранить тестовые данные о компаниях в json файле
+    python -Xutf8 manage.py dumpdata > companies.json
 ```
 
 9. Импортировать данные о компаниях из json файла в БД
 ```
-python manage.py loaddata ../test_data_companies.json
+python manage.py loaddata ../db_test_data/json_files/companies.json
 
 Содержимое папки db_test_data/media/ скопировать в папку media/
 ```
@@ -110,21 +110,16 @@ python manage.py loaddata ../test_data_companies.json
 10. Создать суперпользователя:
 ```
 python manage.py createsuperuser
+
+или импортировать данные суперпользователя из json файла
+    python manage.py loaddata ../db_test_data/json_files/users.json
+    
+    данные суперпользователя:
+    email - su@su.su
+    пароль - password
 ```
 
 11. Запустить проект:
 ```
 python manage.py runserver 8008
 ```
-
-## Команда проекта
-
-[NotMainCode](https://github.com/NotMainCode)
-
-[Stryukov](https://github.com/Stryukov)
-
-[zemtsov-dm](https://github.com/zemtsov-dm)
-
-[aleksandrkomyagin](https://github.com/aleksandrkomyagin)
-
-[olees-orlenko](https://github.com/olees-orlenko)

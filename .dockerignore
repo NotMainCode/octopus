@@ -1,6 +1,5 @@
-venv
-.git
-.vscode
-.env
-.idea
-.github 
+*/venv
+*/.env
+*/media/
+!*/media/static
+!/db_test_data/media/*

@@ -244,3 +244,8 @@ fabric.properties
 #Media files
 **/media/*
 !**/media/static
+!/db_test_data/media/*
+
+# venv with wemake-python-styleguide
+wps_venv/
+wps_venv.bak/

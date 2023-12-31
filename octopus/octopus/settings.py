@@ -89,7 +89,7 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "backend_static/static/")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "api_doc/")]
 
 MEDIA_URL = "media/"
@@ -130,7 +130,7 @@ MAX_LEN_PASSWORD_USER_MODEL = 30
 MAX_LEN_HASH_PASSWORD_USER_MODEL = 128
 
 EMAIL_BACKEND = os.getenv(
-    "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
+    "EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend"
 )
 EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "True") == "True"
 EMAIL_HOST = os.getenv("EMAIL_HOST")
