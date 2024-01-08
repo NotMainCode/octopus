@@ -156,7 +156,7 @@ if DEBUG:
         }
     )
     SPECTACULAR_SETTINGS = {
-        "TITLE": "Octopus Server API",
+        "TITLE": "Octopus API",
         "VERSION": "1.0.0",
         "SERVE_INCLUDE_SCHEMA": False,
     }

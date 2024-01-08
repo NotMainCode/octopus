@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Octopus Server API
+  title: Octopus API
   version: 1.0.0
 paths:
   /api/v1/auth/signup/:
