@@ -1,6 +1,6 @@
-# Octopus API
+## Octopus API
 
-## Оглавление:
+## Оглавление
 - [Описание](#описание)
 - [Технологии](#технологии)
 - [Запуск](#запуск)
@@ -40,7 +40,7 @@ Simple JWT 5.3.0
 
 PostgreSQL 16
 
-[⬆️В начало](#Octopus API)
+[⬆️В начало](#оглавление)
 </details>
 
 
@@ -138,7 +138,7 @@ http://127.0.0.1:8008/api/swagger/v1/dynamic/
 http://<server_ip>/api/v1/...
 ```
 
-[⬆️В начало](#Octopus API)
+[⬆️В начало](#оглавление)
 </details>
 
 <details>
@@ -200,5 +200,5 @@ http://<server_ip>/api/swagger/v1/
 ```markdown
 http://<server_ip>/api/v1/...
 ```
-[⬆️В начало](#Octopus API)
+[⬆️В начало](#оглавление)
 </details>
