@@ -78,7 +78,7 @@ DATABASES = {
     },
 }
 
-AUTH_PASSWORD_VALIDATORS = [{"NAME": "users.validators.CustomPasswordValidator"}]
+AUTH_PASSWORD_VALIDATORS = [{"NAME": "applications.users.validators.CustomPasswordValidator"}]
 
 AUTH_USER_MODEL = "users.User"
 
