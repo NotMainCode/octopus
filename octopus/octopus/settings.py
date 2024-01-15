@@ -5,6 +5,8 @@ from pathlib import Path
 from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
 
+from core.time_in_seconds import TIME_IN_SECONDS
+
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -78,7 +80,9 @@ DATABASES = {
     },
 }
 
-AUTH_PASSWORD_VALIDATORS = [{"NAME": "applications.users.validators.CustomPasswordValidator"}]
+AUTH_PASSWORD_VALIDATORS = [
+    {"NAME": "applications.users.validators.CustomPasswordValidator"}
+]
 
 AUTH_USER_MODEL = "users.User"
 
@@ -105,29 +109,21 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
-ONE_WEEK_IN_SECONDS = 604800
-
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(
-        seconds=int(os.getenv("ACCESS_TOKEN_LIFETIME", ONE_WEEK_IN_SECONDS))
+        seconds=int(os.getenv("ACCESS_TOKEN_LIFETIME", TIME_IN_SECONDS["one_week"]))
     ),
     "REFRESH_TOKEN_LIFETIME": timedelta(
-        seconds=int(os.getenv("REFRESH_TOKEN_LIFETIME", ONE_WEEK_IN_SECONDS))
+        seconds=int(os.getenv("REFRESH_TOKEN_LIFETIME", TIME_IN_SECONDS["one_week"]))
     ),
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
     "ROTATE_REFRESH_TOKENS": True,
 }
 
-PASSWORD_RESET_TIMEOUT = int(os.getenv("PASSWORD_RESET_TIMEOUT", ONE_WEEK_IN_SECONDS))
-
-# CONSTANTS
-MIN_LEN_FULL_NAME_USER_MODEL = 2
-MAX_LEN_FULL_NAME_USER_MODEL = 30
-MAX_LEN_EMAIL_USER_MODEL = 254
-MIN_LEN_PASSWORD_USER_MODEL = 8
-MAX_LEN_PASSWORD_USER_MODEL = 30
-MAX_LEN_HASH_PASSWORD_USER_MODEL = 128
+PASSWORD_RESET_TIMEOUT = int(
+    os.getenv("PASSWORD_RESET_TIMEOUT", TIME_IN_SECONDS["one_week"])
+)
 
 EMAIL_BACKEND = os.getenv(
     "EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend"

@@ -2,12 +2,13 @@
 
 import re
 
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator, validate_ipv46_address
 from django.utils.deconstruct import deconstructible
 from django.utils.regex_helper import _lazy_re_compile
 from django.utils.translation import gettext as _
+
+from core.users.constants.field_limits import FIELD_LIMITS_USERS_APP
 
 
 class CustomPasswordValidator:
@@ -15,8 +16,8 @@ class CustomPasswordValidator:
 
     def __init__(
         self,
-        min_length=settings.MIN_LEN_PASSWORD_USER_MODEL,
-        max_length=settings.MAX_LEN_PASSWORD_USER_MODEL,
+        min_length=FIELD_LIMITS_USERS_APP["password_min_char"],
+        max_length=FIELD_LIMITS_USERS_APP["password_max_char"],
     ):
         self.min_length = min_length
         self.max_length = max_length
