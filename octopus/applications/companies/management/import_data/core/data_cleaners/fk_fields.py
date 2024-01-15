@@ -1,3 +1,5 @@
+"""Replace string with object in data for foreign key fields."""
+
 from django.db import models
 
 
@@ -7,6 +9,7 @@ def set_fk_fields_values(
     fk_model: models.base.ModelBase,
     field_name_in_fk_model: str,
 ) -> None:
+    """Replace string with object in data for foreign key fields."""
     csv_data_for_fk_model_field = {
         object_csv_data[fk_field_name] for object_csv_data in objects_csv_data
     }

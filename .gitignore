@@ -241,11 +241,16 @@ fabric.properties
 .vscode/
 .DS_Store
 
-#Media files
+# Media files
 **/media/*
 !**/media/static
 !/db_test_data/media/*
 
+# Static files
+**/static/*
+!**/static/api_doc/*
+
 # venv with wemake-python-styleguide
 wps_venv/
 wps_venv.bak/
+

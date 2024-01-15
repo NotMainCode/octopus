@@ -1,6 +1,5 @@
 """Database settings of the 'Users' app."""
 
-from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator
 from django.db import models
@@ -8,6 +7,7 @@ from django.db import models
 from applications.users.fields import CustomEmailField
 from applications.users.managers import CustomUserManager
 from applications.users.validators import validate_first_name_and_last_name_fields
+from core.users.constants.field_limits import FIELD_LIMITS_USERS_APP
 
 
 class User(AbstractUser):
@@ -16,31 +16,31 @@ class User(AbstractUser):
     username = None
     first_name = models.CharField(
         verbose_name="first name",
-        max_length=settings.MAX_LEN_FULL_NAME_USER_MODEL,
+        max_length=FIELD_LIMITS_USERS_APP["user_full_name_max_char"],
         blank=False,
         validators=(
             validate_first_name_and_last_name_fields,
-            MinLengthValidator(settings.MIN_LEN_FULL_NAME_USER_MODEL),
+            MinLengthValidator(FIELD_LIMITS_USERS_APP["user_full_name_min_char"]),
         ),
     )
     last_name = models.CharField(
         verbose_name="last name",
-        max_length=settings.MAX_LEN_FULL_NAME_USER_MODEL,
+        max_length=FIELD_LIMITS_USERS_APP["user_full_name_max_char"],
         blank=False,
         validators=(
             validate_first_name_and_last_name_fields,
-            MinLengthValidator(settings.MIN_LEN_FULL_NAME_USER_MODEL),
+            MinLengthValidator(FIELD_LIMITS_USERS_APP["user_full_name_min_char"]),
         ),
     )
     email = CustomEmailField(
         verbose_name="email",
-        max_length=settings.MAX_LEN_EMAIL_USER_MODEL,
+        max_length=FIELD_LIMITS_USERS_APP["email_max_char"],
         blank=False,
         unique=True,
     )
     password = models.CharField(
         verbose_name="password",
-        max_length=settings.MAX_LEN_HASH_PASSWORD_USER_MODEL,
+        max_length=FIELD_LIMITS_USERS_APP["password_hash_max_char"],
         blank=False,
     )
     is_active = models.BooleanField(

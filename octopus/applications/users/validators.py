@@ -2,37 +2,33 @@
 
 import re
 
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator, validate_ipv46_address
 from django.utils.deconstruct import deconstructible
 from django.utils.regex_helper import _lazy_re_compile
 from django.utils.translation import gettext as _
 
+from core.users.constants.field_limits import FIELD_LIMITS_USERS_APP
+
 
 class CustomPasswordValidator:
     """User password validation."""
 
-    def __init__(
-        self,
-        min_length=settings.MIN_LEN_PASSWORD_USER_MODEL,
-        max_length=settings.MAX_LEN_PASSWORD_USER_MODEL,
-    ):
-        self.min_length = min_length
-        self.max_length = max_length
+    MIN_LENGTH = FIELD_LIMITS_USERS_APP["password_min_char"]
+    MAX_LENGTH = FIELD_LIMITS_USERS_APP["password_max_char"]
 
     def validate(self, password, user=None):
         """Validate user password."""
-        if len(password) < self.min_length:
+        if len(password) < self.MIN_LENGTH:
             raise ValidationError(
                 "Минимальная длина пароля {min_length} символов!".format(
-                    min_length=self.min_length
+                    min_length=self.MIN_LENGTH
                 )
             )
-        if len(password) > self.max_length:
+        if len(password) > self.MAX_LENGTH:
             raise ValidationError(
                 "Максимальная длина пароля {max_length} символов!".format(
-                    max_length=self.max_length
+                    max_length=self.MAX_LENGTH
                 )
             )
         if password.isdigit():
@@ -51,8 +47,8 @@ class CustomPasswordValidator:
     def get_help_text(self):
         """Get help text for the password field."""
         return (
-            f"Ваш пароль должен содержать не менее {self.min_length} и "
-            f"не более {self.max_length} символов. "
+            f"Ваш пароль должен содержать не менее {self.MIN_LENGTH} и "
+            f"не более {self.MAX_LENGTH} символов. "
             f"Разрешено использовать кириллицу, латиницу, "
             f"цифры и спецсимволы <-+_.!?@#№$%^&*>"
         )
