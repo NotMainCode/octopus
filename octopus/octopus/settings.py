@@ -151,6 +151,7 @@ if DEBUG:
             "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
         }
     )
+    LOGIN_REDIRECT_URL = "/api/v1/companies/"
     SPECTACULAR_SETTINGS = {
         "TITLE": "Octopus API",
         "VERSION": "1.0.0",
