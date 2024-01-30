@@ -16,7 +16,7 @@ from applications.api.v1.drf_spectacular.auth.serializers import (
     Response403UserIsActiveSerializer,
     Response403UserIsInactiveSerializer,
 )
-from applications.api.v1.drf_spectacular.serializers import Response400Serializer
+from applications.api.v1.drf_spectacular.core.serializers import Response400Serializer
 
 AUTH_VIEW_DECORATORS = {
     "signup": extend_schema(

@@ -3,7 +3,7 @@
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
 from rest_framework import status
 
-from applications.api.v1.drf_spectacular.serializers import (
+from applications.api.v1.drf_spectacular.core.serializers import (
     Response400Serializer,
     Response401Serializer,
 )
