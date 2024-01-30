@@ -13,7 +13,7 @@ from applications.api.v1.drf_spectacular.companies.examples import (
 from applications.api.v1.drf_spectacular.companies.serializers import (
     Response400QueryParamSerializer,
 )
-from applications.api.v1.drf_spectacular.serializers import (
+from applications.api.v1.drf_spectacular.core.serializers import (
     Response400Serializer,
     Response401Serializer,
     Response404Serializer,
