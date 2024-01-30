@@ -52,91 +52,102 @@ PostgreSQL 16
 
 2. Создать базу данных PostgreSQL
 
-3. Cоздать и активировать виртуальное окружение:
-```markdown
-py -3.11 -m venv venv (Windows)
-python3 -m venv venv (Linux, MacOS)
-
-source venv/Scripts/activate (Windows)
-source venv/bin/activate (Linux, MacOS)
-```
+3. Создать и активировать виртуальное окружение:
+    ```bash
+    py -3.11 -m venv venv (Windows)
+    python3 -m venv venv (Linux, MacOS)
+    
+    source venv/Scripts/activate (Windows)
+    source venv/bin/activate (Linux, MacOS)
+    ```
 
 4. Обновить pip:
-```markdown
-python -m pip install --upgrade pip
-```
+    ```bash
+    python -m pip install --upgrade pip
+    ```
 
 5. Установить зависимости:
-```markdown
-pip install -r requirements.txt
-```
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 6. Скопировать файл .env_sample_local и переименовать в .env. Установить значения параметров в файле
 
 7. Выполнить миграции:
-```markdown
-python manage.py makemigrations
-
-python manage.py migrate
-```
-8. Использовать csv файлы с тестовыми данными о компаниях (csv файлы находятся в папке `db_test_data/csv_files/companies/`)
-```markdown
-Импортировать тестовые данные о компаниях из csv файлов в БД 
-    python manage.py import_data_companies
+    ```bash
+    python manage.py makemigrations
     
-Сохранить тестовые данные о компаниях в json файле
-    python -Xutf8 manage.py dumpdata > companies.json
-```
+    python manage.py migrate
+    ```
 
-9. Импортировать данные о компаниях из json файла в БД
-```markdown
-python manage.py loaddata ../db_test_data/json_files/companies.json
+8. Тестовые данные о компаниях
+   - Использовать csv файлы (находятся в папке `db_test_data/csv_files/companies/`)
+       - Импортировать данные в БД 
+         ```bash
+         python manage.py import_data_companies
+         ```
 
-Содержимое папки db_test_data/media/ скопировать в папку media/
-```
+       - Сохранить данные в json файле
+         ```bash
+         python -Xutf8 manage.py dumpdata > companies.json
+         ```
 
-10. Создать суперпользователя:
-- интерактивно
-```markdown
-python manage.py createsuperuser
-```
+   - Использовать json файл с тестовыми данными о компаниях
+       - Импортировать данные в БД
+         ```bash
+         python manage.py loaddata ../db_test_data/json_files/companies.json
+         ```
+      
+       - Содержимое папки db_test_data/media/ скопировать в папку media/
 
-- импортировать данные суперпользователя из json файла
-```markdown
-python manage.py loaddata ../db_test_data/json_files/users.json
-    
-данные суперпользователя:
-    email - su@su.su
-    пароль - password
-```
 
-11. Запустить проект:
-```markdown
-python manage.py runserver 8008
-```
+9. Создать суперпользователя:
+    - интерактивно
+        ```bash
+        python manage.py createsuperuser
+        ```
+
+    - импортировать данные суперпользователя из json файла
+        ```bash
+        python manage.py loaddata ../db_test_data/json_files/users.json
+        ```
+      
+      данные суперпользователя:
+      - email - su@su.su
+      - пароль - password
+
+
+10. Запустить проект:
+    ```bash
+    python manage.py runserver 8008
+    ```
+
 После запуска проект доступен по адресам:
-- cайт администратора
-```markdown
-http://127.0.0.1:8008/admin
-```
+- сайт администратора
+    ```markdown
+    http://127.0.0.1:8008/admin
+    ```
+
 - статическая документация API
-```markdown
-http://127.0.0.1:8008/api/redoc/v1/
+    ```markdown
+    http://127.0.0.1:8008/api/redoc/v1/
+    
+    http://127.0.0.1:8008/api/swagger/v1/
+    ```
 
-http://127.0.0.1:8008/api/swagger/v1/
-```
 - динамическая документация API (генерируется библиотекой drf-spectacular, доступна при DEBUG=True):
-```markdown
-http://127.0.0.1:8008/api/dynamic_doc/v1/download/
+    ```markdown
+    http://127.0.0.1:8008/api/dynamic_doc/v1/download/
+    
+    http://127.0.0.1:8008/api/redoc/v1/dynamic/
+    
+    http://127.0.0.1:8008/api/swagger/v1/dynamic/
+    ```
 
-http://127.0.0.1:8008/api/redoc/v1/dynamic/
-
-http://127.0.0.1:8008/api/swagger/v1/dynamic/
-```
 - Octopus API
-```markdown
-http://<server_ip>/api/v1/...
-```
+    ```markdown
+    http://<server_ip>/api/v1/...
+    ```
 
 [⬆️В начало](#оглавление)
 </details>
@@ -145,60 +156,64 @@ http://<server_ip>/api/v1/...
 <summary>на удалённом сервере</summary>
 
 1. Скопировать на сервер содержимое папки *infra* кроме папки *scripts*
-```shell
-scp -r <path_to_folder>/compose_files <username>@<server_pub_ip>:/<path_to_folder>/octopus
-scp <path_to_file>/nginx.conf <username>@<server_pub_ip>:/<path_to_folder>/octopus
-scp <path_to_file>/.env_sample_remote <username>@<server_pub_ip>:/<path_to_folder>/octopus
-```
+    ```shell
+    scp -r <path_to_folder>/compose_files <username>@<server_pub_ip>:/<path_to_folder>/octopus
+    scp <path_to_file>/nginx.conf <username>@<server_pub_ip>:/<path_to_folder>/octopus
+    scp <path_to_file>/.env_sample_remote <username>@<server_pub_ip>:/<path_to_folder>/octopus
+    ```
 
 2. Подключиться к серверу
-```shell
-ssh <username>@<server_ip>
-```
+    ```shell
+    ssh <username>@<server_ip>
+    ```
 
 3. Переименовать файл *.env_sample_remote* в *.env*
-```shell
-mv <path_to_file>/.env_sample_remote <path_to_file>/.env
-```
+    ```shell
+    mv <path_to_file>/.env_sample_remote <path_to_file>/.env
+    ```
 
 4. Открыть файл *.env* и задать значения параметров
-```shell
-nano <path_to_file>/.env
-```
+    ```shell
+    nano <path_to_file>/.env
+    ```
 
 5. Установить [Docker Engine](https://docs.docker.com/engine/install/ubuntu/)
 и [плагин Compose](https://docs.docker.com/compose/install/linux/#install-the-plugin-manually).
 Выполнить [действия после установки Linux для Docker Engine](https://docs.docker.com/engine/install/linux-postinstall/).
 
 6. Перейти в папку *compose_files*
-```shell
-cd <path_to_folder>/compose_files
-```
+    ```shell
+    cd <path_to_folder>/compose_files
+    ```
 
 7. Выполнить
-- для запуска сервера с тестовыми данными в БД
-```shell
-docker compose -f docker-compose.dev.yml up -d
-```
-- для запуска сервера без тестовых данных в БД
-```shell
-docker compose -f docker-compose.prod.yml up -d
-```
+   - для запуска сервера с тестовыми данными в БД
+      ```shell
+      docker compose -f docker-compose.dev.yml up -d
+      ```
+
+   - для запуска сервера без тестовых данных в БД
+      ```shell
+      docker compose -f docker-compose.prod.yml up -d
+      ```
 
 После запуска проект доступен по адресам:
-- cайт администратора
-```markdown
-http://<server_ip>/admin
-```
-- документация API
-```markdown
-http://<server_ip>/api/redoc/v1/
+- сайт администратора
+    ```markdown
+    http://<server_ip>/admin
+    ```
 
-http://<server_ip>/api/swagger/v1/
-```
+- документация API
+    ```markdown
+    http://<server_ip>/api/redoc/v1/
+    
+    http://<server_ip>/api/swagger/v1/
+    ```
+
 - Octopus API
-```markdown
-http://<server_ip>/api/v1/...
-```
+    ```markdown
+    http://<server_ip>/api/v1/...
+    ```
+
 [⬆️В начало](#оглавление)
 </details>
