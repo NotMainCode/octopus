@@ -1,17 +1,17 @@
-name: PR to release or develop branch
+name: PR to develop or release branch
 
 on:
   pull_request:
     branches:
-      - 'develop'
-      - 'release/*'
+      - develop
+      - "release/*"
     types:
       - closed  
 
 jobs:
   tests:
     if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -30,7 +30,7 @@ jobs:
           python -m flake8 --ignore I001,I004 octopus/
 
   build_and_push_to_docker_hub:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: tests
     steps:
     - name: Check out the repo
@@ -51,7 +51,7 @@ jobs:
         tags: ${{ secrets.DOCKER_REPO_DEV }}
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: build_and_push_to_docker_hub
     steps:
       - name: Executing remote ssh command to deploy
