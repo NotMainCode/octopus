@@ -3,7 +3,7 @@
 import re
 
 from django.core.exceptions import ValidationError
-from django.core.validators import EmailValidator, validate_ipv46_address
+from django.core.validators import validate_ipv46_address
 from django.utils.deconstruct import deconstructible
 from django.utils.regex_helper import _lazy_re_compile
 from django.utils.translation import gettext as _
@@ -136,7 +136,7 @@ class CustomEmailValidator:
 
     def __eq__(self, other):
         return (
-            isinstance(other, EmailValidator)
+            isinstance(other, CustomEmailValidator)
             and (self.domain_allowlist == other.domain_allowlist)
             and (self.message == other.message)
             and (self.code == other.code)
