@@ -99,7 +99,7 @@ PostgreSQL 16
          python manage.py loaddata ../db_test_data/json_files/companies.json
          ```
       
-       - Содержимое папки db_test_data/media/ скопировать в папку media/
+       - Содержимое папки `db_test_data/media/` скопировать в папку `media/`
 
 
 9. Создать суперпользователя:
