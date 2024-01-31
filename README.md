@@ -11,7 +11,7 @@
 Octopus - это онлайн-платформа, которая предоставляет информацию об IT компаниях.
 
 Добавление информации о компаниях возможно на сайте администратора, 
-так же как и управление другими ресурсами (специализации и услуги компаний, пользователи т.д.).
+так же как и управление другими ресурсами (специализации и услуги компаний, пользователи и т.д.).
 
 API Octopus предоставляет следующие возможности:
 - регистрация пользователя с подтверждением по ссылке в email,
@@ -71,7 +71,8 @@ PostgreSQL 16
     pip install -r requirements.txt
     ```
 
-6. Скопировать файл .env_sample_local и переименовать в .env. Установить значения параметров в файле
+6. Скопировать файл `.env_sample_local` и переименовать в `.env`. 
+Установить значения параметров в файле `.env`.
 
 7. Выполнить миграции:
     ```bash
@@ -125,7 +126,7 @@ PostgreSQL 16
 После запуска проект доступен по адресам:
 - сайт администратора
     ```markdown
-    http://127.0.0.1:8008/admin
+    http://127.0.0.1:8008/admin/
     ```
 
 - статическая документация API
@@ -135,7 +136,8 @@ PostgreSQL 16
     http://127.0.0.1:8008/api/swagger/v1/
     ```
 
-- динамическая документация API (генерируется библиотекой drf-spectacular, доступна при DEBUG=True):
+- динамическая документация API 
+(генерируется библиотекой drf-spectacular, доступна при DEBUG=True):
     ```markdown
     http://127.0.0.1:8008/api/dynamic_doc/v1/download/
     
@@ -146,7 +148,53 @@ PostgreSQL 16
 
 - Octopus API
     ```markdown
-    http://<server_ip>/api/v1/...
+    http://127.0.0.1:8008/api/v1/...
+    ```
+
+[⬆️В начало](#оглавление)
+</details>
+
+<details>
+<summary>локально в контейнерах</summary>
+
+1. Для локального запуска в контейнерах необходимо наличие [Docker](https://docs.docker.com/get-docker/)
+2. Скопировать файл `.env_sample_local` и переименовать в `.env`. 
+Установить значения параметров в файле `.env`.
+3. Перейти в папку `infra/compose_files/` и выполнить:
+    ```shell
+    docker compose -f docker-compose.build.dev.yml up -d
+    ```
+
+В БД будут загружены тестовые данные о компаниях и данные суперпользователя:
+- email - su@su.su
+- пароль - password
+
+После запуска проект доступен по адресам:
+- сайт администратора
+    ```markdown
+    http://localhost/admin
+    ```
+
+- статическая документация API
+    ```markdown
+    http://localhost/api/redoc/v1/
+    
+    http://localhost/api/swagger/v1/
+    ```
+
+- динамическая документация API 
+(генерируется библиотекой drf-spectacular, доступна при DEBUG=True):
+    ```markdown
+    http://localhost/api/dynamic_doc/v1/download/
+    
+    http://localhost/api/redoc/v1/dynamic/
+    
+    http://localhost/api/swagger/v1/dynamic/
+    ```
+
+- Octopus API
+    ```markdown
+    http://localhost/api/v1/...
     ```
 
 [⬆️В начало](#оглавление)
@@ -155,7 +203,7 @@ PostgreSQL 16
 <details>
 <summary>на удалённом сервере</summary>
 
-1. Скопировать на сервер содержимое папки *infra* кроме папки *scripts*
+1. Скопировать на сервер содержимое папки `infra/` кроме папки `scripts/`
     ```shell
     scp -r <path_to_folder>/compose_files <username>@<server_pub_ip>:/<path_to_folder>/octopus
     scp <path_to_file>/nginx.conf <username>@<server_pub_ip>:/<path_to_folder>/octopus
@@ -167,12 +215,12 @@ PostgreSQL 16
     ssh <username>@<server_ip>
     ```
 
-3. Переименовать файл *.env_sample_remote* в *.env*
+3. Переименовать файл `.env_sample_remote` в `.env`
     ```shell
     mv <path_to_file>/.env_sample_remote <path_to_file>/.env
     ```
 
-4. Открыть файл *.env* и задать значения параметров
+4. Открыть файл `.env` и задать значения параметров
     ```shell
     nano <path_to_file>/.env
     ```
@@ -181,7 +229,7 @@ PostgreSQL 16
 и [плагин Compose](https://docs.docker.com/compose/install/linux/#install-the-plugin-manually).
 Выполнить [действия после установки Linux для Docker Engine](https://docs.docker.com/engine/install/linux-postinstall/).
 
-6. Перейти в папку *compose_files*
+6. Перейти в папку `compose_files/`
     ```shell
     cd <path_to_folder>/compose_files
     ```
