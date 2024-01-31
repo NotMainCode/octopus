@@ -10,7 +10,7 @@ services:
     container_name: octopus_postgres
     image: postgres:16.1-alpine
     env_file:
-      - ../.env
+      - ../../.env
     restart: on-failure
     volumes:
       - octopus_postgres_data:/var/lib/postgresql/data/
@@ -21,7 +21,7 @@ services:
       context: ../..
       target: dev
     env_file:
-      - ../.env
+      - ../../.env
     expose:
       - "8008"
     restart: on-failure
@@ -38,7 +38,7 @@ services:
     container_name: nginx
     image: nginx:1.25-alpine
     env_file:
-      - ../.env
+      - ../../.env
     ports:
       - "80:80"
     volumes:
